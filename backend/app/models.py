@@ -1,6 +1,6 @@
 # app/models.py
 from sqlalchemy import Column, Integer, String, Date, JSON, ARRAY
-from app.database import Base
+from backend.app.database import Base
 
 class UseCase(Base):
     __tablename__ = "use_cases"

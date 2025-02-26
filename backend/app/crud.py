@@ -1,7 +1,7 @@
 # app/crud.py
 from sqlalchemy.orm import Session
-from app.models import UseCase as UseCaseModel
-from app.schemas import UseCaseCreate
+from backend.app.models import UseCase as UseCaseModel
+from backend.app.schemas import UseCaseCreate
 
 def create_usecase(db: Session, usecase: UseCaseCreate):
     try:

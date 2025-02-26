@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from app.routes.use_cases import router as use_cases_router
+from backend.app.routes.use_cases import router as use_cases_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
