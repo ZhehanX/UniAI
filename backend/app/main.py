@@ -9,7 +9,7 @@ app = FastAPI()
 # Allow CORS for Vue.js frontend (adjust origins in production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://uniai-frontend.onrender.com/"],
+    allow_origins=["http://localhost:5173", "https://uniai-frontend.onrender.com"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
