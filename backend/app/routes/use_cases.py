@@ -1,6 +1,7 @@
 # app/routes/use_cases.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 from app.database import get_db
 from app.schemas import UseCaseCreate, UseCase
 from app.crud import (
@@ -20,9 +21,11 @@ def create_new_usecase(usecase: UseCaseCreate, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/usecases/", response_model=list[UseCase])
+@router.get("/usecases/", response_model=List[UseCase])
 def read_usecases(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return get_usecases(db=db, skip=skip, limit=limit)
+
+
 
 @router.get("/usecases/{usecase_id}", response_model=UseCase)
 def read_usecase(usecase_id: int, db: Session = Depends(get_db)):
