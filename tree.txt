@@ -1,0 +1,1867 @@
+.
+├── backend
+│   ├── app
+│   │   └── routes
+│   └── venv
+│       ├── bin
+│       ├── include
+│       └── lib
+│           └── python3.9
+│               └── site-packages
+│                   ├── SQLAlchemy-2.0.38.dist-info
+│                   ├── _distutils_hack
+│                   ├── annotated_types
+│                   ├── annotated_types-0.7.0.dist-info
+│                   │   └── licenses
+│                   ├── anyio
+│                   │   ├── _backends
+│                   │   ├── _core
+│                   │   ├── abc
+│                   │   └── streams
+│                   ├── anyio-4.8.0.dist-info
+│                   ├── beautifulsoup4-4.13.3.dist-info
+│                   │   └── licenses
+│                   ├── bs4
+│                   │   ├── builder
+│                   │   └── tests
+│                   │       └── fuzz
+│                   ├── certifi
+│                   ├── certifi-2025.1.31.dist-info
+│                   ├── charset_normalizer
+│                   │   └── cli
+│                   ├── charset_normalizer-3.4.1.dist-info
+│                   ├── click
+│                   ├── click-8.1.8.dist-info
+│                   ├── dotenv
+│                   ├── exceptiongroup
+│                   ├── exceptiongroup-1.2.2.dist-info
+│                   ├── fastapi
+│                   │   ├── dependencies
+│                   │   ├── middleware
+│                   │   ├── openapi
+│                   │   └── security
+│                   ├── fastapi-0.115.8.dist-info
+│                   │   └── licenses
+│                   ├── h11
+│                   │   └── tests
+│                   │       └── data
+│                   ├── h11-0.14.0.dist-info
+│                   ├── idna
+│                   ├── idna-3.10.dist-info
+│                   ├── pip
+│                   │   ├── _internal
+│                   │   │   ├── cli
+│                   │   │   ├── commands
+│                   │   │   ├── distributions
+│                   │   │   ├── index
+│                   │   │   ├── locations
+│                   │   │   ├── metadata
+│                   │   │   │   └── importlib
+│                   │   │   ├── models
+│                   │   │   ├── network
+│                   │   │   ├── operations
+│                   │   │   │   ├── build
+│                   │   │   │   └── install
+│                   │   │   ├── req
+│                   │   │   ├── resolution
+│                   │   │   │   ├── legacy
+│                   │   │   │   └── resolvelib
+│                   │   │   ├── utils
+│                   │   │   └── vcs
+│                   │   └── _vendor
+│                   │       ├── cachecontrol
+│                   │       │   └── caches
+│                   │       ├── certifi
+│                   │       ├── distlib
+│                   │       ├── distro
+│                   │       ├── idna
+│                   │       ├── msgpack
+│                   │       ├── packaging
+│                   │       │   └── licenses
+│                   │       ├── pkg_resources
+│                   │       ├── platformdirs
+│                   │       ├── pygments
+│                   │       │   ├── filters
+│                   │       │   ├── formatters
+│                   │       │   ├── lexers
+│                   │       │   └── styles
+│                   │       ├── pyproject_hooks
+│                   │       │   └── _in_process
+│                   │       ├── requests
+│                   │       ├── resolvelib
+│                   │       │   └── compat
+│                   │       ├── rich
+│                   │       ├── tomli
+│                   │       ├── truststore
+│                   │       └── urllib3
+│                   │           ├── contrib
+│                   │           │   └── _securetransport
+│                   │           ├── packages
+│                   │           │   └── backports
+│                   │           └── util
+│                   ├── pip-25.0.1.dist-info
+│                   ├── pkg_resources
+│                   │   ├── _vendor
+│                   │   │   └── packaging
+│                   │   ├── extern
+│                   │   └── tests
+│                   │       └── data
+│                   │           └── my-test-package-source
+│                   ├── psycopg2
+│                   ├── psycopg2-2.9.10.dist-info
+│                   ├── pydantic
+│                   │   ├── _internal
+│                   │   ├── deprecated
+│                   │   ├── experimental
+│                   │   ├── plugin
+│                   │   └── v1
+│                   ├── pydantic-2.10.6.dist-info
+│                   │   └── licenses
+│                   ├── pydantic_core
+│                   ├── pydantic_core-2.27.2.dist-info
+│                   │   └── licenses
+│                   ├── python_dotenv-1.0.1.dist-info
+│                   ├── requests
+│                   ├── requests-2.32.3.dist-info
+│                   ├── setuptools
+│                   │   ├── _distutils
+│                   │   │   └── command
+│                   │   ├── _vendor
+│                   │   │   ├── more_itertools
+│                   │   │   └── packaging
+│                   │   ├── command
+│                   │   └── extern
+│                   ├── setuptools-58.0.4.dist-info
+│                   ├── sniffio
+│                   │   └── _tests
+│                   ├── sniffio-1.3.1.dist-info
+│                   ├── soupsieve
+│                   ├── soupsieve-2.6.dist-info
+│                   │   └── licenses
+│                   ├── sqlalchemy
+│                   │   ├── connectors
+│                   │   ├── cyextension
+│                   │   ├── dialects
+│                   │   │   ├── mssql
+│                   │   │   ├── mysql
+│                   │   │   ├── oracle
+│                   │   │   ├── postgresql
+│                   │   │   └── sqlite
+│                   │   ├── engine
+│                   │   ├── event
+│                   │   ├── ext
+│                   │   │   ├── asyncio
+│                   │   │   ├── declarative
+│                   │   │   └── mypy
+│                   │   ├── future
+│                   │   ├── orm
+│                   │   ├── pool
+│                   │   ├── sql
+│                   │   ├── testing
+│                   │   │   ├── fixtures
+│                   │   │   ├── plugin
+│                   │   │   └── suite
+│                   │   └── util
+│                   ├── starlette
+│                   │   └── middleware
+│                   ├── starlette-0.45.3.dist-info
+│                   │   └── licenses
+│                   ├── typing_extensions-4.12.2.dist-info
+│                   ├── urllib3
+│                   │   ├── contrib
+│                   │   │   └── emscripten
+│                   │   ├── http2
+│                   │   └── util
+│                   ├── urllib3-2.3.0.dist-info
+│                   │   └── licenses
+│                   ├── uvicorn
+│                   │   ├── lifespan
+│                   │   ├── loops
+│                   │   ├── middleware
+│                   │   ├── protocols
+│                   │   │   ├── http
+│                   │   │   └── websockets
+│                   │   └── supervisors
+│                   └── uvicorn-0.34.0.dist-info
+│                       └── licenses
+└── vue_project
+    ├── cypress
+    │   ├── e2e
+    │   ├── fixtures
+    │   └── support
+    ├── node_modules
+    │   ├── @ampproject
+    │   │   └── remapping
+    │   │       └── dist
+    │   │           └── types
+    │   ├── @antfu
+    │   │   └── utils
+    │   │       └── dist
+    │   ├── @asamuzakjp
+    │   │   └── css-color
+    │   │       ├── dist
+    │   │       │   ├── cjs
+    │   │       │   │   └── js
+    │   │       │   └── esm
+    │   │       │       └── js
+    │   │       ├── node_modules
+    │   │       │   └── lru-cache
+    │   │       │       └── dist
+    │   │       │           ├── commonjs
+    │   │       │           └── esm
+    │   │       └── src
+    │   │           └── js
+    │   ├── @babel
+    │   │   ├── code-frame
+    │   │   │   └── lib
+    │   │   ├── compat-data
+    │   │   │   └── data
+    │   │   ├── core
+    │   │   │   ├── lib
+    │   │   │   │   ├── config
+    │   │   │   │   │   ├── files
+    │   │   │   │   │   ├── helpers
+    │   │   │   │   │   └── validation
+    │   │   │   │   ├── errors
+    │   │   │   │   ├── gensync-utils
+    │   │   │   │   ├── parser
+    │   │   │   │   │   └── util
+    │   │   │   │   ├── tools
+    │   │   │   │   ├── transformation
+    │   │   │   │   │   ├── file
+    │   │   │   │   │   └── util
+    │   │   │   │   └── vendor
+    │   │   │   └── src
+    │   │   │       └── config
+    │   │   │           └── files
+    │   │   ├── generator
+    │   │   │   └── lib
+    │   │   │       ├── generators
+    │   │   │       └── node
+    │   │   ├── helper-annotate-as-pure
+    │   │   │   └── lib
+    │   │   ├── helper-compilation-targets
+    │   │   │   └── lib
+    │   │   ├── helper-create-class-features-plugin
+    │   │   │   └── lib
+    │   │   ├── helper-member-expression-to-functions
+    │   │   │   └── lib
+    │   │   ├── helper-module-imports
+    │   │   │   └── lib
+    │   │   ├── helper-module-transforms
+    │   │   │   └── lib
+    │   │   ├── helper-optimise-call-expression
+    │   │   │   └── lib
+    │   │   ├── helper-plugin-utils
+    │   │   │   └── lib
+    │   │   ├── helper-replace-supers
+    │   │   │   └── lib
+    │   │   ├── helper-skip-transparent-expression-wrappers
+    │   │   │   └── lib
+    │   │   ├── helper-string-parser
+    │   │   │   └── lib
+    │   │   ├── helper-validator-identifier
+    │   │   │   └── lib
+    │   │   ├── helper-validator-option
+    │   │   │   └── lib
+    │   │   ├── helpers
+    │   │   │   └── lib
+    │   │   │       └── helpers
+    │   │   ├── parser
+    │   │   │   ├── bin
+    │   │   │   ├── lib
+    │   │   │   └── typings
+    │   │   ├── plugin-proposal-decorators
+    │   │   │   └── lib
+    │   │   ├── plugin-syntax-decorators
+    │   │   │   └── lib
+    │   │   ├── plugin-syntax-import-attributes
+    │   │   │   └── lib
+    │   │   ├── plugin-syntax-import-meta
+    │   │   │   └── lib
+    │   │   ├── plugin-syntax-jsx
+    │   │   │   └── lib
+    │   │   ├── plugin-syntax-typescript
+    │   │   │   └── lib
+    │   │   ├── plugin-transform-typescript
+    │   │   │   └── lib
+    │   │   ├── template
+    │   │   │   └── lib
+    │   │   ├── traverse
+    │   │   │   └── lib
+    │   │   │       ├── path
+    │   │   │       │   ├── inference
+    │   │   │       │   └── lib
+    │   │   │       └── scope
+    │   │   │           └── lib
+    │   │   └── types
+    │   │       └── lib
+    │   │           ├── asserts
+    │   │           │   └── generated
+    │   │           ├── ast-types
+    │   │           │   └── generated
+    │   │           ├── builders
+    │   │           │   ├── flow
+    │   │           │   ├── generated
+    │   │           │   ├── react
+    │   │           │   └── typescript
+    │   │           ├── clone
+    │   │           ├── comments
+    │   │           ├── constants
+    │   │           │   └── generated
+    │   │           ├── converters
+    │   │           ├── definitions
+    │   │           ├── modifications
+    │   │           │   ├── flow
+    │   │           │   └── typescript
+    │   │           ├── retrievers
+    │   │           ├── traverse
+    │   │           ├── utils
+    │   │           │   └── react
+    │   │           └── validators
+    │   │               ├── generated
+    │   │               └── react
+    │   ├── @colors
+    │   │   └── colors
+    │   │       ├── examples
+    │   │       ├── lib
+    │   │       │   ├── custom
+    │   │       │   ├── maps
+    │   │       │   └── system
+    │   │       └── themes
+    │   ├── @csstools
+    │   │   ├── color-helpers
+    │   │   │   └── dist
+    │   │   ├── css-calc
+    │   │   │   └── dist
+    │   │   ├── css-color-parser
+    │   │   │   └── dist
+    │   │   ├── css-parser-algorithms
+    │   │   │   └── dist
+    │   │   └── css-tokenizer
+    │   │       └── dist
+    │   ├── @cypress
+    │   │   ├── request
+    │   │   │   └── lib
+    │   │   └── xvfb
+    │   │       └── node_modules
+    │   │           └── debug
+    │   │               └── src
+    │   ├── @esbuild
+    │   │   └── darwin-arm64
+    │   │       └── bin
+    │   ├── @hapi
+    │   │   ├── hoek
+    │   │   │   └── lib
+    │   │   └── topo
+    │   │       └── lib
+    │   ├── @headlessui
+    │   │   └── vue
+    │   │       └── dist
+    │   │           ├── components
+    │   │           │   ├── combobox
+    │   │           │   ├── description
+    │   │           │   ├── dialog
+    │   │           │   ├── disclosure
+    │   │           │   ├── focus-trap
+    │   │           │   ├── label
+    │   │           │   ├── listbox
+    │   │           │   ├── menu
+    │   │           │   ├── popover
+    │   │           │   ├── portal
+    │   │           │   ├── radio-group
+    │   │           │   ├── switch
+    │   │           │   ├── tabs
+    │   │           │   └── transitions
+    │   │           │       └── utils
+    │   │           ├── hooks
+    │   │           │   ├── __mocks__
+    │   │           │   └── document-overflow
+    │   │           ├── internal
+    │   │           └── utils
+    │   ├── @heroicons
+    │   │   └── vue
+    │   │       ├── 16
+    │   │       │   └── solid
+    │   │       │       └── esm
+    │   │       ├── 20
+    │   │       │   └── solid
+    │   │       │       └── esm
+    │   │       ├── 24
+    │   │       │   ├── outline
+    │   │       │   │   └── esm
+    │   │       │   └── solid
+    │   │       │       └── esm
+    │   │       ├── outline
+    │   │       └── solid
+    │   ├── @isaacs
+    │   │   └── cliui
+    │   │       ├── build
+    │   │       │   └── lib
+    │   │       └── node_modules
+    │   │           ├── ansi-regex
+    │   │           ├── emoji-regex
+    │   │           │   └── es2015
+    │   │           ├── string-width
+    │   │           └── strip-ansi
+    │   ├── @jridgewell
+    │   │   ├── gen-mapping
+    │   │   │   └── dist
+    │   │   │       └── types
+    │   │   ├── resolve-uri
+    │   │   │   └── dist
+    │   │   │       └── types
+    │   │   ├── set-array
+    │   │   │   └── dist
+    │   │   │       └── types
+    │   │   ├── sourcemap-codec
+    │   │   │   └── dist
+    │   │   │       └── types
+    │   │   └── trace-mapping
+    │   │       └── dist
+    │   │           └── types
+    │   ├── @one-ini
+    │   │   └── wasm
+    │   ├── @pkgjs
+    │   │   └── parseargs
+    │   │       ├── examples
+    │   │       └── internal
+    │   ├── @polka
+    │   │   └── url
+    │   ├── @rollup
+    │   │   ├── pluginutils
+    │   │   │   ├── dist
+    │   │   │   │   ├── cjs
+    │   │   │   │   └── es
+    │   │   │   └── types
+    │   │   └── rollup-darwin-arm64
+    │   ├── @sec-ant
+    │   │   └── readable-stream
+    │   │       └── dist
+    │   │           ├── core
+    │   │           ├── index
+    │   │           ├── polyfill
+    │   │           ├── ponyfill
+    │   │           └── types
+    │   ├── @sideway
+    │   │   ├── address
+    │   │   │   └── lib
+    │   │   ├── formula
+    │   │   │   └── lib
+    │   │   └── pinpoint
+    │   │       └── lib
+    │   ├── @sindresorhus
+    │   │   └── merge-streams
+    │   ├── @tailwindcss
+    │   │   ├── node
+    │   │   │   └── dist
+    │   │   ├── oxide
+    │   │   ├── oxide-darwin-arm64
+    │   │   └── vite
+    │   │       └── dist
+    │   ├── @tanstack
+    │   │   ├── virtual-core
+    │   │   │   ├── dist
+    │   │   │   │   ├── cjs
+    │   │   │   │   └── esm
+    │   │   │   └── src
+    │   │   └── vue-virtual
+    │   │       ├── dist
+    │   │       │   ├── cjs
+    │   │       │   └── esm
+    │   │       └── src
+    │   ├── @types
+    │   │   ├── estree
+    │   │   ├── node
+    │   │   │   ├── assert
+    │   │   │   ├── compatibility
+    │   │   │   ├── dns
+    │   │   │   ├── fs
+    │   │   │   ├── readline
+    │   │   │   ├── stream
+    │   │   │   ├── timers
+    │   │   │   └── ts5.6
+    │   │   ├── sinonjs__fake-timers
+    │   │   ├── sizzle
+    │   │   └── yauzl
+    │   ├── @vitejs
+    │   │   ├── plugin-vue
+    │   │   │   └── dist
+    │   │   └── plugin-vue-jsx
+    │   │       └── dist
+    │   ├── @vitest
+    │   │   ├── expect
+    │   │   │   └── dist
+    │   │   ├── mocker
+    │   │   │   ├── dist
+    │   │   │   └── node_modules
+    │   │   │       └── estree-walker
+    │   │   │           ├── src
+    │   │   │           └── types
+    │   │   ├── pretty-format
+    │   │   │   └── dist
+    │   │   ├── runner
+    │   │   │   └── dist
+    │   │   ├── snapshot
+    │   │   │   └── dist
+    │   │   ├── spy
+    │   │   │   └── dist
+    │   │   └── utils
+    │   │       └── dist
+    │   ├── @vue
+    │   │   ├── babel-helper-vue-transform-on
+    │   │   ├── babel-plugin-jsx
+    │   │   │   └── dist
+    │   │   ├── babel-plugin-resolve-type
+    │   │   │   └── dist
+    │   │   ├── compiler-core
+    │   │   │   └── dist
+    │   │   ├── compiler-dom
+    │   │   │   └── dist
+    │   │   ├── compiler-sfc
+    │   │   │   └── dist
+    │   │   ├── compiler-ssr
+    │   │   │   └── dist
+    │   │   ├── devtools-api
+    │   │   │   └── lib
+    │   │   │       ├── cjs
+    │   │   │       │   └── api
+    │   │   │       └── esm
+    │   │   │           └── api
+    │   │   ├── devtools-core
+    │   │   │   ├── dist
+    │   │   │   └── node_modules
+    │   │   │       └── nanoid
+    │   │   │           ├── bin
+    │   │   │           ├── non-secure
+    │   │   │           └── url-alphabet
+    │   │   ├── devtools-kit
+    │   │   │   └── dist
+    │   │   ├── devtools-shared
+    │   │   │   └── dist
+    │   │   ├── reactivity
+    │   │   │   └── dist
+    │   │   ├── runtime-core
+    │   │   │   └── dist
+    │   │   ├── runtime-dom
+    │   │   │   └── dist
+    │   │   ├── server-renderer
+    │   │   │   └── dist
+    │   │   ├── shared
+    │   │   │   └── dist
+    │   │   └── test-utils
+    │   │       └── dist
+    │   │           ├── components
+    │   │           ├── constants
+    │   │           ├── interfaces
+    │   │           ├── utils
+    │   │           └── vnodeTransformers
+    │   ├── abbrev
+    │   │   └── lib
+    │   ├── agent-base
+    │   │   └── dist
+    │   ├── aggregate-error
+    │   ├── ansi-colors
+    │   │   └── types
+    │   ├── ansi-escapes
+    │   ├── ansi-regex
+    │   ├── ansi-styles
+    │   ├── arch
+    │   ├── arg
+    │   ├── asn1
+    │   │   └── lib
+    │   │       └── ber
+    │   ├── assert-plus
+    │   ├── assertion-error
+    │   ├── astral-regex
+    │   ├── async
+    │   │   ├── dist
+    │   │   └── internal
+    │   ├── asynckit
+    │   │   └── lib
+    │   ├── at-least-node
+    │   ├── autoprefixer
+    │   │   ├── bin
+    │   │   ├── data
+    │   │   └── lib
+    │   │       └── hacks
+    │   ├── aws-sign2
+    │   ├── aws4
+    │   ├── axios
+    │   │   ├── dist
+    │   │   │   ├── browser
+    │   │   │   ├── esm
+    │   │   │   └── node
+    │   │   ├── lib
+    │   │   │   ├── adapters
+    │   │   │   ├── cancel
+    │   │   │   ├── core
+    │   │   │   ├── defaults
+    │   │   │   ├── env
+    │   │   │   │   └── classes
+    │   │   │   ├── helpers
+    │   │   │   └── platform
+    │   │   │       ├── browser
+    │   │   │       │   └── classes
+    │   │   │       ├── common
+    │   │   │       └── node
+    │   │   │           └── classes
+    │   │   └── node_modules
+    │   │       └── proxy-from-env
+    │   ├── balanced-match
+    │   ├── base64-js
+    │   ├── bcrypt-pbkdf
+    │   ├── birpc
+    │   │   └── dist
+    │   ├── blob-util
+    │   │   └── dist
+    │   ├── bluebird
+    │   │   └── js
+    │   │       ├── browser
+    │   │       └── release
+    │   ├── brace-expansion
+    │   ├── browserslist
+    │   ├── buffer
+    │   ├── buffer-crc32
+    │   ├── bundle-name
+    │   ├── cac
+    │   │   ├── deno
+    │   │   └── dist
+    │   ├── cachedir
+    │   ├── call-bind-apply-helpers
+    │   │   └── test
+    │   ├── call-bound
+    │   │   └── test
+    │   ├── caniuse-lite
+    │   │   ├── data
+    │   │   │   ├── features
+    │   │   │   └── regions
+    │   │   └── dist
+    │   │       ├── lib
+    │   │       └── unpacker
+    │   ├── caseless
+    │   ├── chai
+    │   │   └── lib
+    │   │       └── chai
+    │   │           ├── core
+    │   │           ├── interface
+    │   │           └── utils
+    │   ├── chalk
+    │   │   ├── node_modules
+    │   │   │   └── supports-color
+    │   │   └── source
+    │   ├── check-error
+    │   ├── check-more-types
+    │   │   └── dist
+    │   ├── ci-info
+    │   ├── clean-stack
+    │   ├── cli-cursor
+    │   ├── cli-table3
+    │   │   └── src
+    │   ├── cli-truncate
+    │   ├── color-convert
+    │   ├── color-name
+    │   ├── colorette
+    │   ├── combined-stream
+    │   │   └── lib
+    │   ├── commander
+    │   │   └── typings
+    │   ├── common-tags
+    │   │   ├── dist
+    │   │   ├── es
+    │   │   │   ├── TemplateTag
+    │   │   │   ├── codeBlock
+    │   │   │   ├── commaLists
+    │   │   │   ├── commaListsAnd
+    │   │   │   ├── commaListsOr
+    │   │   │   ├── html
+    │   │   │   ├── inlineArrayTransformer
+    │   │   │   ├── inlineLists
+    │   │   │   ├── oneLine
+    │   │   │   ├── oneLineCommaLists
+    │   │   │   ├── oneLineCommaListsAnd
+    │   │   │   ├── oneLineCommaListsOr
+    │   │   │   ├── oneLineInlineLists
+    │   │   │   ├── oneLineTrim
+    │   │   │   ├── removeNonPrintingValuesTransformer
+    │   │   │   ├── replaceResultTransformer
+    │   │   │   ├── replaceStringTransformer
+    │   │   │   ├── replaceSubstitutionTransformer
+    │   │   │   ├── safeHtml
+    │   │   │   ├── source
+    │   │   │   ├── splitStringTransformer
+    │   │   │   ├── stripIndent
+    │   │   │   ├── stripIndentTransformer
+    │   │   │   ├── stripIndents
+    │   │   │   ├── trimResultTransformer
+    │   │   │   └── utils
+    │   │   │       └── readFromFixture
+    │   │   └── lib
+    │   │       ├── TemplateTag
+    │   │       ├── codeBlock
+    │   │       ├── commaLists
+    │   │       ├── commaListsAnd
+    │   │       ├── commaListsOr
+    │   │       ├── html
+    │   │       ├── inlineArrayTransformer
+    │   │       ├── inlineLists
+    │   │       ├── oneLine
+    │   │       ├── oneLineCommaLists
+    │   │       ├── oneLineCommaListsAnd
+    │   │       ├── oneLineCommaListsOr
+    │   │       ├── oneLineInlineLists
+    │   │       ├── oneLineTrim
+    │   │       ├── removeNonPrintingValuesTransformer
+    │   │       ├── replaceResultTransformer
+    │   │       ├── replaceStringTransformer
+    │   │       ├── replaceSubstitutionTransformer
+    │   │       ├── safeHtml
+    │   │       ├── source
+    │   │       ├── splitStringTransformer
+    │   │       ├── stripIndent
+    │   │       ├── stripIndentTransformer
+    │   │       ├── stripIndents
+    │   │       ├── trimResultTransformer
+    │   │       └── utils
+    │   │           └── readFromFixture
+    │   ├── config-chain
+    │   │   └── node_modules
+    │   │       └── ini
+    │   ├── convert-source-map
+    │   ├── copy-anything
+    │   │   └── dist
+    │   │       └── cjs
+    │   ├── core-util-is
+    │   │   └── lib
+    │   ├── cross-spawn
+    │   │   └── lib
+    │   │       └── util
+    │   ├── cssstyle
+    │   │   └── lib
+    │   │       ├── properties
+    │   │       └── utils
+    │   ├── csstype
+    │   ├── cypress
+    │   │   ├── angular
+    │   │   │   ├── angular
+    │   │   │   │   └── dist
+    │   │   │   └── dist
+    │   │   ├── bin
+    │   │   ├── lib
+    │   │   │   ├── exec
+    │   │   │   └── tasks
+    │   │   ├── mount-utils
+    │   │   │   ├── dist
+    │   │   │   └── mount-utils
+    │   │   │       └── dist
+    │   │   ├── node_modules
+    │   │   │   └── semver
+    │   │   │       ├── bin
+    │   │   │       ├── classes
+    │   │   │       ├── functions
+    │   │   │       ├── internal
+    │   │   │       └── ranges
+    │   │   ├── react
+    │   │   │   ├── dist
+    │   │   │   └── react
+    │   │   │       └── dist
+    │   │   ├── svelte
+    │   │   │   ├── dist
+    │   │   │   └── svelte
+    │   │   │       └── dist
+    │   │   ├── types
+    │   │   │   ├── bluebird
+    │   │   │   ├── chai
+    │   │   │   ├── chai-jquery
+    │   │   │   ├── jquery
+    │   │   │   ├── lodash
+    │   │   │   │   ├── common
+    │   │   │   │   └── fp
+    │   │   │   ├── minimatch
+    │   │   │   ├── mocha
+    │   │   │   ├── sinon
+    │   │   │   └── sinon-chai
+    │   │   └── vue
+    │   │       ├── dist
+    │   │       └── vue
+    │   │           └── dist
+    │   ├── dashdash
+    │   │   ├── etc
+    │   │   └── lib
+    │   ├── data-urls
+    │   │   └── lib
+    │   ├── dayjs
+    │   │   ├── esm
+    │   │   │   ├── locale
+    │   │   │   └── plugin
+    │   │   │       ├── advancedFormat
+    │   │   │       ├── arraySupport
+    │   │   │       ├── badMutable
+    │   │   │       ├── bigIntSupport
+    │   │   │       ├── buddhistEra
+    │   │   │       ├── calendar
+    │   │   │       ├── customParseFormat
+    │   │   │       ├── dayOfYear
+    │   │   │       ├── devHelper
+    │   │   │       ├── duration
+    │   │   │       ├── isBetween
+    │   │   │       ├── isLeapYear
+    │   │   │       ├── isMoment
+    │   │   │       ├── isSameOrAfter
+    │   │   │       ├── isSameOrBefore
+    │   │   │       ├── isToday
+    │   │   │       ├── isTomorrow
+    │   │   │       ├── isYesterday
+    │   │   │       ├── isoWeek
+    │   │   │       ├── isoWeeksInYear
+    │   │   │       ├── localeData
+    │   │   │       ├── localizedFormat
+    │   │   │       ├── minMax
+    │   │   │       ├── negativeYear
+    │   │   │       ├── objectSupport
+    │   │   │       ├── pluralGetSet
+    │   │   │       ├── preParsePostFormat
+    │   │   │       ├── quarterOfYear
+    │   │   │       ├── relativeTime
+    │   │   │       ├── timezone
+    │   │   │       ├── toArray
+    │   │   │       ├── toObject
+    │   │   │       ├── updateLocale
+    │   │   │       ├── utc
+    │   │   │       ├── weekOfYear
+    │   │   │       ├── weekYear
+    │   │   │       └── weekday
+    │   │   ├── locale
+    │   │   └── plugin
+    │   ├── debug
+    │   │   └── src
+    │   ├── decimal.js
+    │   ├── deep-eql
+    │   ├── default-browser
+    │   ├── default-browser-id
+    │   ├── define-lazy-prop
+    │   ├── delayed-stream
+    │   │   └── lib
+    │   ├── detect-libc
+    │   │   ├── bin
+    │   │   └── lib
+    │   ├── dunder-proto
+    │   │   └── test
+    │   ├── duplexer
+    │   │   └── test
+    │   ├── eastasianwidth
+    │   ├── ecc-jsbn
+    │   │   └── lib
+    │   ├── editorconfig
+    │   │   ├── bin
+    │   │   ├── lib
+    │   │   └── node_modules
+    │   │       ├── commander
+    │   │       │   ├── lib
+    │   │       │   └── typings
+    │   │       └── semver
+    │   │           ├── bin
+    │   │           ├── classes
+    │   │           ├── functions
+    │   │           ├── internal
+    │   │           └── ranges
+    │   ├── electron-to-chromium
+    │   ├── emoji-regex
+    │   │   └── es2015
+    │   ├── end-of-stream
+    │   ├── enhanced-resolve
+    │   │   └── lib
+    │   │       └── util
+    │   ├── enquirer
+    │   │   └── lib
+    │   │       ├── prompts
+    │   │       └── types
+    │   ├── entities
+    │   │   └── lib
+    │   │       ├── esm
+    │   │       │   └── generated
+    │   │       └── generated
+    │   ├── error-stack-parser-es
+    │   │   └── dist
+    │   ├── es-define-property
+    │   │   └── test
+    │   ├── es-errors
+    │   │   └── test
+    │   ├── es-module-lexer
+    │   │   ├── dist
+    │   │   └── types
+    │   ├── es-object-atoms
+    │   │   └── test
+    │   ├── esbuild
+    │   │   ├── bin
+    │   │   └── lib
+    │   ├── escalade
+    │   │   ├── dist
+    │   │   └── sync
+    │   ├── escape-string-regexp
+    │   ├── estree-walker
+    │   │   ├── dist
+    │   │   │   ├── esm
+    │   │   │   └── umd
+    │   │   ├── src
+    │   │   └── types
+    │   ├── event-stream
+    │   │   ├── examples
+    │   │   └── test
+    │   │       └── helper
+    │   ├── eventemitter2
+    │   │   └── lib
+    │   ├── execa
+    │   │   └── lib
+    │   ├── executable
+    │   ├── expect-type
+    │   │   └── dist
+    │   ├── extend
+    │   ├── extract-zip
+    │   ├── extsprintf
+    │   │   └── lib
+    │   ├── fd-slicer
+    │   │   └── test
+    │   ├── figures
+    │   ├── follow-redirects
+    │   ├── foreground-child
+    │   │   ├── dist
+    │   │   │   ├── commonjs
+    │   │   │   └── esm
+    │   │   └── node_modules
+    │   │       └── signal-exit
+    │   │           └── dist
+    │   │               ├── cjs
+    │   │               └── mjs
+    │   ├── forever-agent
+    │   ├── form-data
+    │   │   └── lib
+    │   ├── fraction.js
+    │   ├── from
+    │   │   └── test
+    │   ├── fs-extra
+    │   │   └── lib
+    │   │       ├── copy
+    │   │       ├── copy-sync
+    │   │       ├── empty
+    │   │       ├── ensure
+    │   │       ├── fs
+    │   │       ├── json
+    │   │       ├── mkdirs
+    │   │       ├── move
+    │   │       ├── move-sync
+    │   │       ├── output
+    │   │       ├── path-exists
+    │   │       ├── remove
+    │   │       └── util
+    │   ├── fsevents
+    │   ├── function-bind
+    │   │   └── test
+    │   ├── gensync
+    │   │   └── test
+    │   ├── get-intrinsic
+    │   │   └── test
+    │   ├── get-proto
+    │   │   └── test
+    │   ├── get-stream
+    │   ├── getos
+    │   │   ├── imgs
+    │   │   ├── logic
+    │   │   └── tests
+    │   │       ├── alpine
+    │   │       │   └── 3.3
+    │   │       ├── debian
+    │   │       │   ├── 7.3
+    │   │       │   ├── 7.4
+    │   │       │   ├── 7.5
+    │   │       │   └── 7.6
+    │   │       ├── fedora
+    │   │       │   └── 20
+    │   │       └── ubuntu
+    │   │           ├── 13.10
+    │   │           └── 14.04
+    │   ├── getpass
+    │   │   └── lib
+    │   ├── glob
+    │   │   ├── dist
+    │   │   │   ├── commonjs
+    │   │   │   └── esm
+    │   │   └── node_modules
+    │   │       └── minimatch
+    │   │           └── dist
+    │   │               ├── commonjs
+    │   │               └── esm
+    │   ├── global-dirs
+    │   ├── globals
+    │   ├── gopd
+    │   │   └── test
+    │   ├── graceful-fs
+    │   ├── has-flag
+    │   ├── has-symbols
+    │   │   └── test
+    │   │       └── shams
+    │   ├── hasown
+    │   ├── highcharts
+    │   │   ├── css
+    │   │   │   ├── annotations
+    │   │   │   ├── stocktools
+    │   │   │   └── themes
+    │   │   ├── es-modules
+    │   │   │   ├── Accessibility
+    │   │   │   │   ├── Components
+    │   │   │   │   │   └── SeriesComponent
+    │   │   │   │   ├── Options
+    │   │   │   │   └── Utils
+    │   │   │   ├── Core
+    │   │   │   │   ├── Animation
+    │   │   │   │   ├── Axis
+    │   │   │   │   │   ├── Color
+    │   │   │   │   │   ├── PlotLineOrBand
+    │   │   │   │   │   ├── Stacking
+    │   │   │   │   │   └── TreeGrid
+    │   │   │   │   ├── Chart
+    │   │   │   │   ├── Color
+    │   │   │   │   ├── Geometry
+    │   │   │   │   ├── Legend
+    │   │   │   │   ├── Renderer
+    │   │   │   │   │   ├── HTML
+    │   │   │   │   │   └── SVG
+    │   │   │   │   └── Series
+    │   │   │   ├── Data
+    │   │   │   │   ├── Connectors
+    │   │   │   │   ├── Converters
+    │   │   │   │   ├── Formula
+    │   │   │   │   │   └── Functions
+    │   │   │   │   └── Modifiers
+    │   │   │   ├── Extensions
+    │   │   │   │   ├── Annotations
+    │   │   │   │   │   ├── Controllables
+    │   │   │   │   │   ├── Popup
+    │   │   │   │   │   └── Types
+    │   │   │   │   ├── Boost
+    │   │   │   │   ├── Breadcrumbs
+    │   │   │   │   ├── DataGrouping
+    │   │   │   │   ├── Debugger
+    │   │   │   │   ├── DragPanes
+    │   │   │   │   ├── DraggablePoints
+    │   │   │   │   ├── Drilldown
+    │   │   │   │   ├── ExportData
+    │   │   │   │   ├── Exporting
+    │   │   │   │   ├── MarkerClusters
+    │   │   │   │   ├── MouseWheelZoom
+    │   │   │   │   ├── NoDataToDisplay
+    │   │   │   │   ├── OfflineExporting
+    │   │   │   │   ├── Pane
+    │   │   │   │   ├── ParallelCoordinates
+    │   │   │   │   ├── SeriesLabel
+    │   │   │   │   ├── Sonification
+    │   │   │   │   └── Themes
+    │   │   │   ├── Gantt
+    │   │   │   ├── Maps
+    │   │   │   │   ├── Projections
+    │   │   │   │   └── TilesProviders
+    │   │   │   ├── Series
+    │   │   │   │   ├── ArcDiagram
+    │   │   │   │   ├── Area
+    │   │   │   │   ├── Area3D
+    │   │   │   │   ├── AreaRange
+    │   │   │   │   ├── AreaSpline
+    │   │   │   │   ├── AreaSplineRange
+    │   │   │   │   ├── Bar
+    │   │   │   │   ├── Bellcurve
+    │   │   │   │   ├── BoxPlot
+    │   │   │   │   ├── Bubble
+    │   │   │   │   ├── Bullet
+    │   │   │   │   ├── Candlestick
+    │   │   │   │   ├── Column
+    │   │   │   │   ├── Column3D
+    │   │   │   │   ├── ColumnPyramid
+    │   │   │   │   ├── ColumnRange
+    │   │   │   │   ├── Cylinder
+    │   │   │   │   ├── DependencyWheel
+    │   │   │   │   ├── DotPlot
+    │   │   │   │   ├── Dumbbell
+    │   │   │   │   ├── ErrorBar
+    │   │   │   │   ├── Flags
+    │   │   │   │   ├── FlowMap
+    │   │   │   │   ├── Funnel
+    │   │   │   │   ├── Funnel3D
+    │   │   │   │   ├── Gantt
+    │   │   │   │   ├── Gauge
+    │   │   │   │   ├── GeoHeatmap
+    │   │   │   │   ├── HLC
+    │   │   │   │   ├── Heatmap
+    │   │   │   │   ├── HeikinAshi
+    │   │   │   │   ├── Histogram
+    │   │   │   │   ├── HollowCandlestick
+    │   │   │   │   ├── Item
+    │   │   │   │   ├── Line
+    │   │   │   │   ├── Lollipop
+    │   │   │   │   ├── Map
+    │   │   │   │   ├── MapBubble
+    │   │   │   │   ├── MapLine
+    │   │   │   │   ├── MapPoint
+    │   │   │   │   ├── Networkgraph
+    │   │   │   │   ├── OHLC
+    │   │   │   │   ├── Organization
+    │   │   │   │   ├── PackedBubble
+    │   │   │   │   ├── ParetoSeries
+    │   │   │   │   ├── Pictorial
+    │   │   │   │   ├── Pie
+    │   │   │   │   ├── Pie3D
+    │   │   │   │   ├── PointAndFigure
+    │   │   │   │   ├── Polygon
+    │   │   │   │   ├── Pyramid
+    │   │   │   │   ├── Pyramid3D
+    │   │   │   │   ├── Renko
+    │   │   │   │   ├── Sankey
+    │   │   │   │   ├── Scatter
+    │   │   │   │   ├── Scatter3D
+    │   │   │   │   ├── SolidGauge
+    │   │   │   │   ├── Spline
+    │   │   │   │   ├── Streamgraph
+    │   │   │   │   ├── Sunburst
+    │   │   │   │   ├── TiledWebMap
+    │   │   │   │   ├── Tilemap
+    │   │   │   │   ├── Timeline
+    │   │   │   │   ├── Treegraph
+    │   │   │   │   ├── Treemap
+    │   │   │   │   ├── VariablePie
+    │   │   │   │   ├── Variwide
+    │   │   │   │   ├── Vector
+    │   │   │   │   ├── Venn
+    │   │   │   │   ├── Waterfall
+    │   │   │   │   ├── Windbarb
+    │   │   │   │   ├── Wordcloud
+    │   │   │   │   └── XRange
+    │   │   │   ├── Shared
+    │   │   │   ├── Stock
+    │   │   │   │   ├── Indicators
+    │   │   │   │   │   ├── ABands
+    │   │   │   │   │   ├── AD
+    │   │   │   │   │   ├── AO
+    │   │   │   │   │   ├── APO
+    │   │   │   │   │   ├── ATR
+    │   │   │   │   │   ├── Aroon
+    │   │   │   │   │   ├── AroonOscillator
+    │   │   │   │   │   ├── BB
+    │   │   │   │   │   ├── CCI
+    │   │   │   │   │   ├── CMF
+    │   │   │   │   │   ├── CMO
+    │   │   │   │   │   ├── Chaikin
+    │   │   │   │   │   ├── DEMA
+    │   │   │   │   │   ├── DMI
+    │   │   │   │   │   ├── DPO
+    │   │   │   │   │   ├── DisparityIndex
+    │   │   │   │   │   ├── EMA
+    │   │   │   │   │   ├── IKH
+    │   │   │   │   │   ├── KeltnerChannels
+    │   │   │   │   │   ├── Klinger
+    │   │   │   │   │   ├── LinearRegression
+    │   │   │   │   │   ├── LinearRegressionAngle
+    │   │   │   │   │   ├── LinearRegressionIntercept
+    │   │   │   │   │   ├── LinearRegressionSlopes
+    │   │   │   │   │   ├── MACD
+    │   │   │   │   │   ├── MFI
+    │   │   │   │   │   ├── Momentum
+    │   │   │   │   │   ├── NATR
+    │   │   │   │   │   ├── OBV
+    │   │   │   │   │   ├── PC
+    │   │   │   │   │   ├── PPO
+    │   │   │   │   │   ├── PSAR
+    │   │   │   │   │   ├── PivotPoints
+    │   │   │   │   │   ├── PriceEnvelopes
+    │   │   │   │   │   ├── ROC
+    │   │   │   │   │   ├── RSI
+    │   │   │   │   │   ├── SMA
+    │   │   │   │   │   ├── SlowStochastic
+    │   │   │   │   │   ├── Stochastic
+    │   │   │   │   │   ├── Supertrend
+    │   │   │   │   │   ├── TEMA
+    │   │   │   │   │   ├── TRIX
+    │   │   │   │   │   ├── TrendLine
+    │   │   │   │   │   ├── VBP
+    │   │   │   │   │   ├── VWAP
+    │   │   │   │   │   ├── WMA
+    │   │   │   │   │   ├── WilliamsR
+    │   │   │   │   │   └── Zigzag
+    │   │   │   │   ├── Navigator
+    │   │   │   │   ├── RangeSelector
+    │   │   │   │   ├── Scrollbar
+    │   │   │   │   ├── StockTools
+    │   │   │   │   └── Utilities
+    │   │   │   └── masters
+    │   │   │       ├── indicators
+    │   │   │       ├── modules
+    │   │   │       ├── options
+    │   │   │       └── themes
+    │   │   ├── gfx
+    │   │   │   ├── datagrid-icons
+    │   │   │   └── stock-icons
+    │   │   ├── indicators
+    │   │   ├── lib
+    │   │   ├── modules
+    │   │   ├── options
+    │   │   └── themes
+    │   ├── highcharts-vue
+    │   │   ├── dist
+    │   │   ├── src
+    │   │   └── types
+    │   ├── hookable
+    │   │   └── dist
+    │   ├── html-encoding-sniffer
+    │   │   └── lib
+    │   ├── html-tags
+    │   ├── http-proxy-agent
+    │   │   └── dist
+    │   ├── http-signature
+    │   │   └── lib
+    │   ├── https-proxy-agent
+    │   │   └── dist
+    │   ├── human-signals
+    │   │   └── build
+    │   │       └── src
+    │   ├── iconv-lite
+    │   │   ├── encodings
+    │   │   │   └── tables
+    │   │   └── lib
+    │   ├── ieee754
+    │   ├── indent-string
+    │   ├── ini
+    │   ├── is-docker
+    │   ├── is-fullwidth-code-point
+    │   ├── is-inside-container
+    │   ├── is-installed-globally
+    │   ├── is-path-inside
+    │   ├── is-plain-obj
+    │   ├── is-potential-custom-element-name
+    │   ├── is-stream
+    │   ├── is-typedarray
+    │   ├── is-unicode-supported
+    │   ├── is-what
+    │   │   └── dist
+    │   │       └── cjs
+    │   ├── is-wsl
+    │   ├── isexe
+    │   │   └── test
+    │   ├── isstream
+    │   ├── jackspeak
+    │   │   └── dist
+    │   │       ├── commonjs
+    │   │       └── esm
+    │   ├── jiti
+    │   │   ├── dist
+    │   │   └── lib
+    │   ├── joi
+    │   │   ├── dist
+    │   │   └── lib
+    │   │       └── types
+    │   ├── js-beautify
+    │   │   └── js
+    │   │       ├── bin
+    │   │       ├── lib
+    │   │       │   └── unpackers
+    │   │       └── src
+    │   │           ├── core
+    │   │           ├── css
+    │   │           ├── html
+    │   │           ├── javascript
+    │   │           └── unpackers
+    │   ├── js-cookie
+    │   │   └── dist
+    │   ├── js-tokens
+    │   ├── jsbn
+    │   ├── jsdom
+    │   │   └── lib
+    │   │       └── jsdom
+    │   │           ├── browser
+    │   │           │   ├── parser
+    │   │           │   └── resources
+    │   │           ├── level2
+    │   │           ├── level3
+    │   │           └── living
+    │   │               ├── aborting
+    │   │               ├── attributes
+    │   │               ├── constraint-validation
+    │   │               ├── crypto
+    │   │               ├── cssom
+    │   │               ├── custom-elements
+    │   │               ├── domparsing
+    │   │               ├── events
+    │   │               ├── fetch
+    │   │               ├── file-api
+    │   │               ├── generated
+    │   │               ├── geometry
+    │   │               ├── helpers
+    │   │               │   └── svg
+    │   │               ├── hr-time
+    │   │               ├── mutation-observer
+    │   │               ├── navigator
+    │   │               ├── nodes
+    │   │               ├── range
+    │   │               ├── selection
+    │   │               ├── svg
+    │   │               ├── traversal
+    │   │               ├── webidl
+    │   │               ├── websockets
+    │   │               ├── webstorage
+    │   │               ├── window
+    │   │               └── xhr
+    │   ├── jsesc
+    │   │   ├── bin
+    │   │   └── man
+    │   ├── json-schema
+    │   │   └── lib
+    │   ├── json-stringify-safe
+    │   │   └── test
+    │   ├── json5
+    │   │   ├── dist
+    │   │   └── lib
+    │   ├── jsonfile
+    │   ├── jsprim
+    │   │   └── lib
+    │   ├── kolorist
+    │   │   └── dist
+    │   │       ├── cjs
+    │   │       ├── esm
+    │   │       ├── module
+    │   │       └── types
+    │   ├── lazy-ass
+    │   │   └── test
+    │   ├── lightningcss
+    │   │   └── node
+    │   ├── lightningcss-darwin-arm64
+    │   ├── listr2
+    │   │   ├── dist
+    │   │   │   ├── constants
+    │   │   │   ├── interfaces
+    │   │   │   ├── lib
+    │   │   │   ├── renderer
+    │   │   │   └── utils
+    │   │   └── node_modules
+    │   │       └── wrap-ansi
+    │   ├── lodash
+    │   │   └── fp
+    │   ├── lodash.once
+    │   ├── log-symbols
+    │   ├── log-update
+    │   │   └── node_modules
+    │   │       ├── slice-ansi
+    │   │       └── wrap-ansi
+    │   ├── loupe
+    │   │   └── lib
+    │   ├── lru-cache
+    │   ├── magic-string
+    │   │   └── dist
+    │   ├── map-stream
+    │   │   ├── examples
+    │   │   └── test
+    │   ├── math-intrinsics
+    │   │   ├── constants
+    │   │   └── test
+    │   ├── merge-stream
+    │   ├── mime-db
+    │   ├── mime-types
+    │   ├── mimic-fn
+    │   ├── minimatch
+    │   │   └── dist
+    │   │       ├── cjs
+    │   │       └── mjs
+    │   ├── minimist
+    │   │   ├── example
+    │   │   └── test
+    │   ├── minipass
+    │   │   └── dist
+    │   │       ├── commonjs
+    │   │       └── esm
+    │   ├── mitt
+    │   │   └── dist
+    │   ├── mrmime
+    │   ├── ms
+    │   ├── nanoid
+    │   │   ├── async
+    │   │   ├── bin
+    │   │   ├── non-secure
+    │   │   └── url-alphabet
+    │   ├── node-releases
+    │   │   └── data
+    │   │       ├── processed
+    │   │       └── release-schedule
+    │   ├── nopt
+    │   │   ├── bin
+    │   │   └── lib
+    │   ├── normalize-range
+    │   ├── npm-run-path
+    │   ├── nwsapi
+    │   │   ├── dist
+    │   │   └── src
+    │   │       └── modules
+    │   ├── object-inspect
+    │   │   ├── example
+    │   │   └── test
+    │   │       └── browser
+    │   ├── once
+    │   ├── onetime
+    │   ├── open
+    │   ├── ospath
+    │   ├── p-map
+    │   ├── package-json-from-dist
+    │   │   └── dist
+    │   │       ├── commonjs
+    │   │       └── esm
+    │   ├── parse-ms
+    │   ├── parse5
+    │   │   └── dist
+    │   │       ├── cjs
+    │   │       │   ├── common
+    │   │       │   ├── parser
+    │   │       │   ├── serializer
+    │   │       │   ├── tokenizer
+    │   │       │   └── tree-adapters
+    │   │       ├── common
+    │   │       ├── parser
+    │   │       ├── serializer
+    │   │       ├── tokenizer
+    │   │       └── tree-adapters
+    │   ├── path-key
+    │   ├── path-scurry
+    │   │   ├── dist
+    │   │   │   ├── commonjs
+    │   │   │   └── esm
+    │   │   └── node_modules
+    │   │       └── lru-cache
+    │   │           └── dist
+    │   │               ├── commonjs
+    │   │               └── esm
+    │   ├── pathe
+    │   │   └── dist
+    │   │       └── shared
+    │   ├── pathval
+    │   ├── pause-stream
+    │   │   └── test
+    │   ├── pend
+    │   ├── perfect-debounce
+    │   │   └── dist
+    │   ├── performance-now
+    │   │   ├── lib
+    │   │   ├── src
+    │   │   └── test
+    │   │       └── scripts
+    │   ├── picocolors
+    │   ├── picomatch
+    │   │   └── lib
+    │   ├── pify
+    │   ├── pinia
+    │   │   └── dist
+    │   ├── postcss
+    │   │   └── lib
+    │   ├── postcss-value-parser
+    │   │   └── lib
+    │   ├── pretty-bytes
+    │   ├── pretty-ms
+    │   ├── process
+    │   ├── proto-list
+    │   │   └── test
+    │   ├── proxy-from-env
+    │   ├── ps-tree
+    │   │   └── bin
+    │   ├── pump
+    │   ├── punycode
+    │   ├── qs
+    │   │   ├── dist
+    │   │   ├── lib
+    │   │   └── test
+    │   ├── request-progress
+    │   │   └── test
+    │   ├── restore-cursor
+    │   ├── rfdc
+    │   │   └── test
+    │   ├── rollup
+    │   │   └── dist
+    │   │       ├── bin
+    │   │       ├── es
+    │   │       │   └── shared
+    │   │       └── shared
+    │   ├── rrweb-cssom
+    │   │   ├── build
+    │   │   └── lib
+    │   ├── run-applescript
+    │   ├── rxjs
+    │   │   ├── ajax
+    │   │   ├── dist
+    │   │   │   ├── bundles
+    │   │   │   ├── cjs
+    │   │   │   │   ├── ajax
+    │   │   │   │   ├── fetch
+    │   │   │   │   ├── internal
+    │   │   │   │   │   ├── ajax
+    │   │   │   │   │   ├── observable
+    │   │   │   │   │   │   └── dom
+    │   │   │   │   │   ├── operators
+    │   │   │   │   │   ├── scheduled
+    │   │   │   │   │   ├── scheduler
+    │   │   │   │   │   ├── symbol
+    │   │   │   │   │   ├── testing
+    │   │   │   │   │   └── util
+    │   │   │   │   ├── operators
+    │   │   │   │   ├── testing
+    │   │   │   │   └── webSocket
+    │   │   │   ├── esm
+    │   │   │   │   ├── ajax
+    │   │   │   │   ├── fetch
+    │   │   │   │   ├── internal
+    │   │   │   │   │   ├── ajax
+    │   │   │   │   │   ├── observable
+    │   │   │   │   │   │   └── dom
+    │   │   │   │   │   ├── operators
+    │   │   │   │   │   ├── scheduled
+    │   │   │   │   │   ├── scheduler
+    │   │   │   │   │   ├── symbol
+    │   │   │   │   │   ├── testing
+    │   │   │   │   │   └── util
+    │   │   │   │   ├── operators
+    │   │   │   │   ├── testing
+    │   │   │   │   └── webSocket
+    │   │   │   ├── esm5
+    │   │   │   │   ├── ajax
+    │   │   │   │   ├── fetch
+    │   │   │   │   ├── internal
+    │   │   │   │   │   ├── ajax
+    │   │   │   │   │   ├── observable
+    │   │   │   │   │   │   └── dom
+    │   │   │   │   │   ├── operators
+    │   │   │   │   │   ├── scheduled
+    │   │   │   │   │   ├── scheduler
+    │   │   │   │   │   ├── symbol
+    │   │   │   │   │   ├── testing
+    │   │   │   │   │   └── util
+    │   │   │   │   ├── operators
+    │   │   │   │   ├── testing
+    │   │   │   │   └── webSocket
+    │   │   │   └── types
+    │   │   │       ├── ajax
+    │   │   │       ├── fetch
+    │   │   │       ├── internal
+    │   │   │       │   ├── ajax
+    │   │   │       │   ├── observable
+    │   │   │       │   │   └── dom
+    │   │   │       │   ├── operators
+    │   │   │       │   ├── scheduled
+    │   │   │       │   ├── scheduler
+    │   │   │       │   ├── symbol
+    │   │   │       │   ├── testing
+    │   │   │       │   └── util
+    │   │   │       ├── operators
+    │   │   │       ├── testing
+    │   │   │       └── webSocket
+    │   │   ├── fetch
+    │   │   ├── operators
+    │   │   ├── src
+    │   │   │   ├── ajax
+    │   │   │   ├── fetch
+    │   │   │   ├── internal
+    │   │   │   │   ├── ajax
+    │   │   │   │   ├── observable
+    │   │   │   │   │   └── dom
+    │   │   │   │   ├── operators
+    │   │   │   │   ├── scheduled
+    │   │   │   │   ├── scheduler
+    │   │   │   │   ├── symbol
+    │   │   │   │   ├── testing
+    │   │   │   │   └── util
+    │   │   │   ├── operators
+    │   │   │   ├── testing
+    │   │   │   └── webSocket
+    │   │   ├── testing
+    │   │   └── webSocket
+    │   ├── safe-buffer
+    │   ├── safer-buffer
+    │   ├── saxes
+    │   ├── semver
+    │   │   └── bin
+    │   ├── shebang-command
+    │   ├── shebang-regex
+    │   ├── side-channel
+    │   │   └── test
+    │   ├── side-channel-list
+    │   │   └── test
+    │   ├── side-channel-map
+    │   │   └── test
+    │   ├── side-channel-weakmap
+    │   │   └── test
+    │   ├── siginfo
+    │   ├── signal-exit
+    │   ├── sirv
+    │   ├── slice-ansi
+    │   ├── source-map-js
+    │   │   └── lib
+    │   ├── speakingurl
+    │   │   ├── examples
+    │   │   ├── lib
+    │   │   ├── test
+    │   │   └── typings
+    │   │       └── speakingurl
+    │   ├── split
+    │   │   ├── examples
+    │   │   └── test
+    │   ├── sshpk
+    │   │   ├── bin
+    │   │   ├── lib
+    │   │   │   └── formats
+    │   │   └── man
+    │   │       └── man1
+    │   ├── stackback
+    │   ├── start-server-and-test
+    │   │   ├── node_modules
+    │   │   │   ├── execa
+    │   │   │   │   └── lib
+    │   │   │   ├── get-stream
+    │   │   │   └── human-signals
+    │   │   │       └── build
+    │   │   │           └── src
+    │   │   └── src
+    │   │       └── bin
+    │   ├── std-env
+    │   │   └── dist
+    │   ├── stream-combiner
+    │   │   └── test
+    │   ├── string-width
+    │   ├── string-width-cjs
+    │   ├── strip-ansi
+    │   ├── strip-ansi-cjs
+    │   ├── strip-final-newline
+    │   ├── superjson
+    │   │   └── dist
+    │   ├── supports-color
+    │   ├── svg-tags
+    │   │   └── lib
+    │   ├── symbol-tree
+    │   │   └── lib
+    │   ├── tailwindcss
+    │   │   └── dist
+    │   ├── tapable
+    │   │   └── lib
+    │   ├── throttleit
+    │   ├── through
+    │   │   └── test
+    │   ├── tinybench
+    │   │   └── dist
+    │   ├── tinyexec
+    │   │   └── dist
+    │   ├── tinypool
+    │   │   └── dist
+    │   │       └── entry
+    │   ├── tinyrainbow
+    │   │   └── dist
+    │   ├── tinyspy
+    │   │   └── dist
+    │   ├── tldts
+    │   │   ├── bin
+    │   │   ├── dist
+    │   │   │   ├── cjs
+    │   │   │   │   └── src
+    │   │   │   │       └── data
+    │   │   │   ├── es6
+    │   │   │   │   └── src
+    │   │   │   │       └── data
+    │   │   │   └── types
+    │   │   │       └── src
+    │   │   │           └── data
+    │   │   └── src
+    │   │       └── data
+    │   ├── tldts-core
+    │   │   ├── dist
+    │   │   │   ├── cjs
+    │   │   │   │   └── src
+    │   │   │   │       └── lookup
+    │   │   │   ├── es6
+    │   │   │   │   └── src
+    │   │   │   │       └── lookup
+    │   │   │   └── types
+    │   │   │       └── src
+    │   │   │           └── lookup
+    │   │   └── src
+    │   │       └── lookup
+    │   ├── tmp
+    │   │   └── lib
+    │   ├── totalist
+    │   │   ├── dist
+    │   │   └── sync
+    │   ├── tough-cookie
+    │   │   └── dist
+    │   │       └── cookie
+    │   ├── tr46
+    │   │   └── lib
+    │   ├── tree-kill
+    │   ├── tslib
+    │   │   └── modules
+    │   ├── tunnel-agent
+    │   ├── tweetnacl
+    │   ├── type-fest
+    │   │   ├── source
+    │   │   └── ts41
+    │   ├── undici-types
+    │   ├── unicorn-magic
+    │   ├── universalify
+    │   ├── untildify
+    │   ├── update-browserslist-db
+    │   ├── uuid
+    │   │   └── dist
+    │   │       ├── bin
+    │   │       ├── esm-browser
+    │   │       ├── esm-node
+    │   │       └── umd
+    │   ├── verror
+    │   │   └── lib
+    │   ├── vite
+    │   │   ├── bin
+    │   │   ├── dist
+    │   │   │   ├── client
+    │   │   │   ├── node
+    │   │   │   │   └── chunks
+    │   │   │   └── node-cjs
+    │   │   ├── misc
+    │   │   └── types
+    │   │       └── internal
+    │   ├── vite-hot-client
+    │   │   └── dist
+    │   ├── vite-node
+    │   │   └── dist
+    │   ├── vite-plugin-inspect
+    │   │   ├── dist
+    │   │   │   ├── client
+    │   │   │   │   └── assets
+    │   │   │   └── shared
+    │   │   └── node_modules
+    │   │       └── fs-extra
+    │   │           └── lib
+    │   │               ├── copy
+    │   │               ├── empty
+    │   │               ├── ensure
+    │   │               ├── fs
+    │   │               ├── json
+    │   │               ├── mkdirs
+    │   │               ├── move
+    │   │               ├── output-file
+    │   │               ├── path-exists
+    │   │               ├── remove
+    │   │               └── util
+    │   ├── vite-plugin-vue-devtools
+    │   │   ├── client
+    │   │   │   └── assets
+    │   │   ├── dist
+    │   │   ├── node_modules
+    │   │   │   ├── execa
+    │   │   │   │   ├── lib
+    │   │   │   │   │   ├── arguments
+    │   │   │   │   │   ├── convert
+    │   │   │   │   │   ├── io
+    │   │   │   │   │   ├── ipc
+    │   │   │   │   │   ├── methods
+    │   │   │   │   │   ├── pipe
+    │   │   │   │   │   ├── resolve
+    │   │   │   │   │   ├── return
+    │   │   │   │   │   ├── stdio
+    │   │   │   │   │   ├── terminate
+    │   │   │   │   │   ├── transform
+    │   │   │   │   │   ├── utils
+    │   │   │   │   │   └── verbose
+    │   │   │   │   └── types
+    │   │   │   │       ├── arguments
+    │   │   │   │       ├── methods
+    │   │   │   │       ├── return
+    │   │   │   │       ├── stdio
+    │   │   │   │       ├── subprocess
+    │   │   │   │       └── transform
+    │   │   │   ├── figures
+    │   │   │   ├── get-stream
+    │   │   │   │   └── source
+    │   │   │   ├── human-signals
+    │   │   │   │   └── build
+    │   │   │   │       └── src
+    │   │   │   ├── is-stream
+    │   │   │   ├── is-unicode-supported
+    │   │   │   ├── npm-run-path
+    │   │   │   ├── path-key
+    │   │   │   ├── signal-exit
+    │   │   │   │   └── dist
+    │   │   │   │       ├── cjs
+    │   │   │   │       └── mjs
+    │   │   │   └── strip-final-newline
+    │   │   └── src
+    │   │       └── overlay
+    │   ├── vite-plugin-vue-inspector
+    │   │   ├── dist
+    │   │   └── src
+    │   ├── vitest
+    │   │   └── dist
+    │   │       ├── chunks
+    │   │       └── workers
+    │   ├── vue
+    │   │   ├── compiler-sfc
+    │   │   ├── dist
+    │   │   ├── jsx-runtime
+    │   │   └── server-renderer
+    │   ├── vue-component-type-helpers
+    │   ├── vue-demi
+    │   │   ├── bin
+    │   │   ├── lib
+    │   │   │   ├── v2
+    │   │   │   ├── v2.7
+    │   │   │   └── v3
+    │   │   └── scripts
+    │   ├── vue-router
+    │   │   ├── dist
+    │   │   └── vetur
+    │   ├── w3c-xmlserializer
+    │   │   └── lib
+    │   ├── wait-on
+    │   │   ├── bin
+    │   │   └── lib
+    │   ├── webidl-conversions
+    │   │   └── lib
+    │   ├── whatwg-encoding
+    │   │   └── lib
+    │   ├── whatwg-mimetype
+    │   │   └── lib
+    │   ├── whatwg-url
+    │   │   └── lib
+    │   ├── which
+    │   │   └── bin
+    │   ├── why-is-node-running
+    │   ├── wrap-ansi
+    │   │   └── node_modules
+    │   │       ├── ansi-regex
+    │   │       ├── ansi-styles
+    │   │       ├── emoji-regex
+    │   │       │   └── es2015
+    │   │       ├── string-width
+    │   │       └── strip-ansi
+    │   ├── wrap-ansi-cjs
+    │   ├── wrappy
+    │   ├── ws
+    │   │   └── lib
+    │   ├── xml-name-validator
+    │   │   └── lib
+    │   ├── xmlchars
+    │   │   ├── xml
+    │   │   │   ├── 1.0
+    │   │   │   └── 1.1
+    │   │   └── xmlns
+    │   │       └── 1.0
+    │   ├── yallist
+    │   ├── yauzl
+    │   └── yoctocolors
+    ├── public
+    │   └── images
+    └── src
+        ├── assets
+        ├── components
+        │   ├── __tests__
+        │   └── icons
+        ├── data
+        ├── router
+        ├── stores
+        └── views
+
+1865 directories

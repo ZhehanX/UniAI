@@ -1,0 +1,53 @@
+[
+    {
+      "id": 1,
+      "name": "AI Vision Assistant",
+      "imagePath": "/images/ia_vision_assistant.jpg",
+      "country": "United States",
+      "year": 2024,
+      "price": 49.99,
+      "platform": ["Web", "iOS", "Android"],
+      "chartData": {
+        "xAxisTitle": "Quarterly Performance",
+        "yAxisTitle": "Users (thousands)",
+        "categories": ["Q1", "Q2", "Q3"],
+        "series": [
+          {
+            "name": "Active Users",
+            "data": [30, 45, 25],
+            "color": "#10B981"
+          },
+          {
+            "name": "New Users",
+            "data": [15, 30, 40]
+          }
+        ]
+      },
+      "fullDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nec dapibus lacus, auctor egestas neque. Nunc viverra rhoncus nunc vitae blandit. Duis orci turpis, interdum venenatis cursus eget, porttitor et urna. Phasellus sapien diam, lacinia et felis nec, aliquam hendrerit leo. Integer placerat ante ut enim tempor, eu dignissim metus fringilla. Aliquam vitae malesuada metus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam et lacus sit amet diam pulvinar elementum. Vivamus id lectus a odio condimentum fringilla feugiat quis felis. Duis in porttitor dolor, quis luctus neque. Nullam maximus molestie massa a molestie. Donec porttitor enim diam, eu dictum ante bibendum et. Duis neque magna, facilisis sed eleifend sed, dignissim at nunc."
+    },
+    {
+        "id": 2,
+        "name": "Diffit",
+        "imagePath": "/images/diffit.jpg",
+        "country": "United States",
+        "year": 2024,
+        "price": "Free to try, Paid",
+        "platform": ["Web"],
+        "users": "Teachers",
+        "chartType": "bar",
+        "chartData": {
+          "xAxisTitle": "Stars",
+          "yAxisTitle": "Users",
+          "categories": ["1", "2", "3", "4", "5"],
+          "series": [
+            {
+              "name": "Number of users",
+              "data": [0, 0, 1, 1, 0],
+              "color": "#10B981"
+            }
+          ]
+        },
+        "fullDescription": "Diffit does a great job of quickly putting together resources on just about any topic you can think of—though there is a focus on English, social studies, science, and art. You can input a prompt for a specific topic, upload a link to a website or video, or drop in your own text, and the AI backend will create a series of resources you can use in your classroom. These resources are in printable and digital formats. This is where the tool shines: It can create PDFs, Google Forms quizzes, bubble maps, workbooks, vocabulary choice boards, character analysis sheets, interactive slides, and so much more. These resources can be used  to introduce new topics, recap work already taught in class, organize thoughts on a larger research project, and more. It also stores past resources and searches to your account so that you can reference them later. Keep in mind that some of the resources and text the tool creates can be the same for all grades under fifth grade."
+      }
+]
+
