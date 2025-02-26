@@ -78,9 +78,7 @@ const error = ref(null);
 
 const fetchAppData = async (id) => {
   try {
-    console.log("Fetching app data for ID:", id);
-    const response = await axios.get(`http://localhost:8000/api/usecases/${id}`);
-    console.log("API Response:", response.data);
+    const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/usecases/${id}`);
     currentApp.value = response.data;
   } catch (err) {
     console.error("API Error:", err.response ? err.response.data : err.message);
