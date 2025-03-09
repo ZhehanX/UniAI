@@ -13,6 +13,23 @@
             <div class="bg-white rounded-lg shadow-md p-8">
                 <form @submit.prevent="submitCase">
                     <div class="space-y-8">
+                        <!-- Usage Information Notice -->
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div class="flex items-start space-x-2 text-blue-800">
+                                <svg class="w-4 h-4 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div class="text-sm">
+                                    <p class="font-medium">How we use the information:</p>
+                                    <ul class="list-disc pl-4 space-y-1 mt-1">
+                                        <li>All the information you submit will be published on our public website.</li> 
+                                        <li>Information such as contact email and URL can be left blank if you don't want to make it public.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Basic Information Section -->
                         <div class="space-y-6">
                             <h2 class="text-xl font-semibold text-gray-900 border-b pb-2">Basic Information</h2>
@@ -59,7 +76,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
-                                <textarea v-model="formData.fullDescription" v-auto-resize required
+                                <textarea v-model="formData.fullDescription" v-auto-resize
                                     class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Detailed description of the case study"></textarea>
                             </div>
@@ -99,7 +116,7 @@
 <script setup>
 import { ref } from 'vue';
 
-// Auto-resize directive
+// Auto-resize text-area
 const vAutoResize = {
     mounted(el) {
         el.style.height = 'auto';
@@ -136,35 +153,44 @@ const submitCase = async () => {
         errorMessage.value = '';
         successMessage.value = '';
 
-        // Send email using Formspree or similar service
-        const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+        // Validate all required fields
+        const requiredFields = [
+            formData.value.title,
+            formData.value.institution,
+            formData.value.technology,
+            formData.value.contact
+        ];
+
+        if (requiredFields.some(field => !field?.trim())) {
+            errorMessage.value = 'Please fill all required fields';
+            loading.value = false;
+            return;
+        }
+
+        const response = await fetch("https://formspree.io/f/mkgodnrv", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify({
-                subject: `New Case Submission: ${formData.value.title}`,
+                email: formData.value.contact,
                 _replyto: formData.value.contact,
-                message: `
-                    New Case Submission Details:
-                    
-                    Title: ${formData.value.title}
-                    Institution: ${formData.value.institution}
-                    Technology: ${formData.value.technology}
-                    Contact Email: ${formData.value.contact}
-                    URL: ${formData.value.url}
-                    
-                    Short Description:
-                    ${formData.value.shortDescription}
-                    
-                    Full Description:
-                    ${formData.value.fullDescription}
-                `
+                _subject: `New Case Submission: ${formData.value.title}`,
+                title: formData.value.title,
+                institution: formData.value.institution,
+                technology: formData.value.technology,
+                url: formData.value.url,
+                short_description: formData.value.shortDescription,
+                full_description: formData.value.fullDescription
             }),
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-            successMessage.value = 'Submission successful! Thank you for your contribution.';
+            successMessage.value = 'Submission successful! Thank you.';
+            // Reset form properly
             formData.value = {
                 title: '',
                 institution: '',
@@ -175,10 +201,10 @@ const submitCase = async () => {
                 url: ''
             };
         } else {
-            throw new Error('Failed to submit form');
+            throw new Error(data.errors?.map(e => e.message).join(', ') || 'Submission failed');
         }
     } catch (error) {
-        errorMessage.value = 'There was an error submitting your case. Please try again.';
+        errorMessage.value = error.message || 'Submission error. Please try again.';
     } finally {
         loading.value = false;
     }

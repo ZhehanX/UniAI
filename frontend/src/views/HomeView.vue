@@ -39,8 +39,6 @@ const error = ref(null);
 // Fetch data from backend
 const fetchUseCases = async () => {
     try {
-        console.log("API URL:");
-        console.log("API URL:", import.meta.env.VITE_API_URL);
         const response = await axios.get(
             `${import.meta.env.VITE_API_URL}/api/usecases/` // Use environment variable
         );
