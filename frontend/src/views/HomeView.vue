@@ -4,10 +4,16 @@
         <header class="bg-white shadow">
             <div class="container mx-auto px-6 py-4 flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">AI Tools Directory</h1>
-                <router-link to="/submit-case"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                    Submit a Case
-                </router-link>
+                <div class="flex space-x-2">
+                    <router-link to="/login"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Login
+                    </router-link>
+                    <button @click="handleSubmitCase"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Submit a Case
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -33,8 +39,13 @@ const loading = ref(true);
 const error = ref(null);
 
 
-
-
+const handleSubmitCase = () => {
+    if (localStorage.getItem('authToken')) {
+        router.push('/submit-case');
+    } else {
+        router.push('/login');
+    }
+};
 
 // Fetch data from backend
 const fetchUseCases = async () => {
