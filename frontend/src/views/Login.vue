@@ -54,6 +54,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const router = useRouter();
 const formData = ref({
@@ -69,14 +70,27 @@ const handleLogin = async () => {
         loading.value = true;
         errorMessage.value = '';
         
-        // Add your authentication logic here
-        console.log('Login data:', formData.value);
+        // Encode data as form-urlencoded
+        const params = new URLSearchParams();
+        params.append('username', formData.value.email);
+        params.append('password', formData.value.password);
+
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/auth/login`,
+            params,
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+        );
         
-        // Simulated successful login
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        localStorage.setItem('authToken', response.data.access_token);
         router.push('/');
     } catch (error) {
-        errorMessage.value = error.message || 'Login failed. Please try again.';
+        console.error('Login Error:', error);
+        errorMessage.value = error.response?.data?.detail || 'Login failed. Please check credentials';
     } finally {
         loading.value = false;
     }

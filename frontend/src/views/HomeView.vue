@@ -5,10 +5,14 @@
             <div class="container mx-auto px-6 py-4 flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">AI Tools Directory</h1>
                 <div class="flex space-x-2">
-                    <router-link to="/login"
+                    <button v-if="!isLoggedIn" @click="router.push('/login')"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Login
-                    </router-link>
+                    </button>
+                    <button v-else @click="handleLogout"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Logout
+                    </button>
                     <button @click="handleSubmitCase"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Submit a Case
@@ -28,12 +32,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; 
 import axios from 'axios';
 import AppCard from '@/components/AppCard.vue';
 
 const router = useRouter();
+const route = useRoute();
+
+// Proper computed property
+const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
+
+// Add auth check function
+const checkAuthState = () => {
+    isLoggedIn.value;  // Trigger computed update
+};
+
+watch(() => localStorage.getItem('authToken'), () => {
+    checkAuthState()
+})
+
+const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    router.push({ path: '/', replace: true })
+    checkAuthState()
+}
 const useCases = ref([]);
 const loading = ref(true);
 const error = ref(null);
@@ -48,6 +71,7 @@ const handleSubmitCase = () => {
 };
 
 // Fetch data from backend
+/*
 const fetchUseCases = async () => {
     try {
         const response = await axios.get(
@@ -60,6 +84,7 @@ const fetchUseCases = async () => {
         loading.value = false;
     }
 };
+*/
 
 // Navigation to detail page
 const navigateToDetail = (caseId) => {
@@ -67,5 +92,14 @@ const navigateToDetail = (caseId) => {
 };
 
 // Fetch data when component mounts
-onMounted(fetchUseCases);
+import { watch } from 'vue'
+
+
+
+
+// Update mount hook
+onMounted(() => {
+    checkAuthState()
+    //fetchUseCases()
+})
 </script>
