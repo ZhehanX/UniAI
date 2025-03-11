@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from backend.app.routes.use_cases import router as use_cases_router
+from app.routes import use_cases, auth
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -9,7 +9,8 @@ app = FastAPI()
 # Allow CORS for Vue.js frontend (adjust origins in production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://uniai-frontend.onrender.com"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "https://uniai-frontend.onrender.com"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -20,4 +21,5 @@ def test_endpoint():
     return {"message": "API is working!"}
 
 
-app.include_router(use_cases_router, prefix="/api")
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(use_cases.router, prefix="/api", tags=["use_cases"])
