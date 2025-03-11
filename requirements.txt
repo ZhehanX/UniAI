@@ -8,3 +8,4 @@ alembic
 python-jose[cryptography]
 passlib
 PyJWT
+python-multipart
