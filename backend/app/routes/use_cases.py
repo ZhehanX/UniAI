@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from backend.app.database import get_db
-from backend.app.schemas import UseCaseCreate, UseCase
-from backend.app.crud import (
+from app.database import get_db
+from app.schemas import UseCaseCreate, UseCase
+from app.crud.use_case_crud import (
     create_usecase,
     get_usecase,
     get_usecases,
