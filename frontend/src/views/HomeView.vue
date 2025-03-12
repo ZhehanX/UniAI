@@ -54,7 +54,7 @@ watch(() => localStorage.getItem('authToken'), () => {
 
 const handleLogout = () => {
     localStorage.removeItem('authToken')
-    router.push({ path: '/', replace: true })
+    router.push({ path: '/login', replace: true })
     checkAuthState()
 }
 const useCases = ref([]);
