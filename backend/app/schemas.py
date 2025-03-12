@@ -17,7 +17,9 @@ class User(UserBase):
 
 class InstitutionBase(BaseModel):
     name: str
-    address: str
+    country: str
+    city: str
+    coordinates: float
 
 class InstitutionCreate(InstitutionBase):
     pass
