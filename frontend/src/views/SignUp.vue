@@ -68,6 +68,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';  
 
 const router = useRouter();
 const formData = ref({
@@ -89,14 +90,22 @@ const handleSignUp = async () => {
             throw new Error('Passwords do not match');
         }
         
-        // Add your registration logic here
-        console.log('Signup data:', formData.value);
-        
-        // Simulated successful registration
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Replace simulated registration with actual API call
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/auth/register`,
+            {
+                username: formData.value.name,
+                email: formData.value.email,
+                password: formData.value.password
+            }
+        );
+
+        console.log('Registration successful:', response.data);
         router.push('/login');
     } catch (error) {
-        errorMessage.value = error.message || 'Registration failed. Please try again.';
+        errorMessage.value = error.response?.data?.detail || 
+                            error.message || 
+                            'Registration failed. Please try again.';
     } finally {
         loading.value = false;
     }
