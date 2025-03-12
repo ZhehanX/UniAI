@@ -1,5 +1,5 @@
 # app/models.py
-from sqlalchemy import Column, Integer, String, Date, JSON, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, JSON, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -16,7 +16,9 @@ class Institution(Base):
     __tablename__ = "institutions"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
-    address = Column(String, nullable=False)
+    country = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    coordinates = Column(Float, nullable=False)
     use_cases = relationship("UseCase", back_populates="institution")
 
 class AITechnology(Base):
