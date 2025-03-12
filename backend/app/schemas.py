@@ -5,6 +5,7 @@ from typing import List, Optional
 class UserBase(BaseModel):
     username: str
     email: str
+    role: Optional[str] = "user"
 
 class UserCreate(UserBase):
     password: str

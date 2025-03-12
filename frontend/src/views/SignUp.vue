@@ -100,7 +100,7 @@ const handleSignUp = async () => {
             }
         );
 
-        console.log('Registration successful:', response.data);
+        
         router.push('/login');
     } catch (error) {
         errorMessage.value = error.response?.data?.detail || 

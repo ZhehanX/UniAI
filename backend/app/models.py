@@ -10,7 +10,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default='user')
-    use_cases = relationship("UseCase", back_populates="submitter")
+    use_cases = relationship("UseCase", back_populates="submitter", cascade="all, delete")
 
 class Institution(Base):
     __tablename__ = "institutions"
@@ -38,7 +38,7 @@ class UseCase(Base):
     date_created = Column(Date, server_default='CURRENT_DATE')
     project_initiation_date = Column(Date)
     institution_id = Column(Integer, ForeignKey("institutions.id"), nullable=False)
-    submitted_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    submitted_by = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False)
     
     institution = relationship("Institution", back_populates="use_cases")
     submitter = relationship("User", back_populates="use_cases")

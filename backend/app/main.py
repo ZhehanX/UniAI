@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from app.routes import use_cases, auth
+from app.routes import use_cases, auth, users
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,4 +22,5 @@ def test_endpoint():
 
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(users.router, prefix="/api", tags=["users"])
 app.include_router(use_cases.router, prefix="/api", tags=["use_cases"])
