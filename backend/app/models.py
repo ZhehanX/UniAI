@@ -1,7 +1,8 @@
 # app/models.py
-from sqlalchemy import Column, Integer, String, Date, JSON, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Date, JSON, ForeignKey, Float, DateTime
 from sqlalchemy.orm import relationship
 from app.database import Base
+from datetime import datetime
 
 class User(Base):
     __tablename__ = "users"
@@ -37,7 +38,7 @@ class UseCase(Base):
     url = Column(String)
     logo_filename = Column(String)
     status = Column(String, nullable=False, default='pending')
-    date_created = Column(Date, server_default='CURRENT_DATE')
+    date_created = Column(DateTime, default=datetime.utcnow)
     project_initiation_date = Column(Date)
     institution_id = Column(Integer, ForeignKey("institutions.id"), nullable=False)
     submitted_by = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False)

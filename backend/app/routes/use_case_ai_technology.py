@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
 from app.schemas import AITechnology
-from app.crud import use_case_crud
+from app.models import UseCaseAITechnology as UseCaseAITechnologyModel
 from app.crud import (
     use_case_ai_technology_crud,
-    ai_technology_crud
+    ai_technology_crud,
+    use_case_crud
 )
 
 
@@ -16,7 +17,7 @@ router = APIRouter()
 def add_ai_tech_to_use_case(use_case_id: int, ai_tech_id: int, db: Session = Depends(get_db)):
     try:
         # Verify both entities exist
-        use_case = use_case_crud.get_use_case(db, use_case_id)
+        use_case = use_case_crud.get_usecase(db, use_case_id)
         if not use_case:
             raise HTTPException(status_code=404, detail="Use Case not found")
             
