@@ -1,50 +1,51 @@
-# app/routes/use_cases.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
 from app.schemas import UseCaseCreate, UseCase
-from app.crud.use_case_crud import (
-    create_usecase,
-    get_usecase,
-    get_usecases,
-    update_usecase,
-    delete_usecase
-)
+from app.crud import use_case_crud, institutions_crud, ai_technology_crud
+from fastapi import Depends, HTTPException, status
+from app.routes.auth import get_current_user
+from app.models import User
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
 
 router = APIRouter()
 
-@router.post("/usecases/", response_model=UseCase)
-def create_new_usecase(usecase: UseCaseCreate, db: Session = Depends(get_db)):
-    try:
-        return create_usecase(db=db, usecase=usecase)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/use-cases/", response_model=UseCase, dependencies=[Security(get_current_user)])
+def create_new_use_case(
+    use_case: UseCaseCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return use_case_crud.create_use_case(db=db, use_case=use_case, user_id=current_user.id)
 
-@router.get("/usecases/", response_model=List[UseCase])
-def read_usecases(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return get_usecases(db=db, skip=skip, limit=limit)
+@router.get("/use-cases/", response_model=List[UseCase])
+def read_use_cases(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return use_case_crud.get_use_cases(db=db, skip=skip, limit=limit)
 
-
-
-@router.get("/usecases/{usecase_id}", response_model=UseCase)
-def read_usecase(usecase_id: int, db: Session = Depends(get_db)):
-    db_usecase = get_usecase(db=db, usecase_id=usecase_id)
-    if not db_usecase:
+@router.get("/use-cases/{use_case_id}", response_model=UseCase)
+def read_use_case(use_case_id: int, db: Session = Depends(get_db)):
+    db_use_case = use_case_crud.get_use_case(db, use_case_id)
+    if not db_use_case:
         raise HTTPException(status_code=404, detail="Use case not found")
-    return db_usecase
+    return db_use_case
 
-
-@router.put("/usecases/{usecase_id}", response_model=UseCase)
-def update_existing_usecase(usecase_id: int, usecase: UseCaseCreate, db: Session = Depends(get_db)):
-    updated_usecase = update_usecase(db=db, usecase_id=usecase_id, usecase_data=usecase.model_dump())
-    if not updated_usecase:
+@router.put("/use-cases/{use_case_id}", response_model=UseCase, dependencies=[Security(get_current_user)])
+def update_use_case(use_case_id: int, use_case_data: UseCaseCreate, db: Session = Depends(get_db)):
+    updated_use_case = use_case_crud.update_use_case(
+        db=db, 
+        use_case_id=use_case_id, 
+        use_case_data=use_case_data.model_dump()
+    )
+    if not updated_use_case:
         raise HTTPException(status_code=404, detail="Use case not found")
-    return updated_usecase
+    return updated_use_case
 
-@router.delete("/usecases/{usecase_id}")
-def delete_existing_usecase(usecase_id: int, db: Session = Depends(get_db)):
-    deleted_usecase = delete_usecase(db=db, usecase_id=usecase_id)
-    if not deleted_usecase:
+@router.delete("/use-cases/{use_case_id}", dependencies=[Security(get_current_user)])
+def delete_use_case(use_case_id: int, db: Session = Depends(get_db)):
+    deleted_use_case = use_case_crud.delete_use_case(db=db, use_case_id=use_case_id)
+    if not deleted_use_case:
         raise HTTPException(status_code=404, detail="Use case not found")
     return {"message": "Use case deleted successfully"}

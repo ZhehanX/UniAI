@@ -1,15 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, status, Security
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import schemas, models
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = "your-secret-key"  # Use environment variable in production
+SECRET_KEY = "your-secret-key" 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -25,6 +27,34 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
+
+security = HTTPBearer()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Security(security),
+    db: Session = Depends(get_db)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    token = credentials.credentials  # Extract token from Bearer header
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id: str = payload.get("sub")
+        if not user_id:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    user = db.query(models.User).get(int(user_id))
+    if not user:
+        raise credentials_exception
+        
+    return user
 
 @router.post("/register", response_model=schemas.User)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
