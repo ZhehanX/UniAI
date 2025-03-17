@@ -18,8 +18,10 @@ class Institution(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     country = Column(String, nullable=False)
+    state = Column(String, nullable=False)
     city = Column(String, nullable=False)
-    coordinates = Column(Float, nullable=False)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
     use_cases = relationship("UseCase", back_populates="institution")
 
 class AITechnology(Base):
@@ -39,7 +41,7 @@ class UseCase(Base):
     logo_filename = Column(String)
     status = Column(String, nullable=False, default='pending')
     date_created = Column(DateTime, default=datetime.utcnow)
-    project_initiation_date = Column(Date)
+    project_initiation_date = Column(Date) 
     institution_id = Column(Integer, ForeignKey("institutions.id"), nullable=False)
     submitted_by = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False)
     
