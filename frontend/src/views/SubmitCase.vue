@@ -370,7 +370,7 @@ const newTechName = ref('');
 onMounted(async () => {
     try {
         loadingTechnologies.value = true;
-        const response = await fetch('http://localhost:8000/api/ai-technologies/');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         technologies.value = await response.json();
     } catch (error) {
@@ -776,7 +776,7 @@ const vAutoResize = {
 onMounted(async () => {
     try {
         loadingInstitutions.value = true;
-        const response = await fetch('http://localhost:8000/api/institutions/');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
