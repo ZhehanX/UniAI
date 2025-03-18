@@ -42,6 +42,8 @@
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter case title">
                             </div>
+
+                            <!-- Intitution -->
                             <div class="relative">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Institution *</label>
                                 <input type="text" ref="institutionInput" v-model="institutionSearch"
@@ -204,12 +206,80 @@
                             </div>
 
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used
-                                    *</label>
-                                <input v-model="formData.technology" type="text" required
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                    placeholder="List AI technologies">
+                            <!-- AI Technology Used Section -->
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used *</label>
+
+                                <!-- Selected Technologies -->
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <div v-for="(tech, index) in formData.technologies" :key="index"
+                                        class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                        {{ tech.name }}
+                                        <button @click="removeTechnology(index)"
+                                            class="ml-2 text-blue-600 hover:text-blue-800">&times;</button>
+                                    </div>
+                                </div>
+
+                                <!-- Search Input -->
+                                <input type="text" ref="techInput" v-model="aiTechnologySearch"
+                                    @focus="handleTechInputFocus" @blur="handleTechInputBlur"
+                                    @keydown.down.prevent="handleTechArrowDown" @keydown.up.prevent="handleTechArrowUp"
+                                    @keydown.enter.prevent="handleTechEnter" @keydown.esc.prevent="handleTechEscape"
+                                    aria-haspopup="listbox" :aria-expanded="showTechDropdown" aria-controls="tech-list"
+                                    placeholder="Search AI technologies..."
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+
+                                <!-- Dropdown -->
+                                <transition name="fade">
+                                    <div v-if="showTechDropdown" id="tech-list" role="listbox"
+                                        class="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                        <template v-if="filteredTechnologies.length === 0">
+                                            <div class="p-3 text-gray-500 text-sm">
+                                                No technologies found. Select "Add new technology" below.
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div v-for="(tech, index) in filteredTechnologies" :key="tech.id"
+                                                role="option" :aria-selected="focusedTechIndex === index" :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100',
+                    { 'bg-gray-100': focusedTechIndex === index }]" @mousedown.prevent="selectTechnology(tech)"
+                                                @keydown.enter.prevent="selectTechnology(tech)" :tabindex="-1"
+                                                :ref="el => setTechItemRef(el, index)">
+                                                <div class="font-medium text-gray-900">{{ tech.name }}</div>
+                                            </div>
+                                        </template>
+                                        <div role="option" :class="['p-3 hover:bg-gray-50 cursor-pointer border-t border-gray-100',
+                    { 'bg-gray-100': focusedTechIndex === filteredTechnologies.length }]"
+                                            @mousedown.prevent="handleAddNewTechnology"
+                                            @keydown.enter.prevent="handleAddNewTechnology"
+                                            :tabindex="-1" :ref="el => setTechItemRef(el, filteredTechnologies.length)">
+                                            <div class="font-medium text-blue-600">+ Add new technology</div>
+                                        </div>
+                                    </div>
+                                </transition>
+
+                                <!-- New Technology Input Field -->
+                                <div v-if="showNewTechField" class="mt-4 space-y-4 new-institution-section">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Technology Name
+                                                *</label>
+                                            <input v-model="newTechName" type="text" required ref="newTechInput"
+                                                @keydown.enter.prevent="confirmNewTechnology"
+                                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                                                placeholder="Enter technology name">
+                                        </div>
+                                        <div class="flex gap-2 pt-2">
+                                            <button @click.prevent="confirmNewTechnology"
+                                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                                Add Technology
+                                            </button>
+                                            <button @click.prevent="cancelNewTechnology"
+                                                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email *</label>
@@ -286,6 +356,142 @@ const showCityDropdown = ref(false);
 const focusedCountryIndex = ref(-1);
 const focusedStateIndex = ref(-1);
 const focusedCityIndex = ref(-1);
+const aiTechnologySearch = ref('');
+const showTechDropdown = ref(false);
+const focusedTechIndex = ref(-1);
+const techItemRefs = ref([]);
+const techInput = ref(null);
+const technologies = ref([]);
+const loadingTechnologies = ref(false);
+const showNewTechField = ref(false);
+const newTechName = ref('');
+
+// Fetch technologies similar to institutions
+onMounted(async () => {
+    try {
+        loadingTechnologies.value = true;
+        const response = await fetch('http://localhost:8000/api/ai-technologies/');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        technologies.value = await response.json();
+    } catch (error) {
+        console.error('Error fetching technologies:', error);
+        errorMessage.value = 'Could not load technology list';
+    } finally {
+        loadingTechnologies.value = false;
+    }
+});
+
+
+const filteredTechnologies = computed(() => {
+    const search = aiTechnologySearch.value.toLowerCase();
+    return technologies.value.filter(tech =>
+        tech.name.toLowerCase().includes(search)
+    );
+});
+
+// Modified selectTechnology function
+const selectTechnology = (tech) => {
+    if (!formData.value.technologies.some(t => t.id === tech.id)) {
+        formData.value.technologies.push(tech);
+    }
+    aiTechnologySearch.value = '';
+    // Keep dropdown open and focus input
+    showTechDropdown.value = true;
+    nextTick(() => techInput.value?.focus());
+};
+
+const handleAddNewTechnology = () => {
+    showTechDropdown.value = true;
+    showNewTechField.value = true;
+    aiTechnologySearch.value = '';
+    nextTick(() => {
+        newTechInput.value?.focus();
+    });
+    showTechDropdown.value = false;
+};
+
+const confirmNewTechnology = () => {
+    if (newTechName.value.trim()) {
+        const newTech = {
+            id: Date.now(), // Temporary ID for local use
+            name: newTechName.value.trim()
+        };
+
+        if (!formData.value.technologies.some(t => t.name.toLowerCase() === newTech.name.toLowerCase())) {
+            formData.value.technologies.push(newTech);
+        }
+
+        newTechName.value = '';
+        showNewTechField.value = false;
+        nextTick(() => techInput.value?.focus());
+    }
+};
+
+const cancelNewTechnology = () => {
+    showNewTechField.value = false;
+    newTechName.value = '';
+    nextTick(() => techInput.value?.focus());
+};
+
+
+const removeTechnology = (index) => {
+    formData.value.technologies.splice(index, 1);
+};
+
+// Keyboard navigation handlers
+const handleTechArrowDown = () => {
+    if (!showTechDropdown.value) return;
+    focusedTechIndex.value = Math.min(
+        focusedTechIndex.value + 1,
+        filteredTechnologies.value.length
+    );
+    scrollToFocusedTechItem();
+};
+
+const handleTechArrowUp = () => {
+    if (!showTechDropdown.value) return;
+    focusedTechIndex.value = Math.max(focusedTechIndex.value - 1, 0);
+    scrollToFocusedTechItem();
+};
+
+const handleTechEnter = () => {
+    if (!showTechDropdown.value) return;
+    if (focusedTechIndex.value === filteredTechnologies.value.length) {
+        handleAddNewTechnology();
+    } else if (focusedTechIndex.value >= 0) {
+        selectTechnology(filteredTechnologies.value[focusedTechIndex.value]);
+    }
+};
+
+const handleTechEscape = () => {
+    showTechDropdown.value = false;
+    techInput.value.blur();
+};
+
+const scrollToFocusedTechItem = async () => {
+    await nextTick();
+    techItemRefs.value[focusedTechIndex.value]?.scrollIntoView({
+        block: 'nearest'
+    });
+};
+
+const setTechItemRef = (el, index) => {
+    techItemRefs.value[index] = el;
+};
+
+const handleTechInputFocus = () => {
+    showTechDropdown.value = true;
+    focusedTechIndex.value = 0;
+};
+
+const handleTechInputBlur = () => {
+    setTimeout(() => {
+        if (!document.activeElement?.closest('[role="option"]')) {
+            showTechDropdown.value = false;
+            focusedTechIndex.value = -1;
+        }
+    }, 0);
+};
 
 const selectedCountryName = computed(() => {
     const country = countries.value.find(c => c.isoCode === selectedCountry.value);
@@ -686,7 +892,7 @@ const formData = ref({
         state: '',
         city: ''
     },
-    technology: '',
+    technologies: [],
     contact: '',
     shortDescription: '',
     fullDescription: '',
