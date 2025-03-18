@@ -21,8 +21,10 @@ class User(UserBase):
 class InstitutionBase(BaseModel):
     name: str
     country: str
+    state: str
     city: str
-    coordinates: float
+    latitude: float 
+    longitude: float
 
 class InstitutionCreate(InstitutionBase):
     pass

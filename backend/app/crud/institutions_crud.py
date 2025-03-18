@@ -7,8 +7,10 @@ def create_institution(db: Session, institution: InstitutionCreate):
         db_institution = InstitutionModel(
             name=institution.name,
             country=institution.country,
+            state=institution.state,
             city=institution.city,
-            coordinates=institution.coordinates
+            latitude=institution.latitude,
+            longitude=institution.longitude
         )
         db.add(db_institution)
         db.commit()
