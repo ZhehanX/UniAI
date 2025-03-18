@@ -12,10 +12,12 @@
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.0.3",
     "axios": "^1.7.9",
+    "country-state-city": "^3.2.1",
     "highcharts": "^12.1.2",
     "highcharts-vue": "^2.0.1",
     "pinia": "^2.3.1",
