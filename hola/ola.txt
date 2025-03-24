@@ -1,0 +1,530 @@
+// components/LocationDropdown.vue
+<template>
+    <div class="relative" ref="dropdownContainer">
+        <button type="button" aria-haspopup="listbox" :aria-expanded="show" @click="toggleDropdown" @keydown="handleButtonKeydown"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all flex justify-between items-center"
+            >
+            {{ modelValue }}
+            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+            </svg>
+        </button>
+        <transition name="fade">
+            <div v-if="show"
+                class="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto"                
+            >                
+                <div v-for="(option, index) in options.value"
+                    :key="option.isoCode || option.name"
+                    :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0',
+                    { 'bg-gray-100': props.focusedIndex.value === index }]"
+                    @click="handleSelect(option, index)"
+                    @keydown="handleOptionKeydown($event, option, index)"
+                    :tabindex="props.focusedIndex.value === index ? 0 : -1"
+                    role="option"
+                    :aria-selected="props.focusedIndex.value === index"
+                    :ref="el => { if (props.focusedIndex.value === index) focusedOption = el }"
+                >
+                    {{ option.name }}
+                </div>
+            </div>
+        </transition>
+    </div>
+</template>
+
+<script setup>
+import { ref, watch, nextTick, computed, onMounted } from 'vue';
+
+
+const props = defineProps({
+    modelValue: String,
+    show: Boolean,
+    options: Array,
+    disabled: Boolean,
+    focusedIndex: {
+        type: Number,
+        default: -1
+    }
+});
+
+const dropdownContainer = ref(null);
+const focusedOption = ref(null);
+
+const emit = defineEmits(['update:modelValue', 'select', 'update:show', 'navigate']);
+
+
+
+watch(() => props.options, (newOptions) => {
+    console.log('Options List:', newOptions);
+    console.log('Props Options List:', newOptions.value);
+}, { immediate: true, deep: true });
+
+// Log selected option
+const handleSelect = (option, index) => {
+    // Check if isoCode exists
+    if (!option.isoCode) {
+        console.warn('Selected option is missing isoCode:', option);
+    }
+    
+    emit('update:modelValue', option.name);
+    emit('select', option);
+    console.log('show value false in handleselect');
+    emit('update:show', false);
+    focusedIndex.value = -1;
+    console.log('option selected', option);
+    console.log('index: ', index);
+};
+
+
+const toggleDropdown = () => {
+    if (!props.disabled) {
+        console.log('toggleDropdown called in LocationDropdown.vue');
+        emit('update:show', !props.show);
+    }
+};
+
+
+const handleButtonKeydown = (event) => {
+  if (['Enter', ' '].includes(event.key)) {
+    event.preventDefault();
+    toggleDropdown();
+    if (props.show) {
+      nextTick(() => {
+        const firstOption = dropdownContainer.value.querySelector('[role="option"]');
+        if (firstOption) firstOption.focus();
+      });
+    }
+  }
+};
+
+
+
+const handleOptionKeydown = (event, option, index) => {
+  console.log('handleOptionKeydown called');
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    console.log('ArrowDown key pressed');
+    emit('navigate', 'down');
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    console.log('ArrowUp key pressed');
+    emit('navigate', 'up');
+  } else if (event.key === 'Enter') {
+    event.preventDefault();
+    console.log('Enter key pressed');
+    handleSelect(option);
+  } else if (event.key === 'Escape') {
+    console.log('Escape key pressed');
+    emit('update:show', false);
+  }
+};
+
+
+watch (() => props.focusedIndex.value, (newIndex) => {
+    console.log('focusedIndex changed to:', props.focusedIndex.value);
+})
+
+// Auto-scroll to focused option
+watch(() => props.focusedIndex.value, (newIndex) => {
+    if (focusedOption.value) {
+        console.log('focusedOption.value', focusedOption.value);
+        focusedOption.value.scrollIntoView({
+            block: 'nearest',
+            behavior: 'smooth'
+        });
+    }
+});
+
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    nextTick(() => {
+      const firstOption = dropdownContainer.value?.querySelector('[role="option"]');
+      if (firstOption) {
+        firstOption.focus();
+        props.focusedIndex.value = 0; // Sync with composable's state
+      }
+    });
+  }
+});
+
+// Close dropdown when clicking outside
+watch(() => props.show, (newVal) => {
+    if (newVal) {
+        const handleClickOutside = (event) => {
+            // Check if the click is outside the dropdown container
+            if (dropdownContainer.value && !dropdownContainer.value.contains(event.target)) {
+                console.log('Click outside the dropdown container');
+                emit('update:show', false);
+            }
+        };
+        
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }
+});
+
+</script>
+
+
+
+// composables/useLocationDropdown.js
+import { ref, computed, watch, onMounted } from 'vue';
+
+export function useLocationDropdown({
+    parentValue = null,
+    getOptions,
+    initialValue = ''
+}) {
+    const showDropdown = ref(false);
+    const searchQuery = ref('');
+    const selectedValue = ref(initialValue);
+    const options = ref([]);
+    const focusedIndex = ref(-1);
+
+
+
+    const filteredOptions = computed(() => {
+        if (!searchQuery.value) return options.value || [];
+        const query = searchQuery.value.toLowerCase();
+        //console.log('filteredOptions query:', query);
+        return options.value.filter(opt =>
+            opt.name.toLowerCase().includes(query)
+        );
+    });
+
+    
+
+    const loadOptions = async () => {
+        try {
+            
+            
+            options.value = await getOptions(parentValue?.value);
+
+            // Add debug logging here
+            /*
+            console.groupCollapsed(`[LocationDropdown] Loaded ${options.value.length} options (parent: ${parentValue?.value || 'none'})`);
+            console.log('Parent value:', parentValue?.value);
+            options.value?.forEach((opt, index) => {
+                console.log(`Option ${index + 1}:`, {
+                    name: opt.name,
+                    isoCode: opt.isoCode,
+                    countryCode: opt.countryCode,
+                    stateCode: opt.stateCode
+                });
+            });
+            console.groupEnd();
+            */
+
+
+            if (options.value.length === 0) {
+                console.warn('No options found for parent value:', parentValue?.value);
+            }
+
+            console.log('options value in loadoptions:', options.value);
+
+        } catch (error) {
+            console.error('Error loading options:', error);
+            options.value = [];
+        }
+    };
+
+    // Update search query to display the selected option's name
+    const updateSearchQueryFromSelected = () => {
+        if (selectedValue.value) {
+            const selectedOption = options.value.find(opt => 
+                opt.isoCode === selectedValue.value || opt.name === selectedValue.value
+            );
+            
+            searchQuery.value = selectedOption ? selectedOption.name : '';
+        } else {
+           
+            searchQuery.value = '';
+        }
+    };
+
+    watch(selectedValue, updateSearchQueryFromSelected);
+
+    watch(parentValue, () => {
+        selectedValue.value = '';
+        loadOptions();
+    }, { immediate: true });
+
+
+
+    watch(selectedValue, () => {
+        console.log('Selected value changed:', selectedValue.value);
+    })
+
+
+
+    watch(showDropdown, (newVal) => {
+        console.log('Show dropdown value changed in watch useLocationDropdwon.js:', newVal);
+        if (newVal) {
+            searchQuery.value = '';
+            focusedIndex.value = 0;
+            loadOptions();
+        }
+    });
+
+    watch(searchQuery, () => {
+        console.log('Search query changed:', searchQuery.value);
+    })
+
+    const selectOption = (option) => {
+        console.log('Select option in useLocation.js:', option);
+        selectedValue.value = option.isoCode || option.name;
+        searchQuery.value = option.name;
+        console.log('show drop down false in selectOption useLocationDropdown.js:');
+        showDropdown.value = false;
+    };
+
+
+    const keyboardNav = (direction) => {
+        console.log('Keyboard navigation in useLocationDropdown.js:', direction);
+        if (!showDropdown.value) return;
+        if (direction === 'up') {
+          focusedIndex.value = Math.max(focusedIndex.value - 1, 0);
+        } else {
+          focusedIndex.value = Math.min(focusedIndex.value + 1, filteredOptions.value.length - 1);
+        }
+      };
+
+    return {
+        showDropdown,
+        searchQuery,
+        selectedValue,
+        filteredOptions,
+        selectOption,
+        keyboardNav,
+        loadOptions,
+        focusedIndex
+    };
+}
+
+
+// views/SubmitCase.vue
+
+<template>
+    <div class="min-h-screen bg-gray-50">
+        <header class="bg-white shadow">
+            <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+                <h1 class="text-3xl font-bold text-gray-900">Submit New Case</h1>
+                <button @click="$router.push('/')" class="text-blue-600 hover:text-blue-800 flex items-center">
+                    ← Back to Overview
+                </button>
+            </div>
+        </header>
+
+                            <!-- New Institution Form Fields -->
+                            <div v-if="showNewInstitutionFields" class="mt-4 space-y-4 new-institution-section">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Institution Name
+                                        *</label>
+                                    <input v-model="formData.new_institution.name" type="text" required
+                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                                </div>
+
+
+                                <!-- Country Dropdown -->
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                                <LocationDropdown v-model="countryDropdown.selectedValue"
+                                    v-model:show="countryDropdown.showDropdown.value"
+                                    :options="countryDropdown.filteredOptions"
+                                    :focused-index="countryDropdown.focusedIndex" @select="countryDropdown.selectOption"
+                                    @navigate="countryDropdown.keyboardNav" />
+
+
+                                <!-- State Dropdown -->
+                                <label class="block text-sm font-medium text-gray-700 mb-2">State *</label>
+                                <LocationDropdown v-model="stateDropdown.selectedValue"
+                                    v-model:show="stateDropdown.showDropdown.value"
+                                    :options="stateDropdown.filteredOptions" :focused-index="stateDropdown.focusedIndex"
+                                    @select="stateDropdown.selectOption" @navigate="stateDropdown.keyboardNav"
+                                    :disabled="!countryDropdown.selectedValue" />
+
+
+                                <!-- City Dropdown -->
+                                <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                                <LocationDropdown v-model="cityDropdown.selectedValue"
+                                    v-model:show="cityDropdown.showDropdown.value"
+                                    :options="cityDropdown.filteredOptions" :focused-index="cityDropdown.focusedIndex"
+                                    @select="cityDropdown.selectOption" @navigate="cityDropdown.keyboardNav"
+                                    :disabled="!stateDropdown.selectedValue" />
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { Country, State, City } from 'country-state-city';
+import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
+import LocationDropdown from '@/components/LocationDropdown.vue';
+
+// form date structure
+const formData = ref({
+    title: '',
+    institution_id: null,
+    new_institution: {
+        name: '',
+        country: '',
+        state: '',
+        city: ''
+    },
+    technologies: [],
+    contact: '',
+    shortDescription: '',
+    fullDescription: '',
+    url: ''
+});
+
+const currentCountrycode = ref('');
+const currentStatecode = ref('');
+const currentCitycode = ref('');
+
+const countryDropdown = useLocationDropdown({
+    getOptions: () => Country.getAllCountries(),
+    initialValue: formData.value.new_institution.country
+});
+
+
+const stateDropdown = useLocationDropdown({
+    parentValue: countryDropdown.selectedValue,
+    getOptions: (countryCode) =>
+        countryCode ? State.getStatesOfCountry(countryCode) : [],
+    initialValue: formData.value.new_institution.state
+});
+
+const cityDropdown = useLocationDropdown({
+    parentValue: stateDropdown.selectedValue,
+    getOptions: (stateCode) =>
+        stateCode ? City.getCitiesOfState(currentCountrycode.value, stateCode) : [],
+    initialValue: formData.value.new_institution.city
+});
+
+watch (countryDropdown.selectedValue, (newValue) => {
+    currentCountrycode.value = newValue;
+    formData.value.new_institution.country = newValue;
+    stateDropdown.selectedValue = '';
+    cityDropdown.selectedValue = '';
+
+});
+
+watch (stateDropdown.selectedValue, (newValue) => {
+    currentStatecode.value = newValue;
+    formData.value.new_institution.state = newValue;
+    cityDropdown.selectedValue = '';
+});
+
+watch (cityDropdown.selectedValue, (newValue) => {
+    currentCitycode.value = newValue;
+    formData.value.new_institution.city = newValue;
+});
+
+
+
+
+const handleAddNewInstitution = () => {
+    addNewInstitution();
+    // Manually focus the first field of new institution
+    nextTick(() => {
+        document.querySelector('[name="new-institution-name"]')?.focus();
+    });
+};
+
+
+
+
+// Fetch institutions on component mount
+onMounted(async () => {
+    try {
+        loadingInstitutions.value = true;
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        institutions.value = await response.json();
+    } catch (error) {
+        console.error('Error fetching institutions:', error);
+        errorMessage.value = 'Could not load institution list';
+    } finally {
+        loadingInstitutions.value = false;
+    }
+});
+
+
+
+const selectInstitution = (institution) => {
+    formData.value.institution_id = institution.id;
+    institutionSearch.value = institution.name;
+    showDropdown.value = false;
+    // Clear new institution fields when selecting existing
+    showNewInstitutionFields.value = false;
+    formData.value.new_institution = {
+        name: '',
+        country: '',
+        state: '',
+        city: ''
+    };
+    setTimeout(() => {
+        institutionInput.value.blur();
+        document.activeElement.blur();
+    }, 10);
+    focusedItemIndex.value = -1;
+};
+
+
+const addNewInstitution = () => {
+    formData.value.institution_id = 'new';
+    showDropdown.value = false;
+    showNewInstitutionFields.value = true;
+    institutionSearch.value = '';
+
+    // Force blur the institution input
+    institutionInput.value.blur();
+
+    // Focus new institution name field after blur
+    nextTick(() => {
+        document.querySelector('[name="new-institution-name"]')?.focus();
+    });
+
+    formData.value.new_institution = {
+        name: '',
+        country: '',
+        state: '',
+        city: ''
+    };
+    focusedItemIndex.value = -1;
+};
+
+const filteredInstitutions = computed(() => {
+    const search = institutionSearch.value.toLowerCase();
+    return institutions.value.filter(inst =>
+        inst.name.toLowerCase().includes(search) ||
+        inst.city?.toLowerCase().includes(search) ||
+        inst.country?.toLowerCase().includes(search)
+    );
+});
+
+
+
+</script>
+<style>
+.new-institution-section {
+    border-left: 2px solid #2563eb;
+    padding-left: 1rem;
+    transition: all 0.2s ease;
+}
+
+
+</style>
