@@ -51,7 +51,7 @@ export function useLocationDropdown({
                 console.warn('No options found for parent value:', parentValue?.value);
             }
 
-            console.log('options value in loadoptions:', options.value);
+            //console.log('options value in loadoptions:', options.value);
 
         } catch (error) {
             console.error('Error loading options:', error);

@@ -199,10 +199,16 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
                                 <input v-model="formData.contact" type="email"
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter contact email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Project Initiation Date
+                                    *</label>
+                                <input v-model="formData.projectInitiationDate" type="date" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                             </div>
                         </div>
                     </div>
@@ -220,7 +226,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
-                            <textarea v-model="formData.fullDescription" v-auto-resize
+                            <textarea v-model="formData.fullDescription.value" v-auto-resize
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="Detailed description of the case study"></textarea>
                         </div>
@@ -245,7 +251,7 @@
                     <div class="pt-6">
                         <button type="submit"
                             class="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold disabled:bg-gray-400"
-                            :disabled="loading">
+                            :disabled="loading" @click="handleSubmit">
                             <span v-if="!loading">Submit Case</span>
                             <span v-else>Sending...</span>
                         </button>
@@ -261,6 +267,7 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import { Country, State, City } from 'country-state-city';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
+import useCaseForm from '@/composables/useCaseForm.js'
 import LocationDropdown from '@/components/LocationDropdown.vue';
 
 const aiTechnologySearch = ref('');
@@ -298,10 +305,47 @@ const formData = ref({
     },
     technologies: [],
     contact: '',
+    projectInitiationDate: '',
     shortDescription: '',
-    fullDescription: '',
+    fullDescription: {
+        value: ''
+    },
     url: ''
 });
+
+const {
+    loading,
+    successMessage,
+    errorMessage,
+    submitForm
+} = useCaseForm()
+
+// Add submit handler
+const handleSubmit = async () => {
+    const success = await submitForm(formData.value)
+    if (success) {
+        // Reset form
+        formData.value = {
+            title: '',
+            institution_id: null,
+            new_institution: {
+                name: '',
+                country: '',
+                state: '',
+                city: ''
+            },
+            technologies: [],
+            contact: '',
+            projectInitiationDate: '',
+            shortDescription: '',
+            fullDescription: {
+                value: ''
+            },
+            url: ''
+        }
+
+    }
+}
 
 
 // country, state, city dropdowns
@@ -326,16 +370,18 @@ const cityDropdown = useLocationDropdown({
 });
 
 watch(countryDropdown.selectedValue, (newValue) => {
+    const country = Country.getCountryByCode(newValue);
+    formData.value.new_institution.country = country?.name || '';
     currentCountrycode.value = newValue;
-    formData.value.new_institution.country = newValue;
     stateDropdown.selectedValue = '';
     cityDropdown.selectedValue = '';
 
 });
 
 watch(stateDropdown.selectedValue, (newValue) => {
+    const state = State.getStateByCodeAndCountry(newValue, currentCountrycode.value);
+    formData.value.new_institution.state = state?.name || '';
     currentStatecode.value = newValue;
-    formData.value.new_institution.state = newValue;
     cityDropdown.selectedValue = '';
 });
 
@@ -396,7 +442,6 @@ const handleAddNewTechnology = () => {
 const confirmNewTechnology = () => {
     if (newTechName.value.trim()) {
         const newTech = {
-            id: Date.now(), // Temporary ID for local use
             name: newTechName.value.trim()
         };
 

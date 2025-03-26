@@ -13,6 +13,10 @@
                         class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Logout
                     </button>
+                    <button v-if="isAdmin" @click="router.push('/admin/review')"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Admin Review
+                    </button>
                     <button @click="handleSubmitCase"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Submit a Case
@@ -36,12 +40,15 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router'; 
 import axios from 'axios';
 import AppCard from '@/components/AppCard.vue';
+import { getUserRole } from '@/utils/auth.js';
 
 const router = useRouter();
 const route = useRoute();
 
-// Proper computed property
+// Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
+// Check if user is an admin
+const isAdmin = computed(() => getUserRole() === 'admin');
 
 // Add auth check function
 const checkAuthState = () => {

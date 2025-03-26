@@ -22,8 +22,8 @@ def create_new_use_case(
     return use_case_crud.create_use_case(db=db, use_case=use_case, user_id=current_user.id)
 
 @router.get("/use-cases/", response_model=List[UseCase])
-def read_use_cases(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return use_case_crud.get_use_cases(db=db, skip=skip, limit=limit)
+def read_use_cases(status=None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return use_case_crud.get_use_cases(db=db, status=status, skip=skip, limit=limit)
 
 @router.get("/use-cases/{use_case_id}", response_model=UseCase)
 def read_use_case(use_case_id: int, db: Session = Depends(get_db)):
