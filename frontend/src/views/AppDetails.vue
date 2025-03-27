@@ -52,7 +52,7 @@
                 <!-- Description -->
                 <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
                     <h2 class="text-xl font-semibold mb-4">About this AI Tool</h2>
-                    <p class="text-gray-600 leading-relaxed" style="white-space: pre-line">{{ currentApp.full_description }}</p>
+                    <p class="text-gray-600 leading-relaxed" style="white-space: pre-line">{{ currentApp.full_description ? currentApp.full_description.value : "" }}</p>
                 </div>
             </div>
         </main>
@@ -69,28 +69,31 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { useCases } from '@/composables/useCases.js';
 
 const route = useRoute();
-const currentApp = ref({});
+
 const error = ref(null);
+const { currentCase, fetchUseCasesById } = useCases();
 
-
-
-const fetchAppData = async (id) => {
+/*
+const fetchUseCasesById = async (id) => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/usecases/${id}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/use-cases/${id}`);
     currentApp.value = response.data;
   } catch (err) {
     console.error("API Error:", err.response ? err.response.data : err.message);
     error.value = 'Failed to load application details';
   }
 };
-
-
+*/
+const currentApp = currentCase;
 
 // Fetch when component mounts or ID changes
-onMounted(() => fetchAppData(route.params.id));
-watch(() => route.params.id, (newId) => fetchAppData(newId));
+onMounted(() => {
+    fetchUseCasesById(route.params.id)
+});
+watch(() => route.params.id, (newId) => fetchUseCasesById(newId));
 
 
 

@@ -37,16 +37,16 @@
 
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
-                                <input v-model="formData.title" type="text" required
+                                <label for="case-title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                                <input id="case-title" v-model="formData.title" type="text" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter case title">
                             </div>
 
-                            <!-- Intitution -->
+                            <!-- Institution field -->
                             <div class="relative">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Institution *</label>
-                                <input type="text" ref="institutionInput" v-model="institutionSearch"
+                                <label for="institution-search" class="block text-sm font-medium text-gray-700 mb-2">Institution *</label>
+                                <input id="institution-search" type="text" ref="institutionInput" v-model="institutionSearch"
                                     @focus="handleInputFocus" @blur="handleInputBlur"
                                     @keydown.down.prevent="handleArrowDown" @keydown.up.prevent="handleArrowUp"
                                     @keydown.enter.prevent="handleEnter" @keydown.esc.prevent="handleEscape"
@@ -88,45 +88,40 @@
                             <!-- New Institution Form Fields -->
                             <div v-if="showNewInstitutionFields" class="mt-4 space-y-4 new-institution-section">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Institution Name
-                                        *</label>
-                                    <input v-model="formData.new_institution.name" type="text" required
+                                    <label for="institution-name" class="block text-sm font-medium text-gray-700 mb-2">Institution Name *</label>
+                                    <input id="institution-name" name="new-institution-name" v-model="formData.new_institution.name" type="text" required
                                         class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                                 </div>
 
-
                                 <!-- Country Dropdown -->
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
-                                <LocationDropdown v-model="countryDropdown.selectedValue"
+                                <label for="country-dropdown" class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                                <LocationDropdown id="country-dropdown" v-model="countryDropdown.selectedValue"
                                     v-model:show="countryDropdown.showDropdown.value"
                                     :options="countryDropdown.filteredOptions"
                                     :focused-index="countryDropdown.focusedIndex" @select="countryDropdown.selectOption"
                                     @navigate="countryDropdown.keyboardNav" />
 
-
                                 <!-- State Dropdown -->
-                                <label class="block text-sm font-medium text-gray-700 mb-2">State *</label>
-                                <LocationDropdown v-model="stateDropdown.selectedValue"
+                                <label for="state-dropdown" class="block text-sm font-medium text-gray-700 mb-2">State *</label>
+                                <LocationDropdown id="state-dropdown" v-model="stateDropdown.selectedValue"
                                     v-model:show="stateDropdown.showDropdown.value"
                                     :options="stateDropdown.filteredOptions" :focused-index="stateDropdown.focusedIndex"
                                     @select="stateDropdown.selectOption" @navigate="stateDropdown.keyboardNav"
                                     :disabled="!countryDropdown.selectedValue" />
 
-
                                 <!-- City Dropdown -->
-                                <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                                <LocationDropdown v-model="cityDropdown.selectedValue"
+                                <label for="city-dropdown" class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                                <LocationDropdown id="city-dropdown" v-model="cityDropdown.selectedValue"
                                     v-model:show="cityDropdown.showDropdown.value"
                                     :options="cityDropdown.filteredOptions" :focused-index="cityDropdown.focusedIndex"
                                     @select="cityDropdown.selectOption" @navigate="cityDropdown.keyboardNav"
                                     :disabled="!stateDropdown.selectedValue" />
                             </div>
 
-
                             <!-- AI Technology Used Section -->
                             <div class="relative">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used *</label>
-
+                                <label for="tech-search" class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used *</label>
+                                
                                 <!-- Selected Technologies -->
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     <div v-for="(tech, index) in formData.technologies" :key="index"
@@ -136,16 +131,16 @@
                                             class="ml-2 text-blue-600 hover:text-blue-800">&times;</button>
                                     </div>
                                 </div>
-
+                                
                                 <!-- Search Input -->
-                                <input type="text" ref="techInput" v-model="aiTechnologySearch"
+                                <input id="tech-search" type="text" ref="techInput" v-model="aiTechnologySearch"
                                     @focus="handleTechInputFocus" @blur="handleTechInputBlur"
                                     @keydown.down.prevent="handleTechArrowDown" @keydown.up.prevent="handleTechArrowUp"
                                     @keydown.enter.prevent="handleTechEnter" @keydown.esc.prevent="handleTechEscape"
                                     aria-haspopup="listbox" :aria-expanded="showTechDropdown" aria-controls="tech-list"
                                     placeholder="Search AI technologies..."
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-
+                                
                                 <!-- Dropdown -->
                                 <transition name="fade">
                                     <div v-if="showTechDropdown" id="tech-list" role="listbox"
@@ -173,14 +168,13 @@
                                         </div>
                                     </div>
                                 </transition>
-
+                                
                                 <!-- New Technology Input Field -->
                                 <div v-if="showNewTechField" class="mt-4 space-y-4 new-institution-section">
                                     <div class="space-y-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Technology Name
-                                                *</label>
-                                            <input v-model="newTechName" type="text" required ref="newTechInput"
+                                            <label for="new-tech-name" class="block text-sm font-medium text-gray-700 mb-2">Technology Name *</label>
+                                            <input id="new-tech-name" v-model="newTechName" type="text" required ref="newTechInput"
                                                 @keydown.enter.prevent="confirmNewTechnology"
                                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                                 placeholder="Enter technology name">
@@ -199,15 +193,14 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
-                                <input v-model="formData.contact" type="email"
+                                <label for="contact-email" class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                <input id="contact-email" v-model="formData.contact" type="email"
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter contact email">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Project Initiation Date
-                                    *</label>
-                                <input v-model="formData.projectInitiationDate" type="date" required
+                                <label for="project-date" class="block text-sm font-medium text-gray-700 mb-2">Project Initiation Date *</label>
+                                <input id="project-date" v-model="formData.projectInitiationDate" type="date" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                             </div>
                         </div>
@@ -218,22 +211,22 @@
                         <h2 class="text-xl font-semibold text-gray-900 border-b pb-2">Additional Information</h2>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Short Description *</label>
-                            <textarea v-model="formData.shortDescription" v-auto-resize required
+                            <label for="short-description" class="block text-sm font-medium text-gray-700 mb-2">Short Description *</label>
+                            <textarea id="short-description" v-model="formData.shortDescription" v-auto-resize required
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="Brief summary (max 200 characters)"></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
-                            <textarea v-model="formData.fullDescription.value" v-auto-resize
+                            <label for="full-description" class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
+                            <textarea id="full-description" v-model="formData.fullDescription.value" v-auto-resize
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="Detailed description of the case study"></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Case Study URL</label>
-                            <input v-model="formData.url" type="url"
+                            <label for="case-url" class="block text-sm font-medium text-gray-700 mb-2">Case Study URL</label>
+                            <input id="case-url" v-model="formData.url" type="url"
                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="https://example.com/case-study">
                         </div>

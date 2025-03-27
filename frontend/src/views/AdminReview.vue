@@ -166,8 +166,8 @@
 
                 <form @submit.prevent="saveEditedCase" class="space-y-4">
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">Title</label>
-                        <input v-model="editForm.title" type="text" required
+                        <label for="editCaseTitle" class="block text-gray-700 font-medium mb-1">Title</label>
+                        <input id="editCaseTitle" v-model="editForm.title" type="text" required
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
 
@@ -176,31 +176,31 @@
                         <div class="border rounded-md p-4 bg-gray-50">
                             <div class="space-y-3">
                                 <div>
-                                    <label class="block text-gray-600 text-sm mb-1">Name</label>
-                                    <input v-model="editForm.institution_name" type="text"
+                                    <label for="editInstitutionName" class="block text-gray-600 text-sm mb-1">Name</label>
+                                    <input id="editInstitutionName" v-model="editForm.institution_name" type="text"
                                         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <label class="block text-gray-600 text-sm mb-1">City</label>
-                                        <input v-model="editForm.institution_city" type="text"
+                                        <label for="editInstitutionCity" class="block text-gray-600 text-sm mb-1">City</label>
+                                        <input id="editInstitutionCity" v-model="editForm.institution_city" type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                     <div>
-                                        <label class="block text-gray-600 text-sm mb-1">Country</label>
-                                        <input v-model="editForm.institution_country" type="text"
+                                        <label for="editInstitutionCountry" class="block text-gray-600 text-sm mb-1">Country</label>
+                                        <input id="editInstitutionCountry" v-model="editForm.institution_country" type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <label class="block text-gray-600 text-sm mb-1">Latitude</label>
-                                        <input v-model="editForm.institution_latitude" type="text"
+                                        <label for="editInstitutionLatitude" class="block text-gray-600 text-sm mb-1">Latitude</label>
+                                        <input id="editInstitutionLatitude" v-model="editForm.institution_latitude" type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                     <div>
-                                        <label class="block text-gray-600 text-sm mb-1">Longitude</label>
-                                        <input v-model="editForm.institution_longitude" type="text"
+                                        <label for="editInstitutionLongitude" class="block text-gray-600 text-sm mb-1">Longitude</label>
+                                        <input id="editInstitutionLongitude" v-model="editForm.institution_longitude" type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
@@ -224,35 +224,35 @@
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">Short Description</label>
-                        <textarea v-model="editForm.short_description" required rows="2"
+                        <label for="editShortDescription" class="block text-gray-700 font-medium mb-1">Short Description</label>
+                        <textarea id="editShortDescription" v-model="editForm.short_description" required rows="2"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">Full Description</label>
-                        <textarea v-model="editForm.full_description" rows="5"
+                        <label for="editFullDescription" class="block text-gray-700 font-medium mb-1">Full Description</label>
+                        <textarea id="editFullDescription" v-model="editForm.full_description" rows="5"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-gray-700 font-medium mb-1">Project URL</label>
-                            <input v-model="editForm.url" type="url"
+                            <label for="editProjectUrl" class="block text-gray-700 font-medium mb-1">Project URL</label>
+                            <input id="editProjectUrl" v-model="editForm.url" type="url"
                                 class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
                         <div>
-                            <label class="block text-gray-700 font-medium mb-1">Contact Email</label>
-                            <input v-model="editForm.contact" type="email"
+                            <label for="editContactEmail" class="block text-gray-700 font-medium mb-1">Contact Email</label>
+                            <input id="editContactEmail" v-model="editForm.contact" type="email"
                                 class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
 
                     <!-- Add project initiation date field -->
                     <div>
-                        <label class="block text-gray-700 font-medium mb-1">Project Initiation Date</label>
-                        <input v-model="editForm.project_initiation_date" type="date"
+                        <label for="editProjectDate" class="block text-gray-700 font-medium mb-1">Project Initiation Date</label>
+                        <input id="editProjectDate" v-model="editForm.project_initiation_date" type="date"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
 
@@ -278,116 +278,124 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUserRole } from '@/utils/auth.js';
 import { PencilIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { useCases } from '@/composables/useCases.js';
+import { useInstitutions } from '@/composables/useInstitutions.js';
+import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 
 const router = useRouter();
 const userRole = getUserRole();
-const cases = ref([]);
-const loading = ref(false);
-const errorMessage = ref('');
-const successMessage = ref('');
+
+const { 
+  cases, 
+  loading, 
+  errorMessage, 
+  successMessage, 
+  fetchPendingCasesWithDetails, 
+  approveCase: approveCaseAction, 
+  rejectCase: rejectCaseAction,
+  updateCase 
+} = useCases();
+
+const { 
+  institutions,
+  fetchInstitutionDetailsById, 
+  fetchInstitutions,
+  updateInstitution, 
+  createInstitution 
+} = useInstitutions();
+
+const { 
+  technologies: allAiTechnologies, 
+  fetchAllTechnologies, 
+  fetchTechnologyDetails 
+} = useAiTechnologies();
+
+// Local state
 const aiTechnologies = ref({});
-
-const institutions = ref([]);
-const allAiTechnologies = ref([]);
-
 const showEditModal = ref(false);
 const editingCase = ref(null);
 const editForm = ref({});
 const editLoading = ref(false);
 const editError = ref('');
 
-// Fetch pending cases
-const fetchCases = async () => {
-    try {
-        loading.value = true;
-        const token = localStorage.getItem('authToken');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/?status=pending`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
 
-        if (!response.ok) throw new Error('Failed to fetch cases');
-        cases.value = await response.json();
+// Load institution details for each case
+const loadInstitutionDetails = async (caseItem) => {
+  if (!caseItem.institution_id) return;
 
-        // Load institution details for each case
-        for (const caseItem of cases.value) {
-            if (caseItem.institution_id) {
-                await loadInstitutionDetails(caseItem);
+  try {
+    const institutionData = await fetchInstitutionDetailsById(caseItem.institution_id);
+    if (institutionData) {
+      // Update the case item with institution details
+      caseItem.institution = institutionData;
+    }
+  } catch (error) {
+    console.error('Error loading institution details:', error);
+  }
+};
+
+// Fetch cases with details
+const loadCasesWithDetails = async () => {
+  try {
+    const casesData = await fetchPendingCasesWithDetails();
+    
+    // Load institution details for each case
+    for (const caseItem of casesData) {
+      if (caseItem.institution_id) {
+        await loadInstitutionDetails(caseItem);
+      }
+
+      // Load AI technology details
+      if (caseItem.ai_technologies && caseItem.ai_technologies.length) {
+        caseItem.aiTechDetails = [];
+        for (const techId of caseItem.ai_technologies) {
+          // Check if we already have this tech in our cache
+          if (!aiTechnologies.value[techId]) {
+            const techDetails = await fetchTechnologyDetails(techId);
+            if (techDetails) {
+              aiTechnologies.value[techId] = techDetails;
             }
+          }
 
-            // Load AI technology details
-            if (caseItem.ai_technologies && caseItem.ai_technologies.length) {
-                caseItem.aiTechDetails = [];
-                for (const techId of caseItem.ai_technologies) {
-                    // Check if we already have this tech in our cache
-                    if (!aiTechnologies.value[techId]) {
-                        const techDetails = await fetchAiTechnologyDetails(techId);
-                        if (techDetails) {
-                            aiTechnologies.value[techId] = techDetails;
-                        }
-                    }
-
-                    if (aiTechnologies.value[techId]) {
-                        caseItem.aiTechDetails.push(aiTechnologies.value[techId]);
-                    }
-                }
-            }
+          if (aiTechnologies.value[techId]) {
+            caseItem.aiTechDetails.push(aiTechnologies.value[techId]);
+          }
         }
-
-    } catch (error) {
-        errorMessage.value = 'Error loading cases';
-    } finally {
-        loading.value = false;
+      }
     }
+  } catch (error) {
+    console.error('Error loading cases with details:', error);
+  }
 };
 
-// Approve case
+// Approve case wrapper
 const approveCase = async (caseId) => {
-    try {
-        const token = localStorage.getItem('authToken');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/${caseId}/approve/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) throw new Error('Approval failed');
-        successMessage.value = 'Case approved successfully';
-        await fetchCases();
-    } catch (error) {
-        errorMessage.value = 'Approval failed. Please try again.';
-    }
+  try {
+    await approveCaseAction(caseId);
+    await loadCasesWithDetails();
+  } catch (error) {
+    console.error('Error approving case:', error);
+  }
 };
 
-// Reject case
+// Reject case wrapper
 const rejectCase = async (caseId) => {
-    try {
-        const token = localStorage.getItem('authToken');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/${caseId}/reject/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) throw new Error('Rejection failed');
-        successMessage.value = 'Case rejected successfully';
-        await fetchCases();
-    } catch (error) {
-        errorMessage.value = 'Rejection failed. Please try again.';
-    }
+  try {
+    await rejectCaseAction(caseId);
+    await loadCasesWithDetails();
+  } catch (error) {
+    console.error('Error rejecting case:', error);
+  }
 };
 
 onMounted(() => {
-    if (userRole === 'admin') {
-        fetchCases();
-    } else {
-        router.push('/');
-    }
+  if (userRole === 'admin') {
+    loadCasesWithDetails();
+    fetchAllTechnologies();
+  } else {
+    router.push('/');
+  }
 });
-
 
 // Status badge styling
 const statusBadge = (status) => ({
@@ -397,77 +405,6 @@ const statusBadge = (status) => ({
     'bg-rose-100 text-rose-800': status === 'rejected'
 });
 
-const loadInstitutionDetails = async (caseItem) => {
-    if (!caseItem.institution_id) return;
-
-    try {
-        const institutionData = await fetchInstitutionDetails(caseItem.institution_id);
-        if (institutionData) {
-            // Update the case item with institution details
-            caseItem.institution = institutionData;
-            //console.log('Institution data:', institutionData);
-        }
-    } catch (error) {
-        console.error('Error loading institution details:', error);
-    }
-};
-
-const fetchInstitutionDetails = async (institutionId) => {
-    try {
-        const token = localStorage.getItem('authToken');
-        const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/institutions/${institutionId}/`,
-            {
-                headers: { 'Authorization': `Bearer ${token}` }
-            }
-        );
-
-        if (!response.ok) throw new Error('Institution not found');
-        const data = await response.json();
-
-        return data;
-    } catch (error) {
-        errorMessage.value = 'Could not fetch institution details';
-    }
-};
-
-const fetchAiTechnologyDetails = async (techId) => {
-    try {
-        //const token = localStorage.getItem('authToken');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/${techId}/`);
-
-        if (!response.ok) throw new Error('AI technology not found');
-        return await response.json();
-    } catch (error) {
-        console.error(`Error fetching AI technology ${techId}:`, error);
-        return null;
-    }
-};
-
-const fetchInstitutions = async () => {
-    try {
-        const token = localStorage.getItem('authToken');
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch institutions');
-        institutions.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching institutions:', error);
-    }
-};
-
-const fetchAllAiTechnologies = async () => {
-    try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/`);
-
-        if (!response.ok) throw new Error('Failed to fetch AI technologies');
-        allAiTechnologies.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching AI technologies:', error);
-    }
-};
 
 const openEditModal = (caseItem) => {
     editingCase.value = caseItem;
@@ -517,7 +454,7 @@ const openEditModal = (caseItem) => {
     }
 
     if (allAiTechnologies.value.length === 0) {
-        fetchAllAiTechnologies();
+        fetchAllTechnologies();
     }
 
     showEditModal.value = true;
@@ -642,7 +579,7 @@ const saveEditedCase = async () => {
 
         successMessage.value = 'Case updated successfully';
         closeEditModal();
-        await fetchCases(); // Refresh the cases list
+        await fetchPendingCasesWithDetails(); // Refresh the cases list
     } catch (error) {
         console.error('Error in saveEditedCase:', error);
         editError.value = error.message || 'Error updating case';
