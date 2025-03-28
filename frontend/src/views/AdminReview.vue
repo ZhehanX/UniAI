@@ -287,21 +287,17 @@ const userRole = getUserRole();
 
 const { 
   cases, 
-  loading, 
-  errorMessage, 
+  loading,
   successMessage, 
   fetchPendingCasesWithDetails, 
   approveCase: approveCaseAction, 
-  rejectCase: rejectCaseAction,
-  updateCase 
+  rejectCase: rejectCaseAction
 } = useCases();
 
 const { 
   institutions,
   fetchInstitutionDetailsById, 
-  fetchInstitutions,
-  updateInstitution, 
-  createInstitution 
+  fetchInstitutions
 } = useInstitutions();
 
 const { 
@@ -587,7 +583,7 @@ const saveEditedCase = async () => {
         editLoading.value = false;
     }
 };
-
+  
 const closeEditModal = () => {
     showEditModal.value = false;
     editingCase.value = null;

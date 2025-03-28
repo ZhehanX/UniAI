@@ -11,6 +11,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default='user')
+    # WARNING: This will delete all the UseCase records associated with the User
     use_cases = relationship("UseCase", back_populates="submitter", cascade="all, delete")
 
 class Institution(Base):
@@ -47,11 +48,12 @@ class UseCase(Base):
     
     institution = relationship("Institution", back_populates="use_cases")
     submitter = relationship("User", back_populates="use_cases")
-    ai_technologies = relationship("UseCaseAITechnology", back_populates="use_case")
+    # By adding cascade="all, delete-orphan", the related UseCaseAITechnology records will be automatically delete
+    ai_technologies = relationship("UseCaseAITechnology", back_populates="use_case", cascade="all, delete-orphan")
 
 class UseCaseAITechnology(Base):
     __tablename__ = "use_case_ai_technology"
-    use_case_id = Column(Integer, ForeignKey("use_cases.id"), primary_key=True)
+    use_case_id = Column(Integer, ForeignKey("use_cases.id", ondelete="CASCADE"), primary_key=True)
     ai_technology_id = Column(Integer, ForeignKey("ai_technology.id"), primary_key=True)
     use_case = relationship("UseCase", back_populates="ai_technologies")
     ai_technology = relationship("AITechnology", back_populates="use_cases")

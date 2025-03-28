@@ -22,7 +22,7 @@ const props = defineProps({
   chartTitle: {
     type: String,
     default: 'Performance Metrics'
-  },
+  }, 
   chartType: {
     type: String,
     default: 'line',
