@@ -37,16 +37,16 @@
 
                         <div class="space-y-6">
                             <div>
-                                <label for="case-title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
-                                <input id="case-title" v-model="formData.title" type="text" required
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                                <input v-model="formData.title" type="text" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter case title">
                             </div>
 
-                            <!-- Institution field -->
+                            <!-- Intitution -->
                             <div class="relative">
-                                <label for="institution-search" class="block text-sm font-medium text-gray-700 mb-2">Institution *</label>
-                                <input id="institution-search" type="text" ref="institutionInput" v-model="institutionSearch"
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Institution *</label>
+                                <input type="text" ref="institutionInput" v-model="institutionSearch"
                                     @focus="handleInputFocus" @blur="handleInputBlur"
                                     @keydown.down.prevent="handleArrowDown" @keydown.up.prevent="handleArrowUp"
                                     @keydown.enter.prevent="handleEnter" @keydown.esc.prevent="handleEscape"
@@ -88,40 +88,130 @@
                             <!-- New Institution Form Fields -->
                             <div v-if="showNewInstitutionFields" class="mt-4 space-y-4 new-institution-section">
                                 <div>
-                                    <label for="institution-name" class="block text-sm font-medium text-gray-700 mb-2">Institution Name *</label>
-                                    <input id="institution-name" name="new-institution-name" v-model="formData.new_institution.name" type="text" required
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Institution Name
+                                        *</label>
+                                    <input v-model="formData.new_institution.name" type="text" required
                                         class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                                 </div>
 
+
                                 <!-- Country Dropdown -->
-                                <label for="country-dropdown" class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
-                                <LocationDropdown id="country-dropdown" v-model="countryDropdown.selectedValue"
-                                    v-model:show="countryDropdown.showDropdown.value"
-                                    :options="countryDropdown.filteredOptions"
-                                    :focused-index="countryDropdown.focusedIndex" @select="countryDropdown.selectOption"
-                                    @navigate="countryDropdown.keyboardNav" />
+                                <div class="relative dropdown-container">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                                    <div class="relative">
+                                        <button type="button" aria-haspopup="listbox"
+                                            :aria-expanded="showCountryDropdown"
+                                            :aria-activedescendant="focusedCountryIndex >= 0 ? `country-${focusedCountryIndex}` : null"
+                                            @click="toggleCountryDropdown" @keydown.down.prevent="handleCountryKeyDown"
+                                            @keydown.up.prevent="handleCountryKeyUp"
+                                            @keydown.enter.prevent="handleCountryEnter"
+                                            @keydown.space.prevent="handleCountryEnter"
+                                            @keydown.esc.prevent="closeCountryDropdown"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all flex justify-between items-center">
+                                            {{ selectedCountryName || 'Select Country' }}
+                                            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <transition name="fade">
+                                            <div v-if="showCountryDropdown"
+                                                class="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                                <div :id="`country-${index}`" v-for="(country, index) in countries"
+                                                    :key="country.isoCode" role="option"
+                                                    :aria-selected="focusedCountryIndex === index" :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0',
+                    { 'bg-gray-100': focusedCountryIndex === index }]" @click="selectCountry(country)"
+                                                    @keydown.enter.prevent="selectCountry(country)"
+                                                    @keydown.space.prevent="selectCountry(country)"
+                                                    @mouseenter="focusedCountryIndex = index" tabindex="-1">
+                                                    {{ country.name }}
+                                                </div>
+                                            </div>
+                                        </transition>
+                                    </div>
+                                </div>
+
 
                                 <!-- State Dropdown -->
-                                <label for="state-dropdown" class="block text-sm font-medium text-gray-700 mb-2">State *</label>
-                                <LocationDropdown id="state-dropdown" v-model="stateDropdown.selectedValue"
-                                    v-model:show="stateDropdown.showDropdown.value"
-                                    :options="stateDropdown.filteredOptions" :focused-index="stateDropdown.focusedIndex"
-                                    @select="stateDropdown.selectOption" @navigate="stateDropdown.keyboardNav"
-                                    :disabled="!countryDropdown.selectedValue" />
+                                <div class="relative dropdown-container" v-if="states.length">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">State/Province *</label>
+                                    <div class="relative">
+                                        <button type="button" aria-haspopup="listbox" :aria-expanded="showStateDropdown"
+                                            :aria-activedescendant="focusedStateIndex >= 0 ? `state-${focusedStateIndex}` : null"
+                                            @click="toggleStateDropdown" @keydown.down.prevent="handleStateKeyDown"
+                                            @keydown.up.prevent="handleStateKeyUp"
+                                            @keydown.enter.prevent="handleStateEnter"
+                                            @keydown.space.prevent="handleStateEnter"
+                                            @keydown.esc.prevent="closeStateDropdown"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all flex justify-between items-center">
+                                            {{ selectedStateName || 'Select State' }}
+                                            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <transition name="fade">
+                                            <div v-if="showStateDropdown"
+                                                class="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                                <div :id="`state-${index}`" v-for="(state, index) in states"
+                                                    :key="state.isoCode" role="option"
+                                                    :aria-selected="focusedStateIndex === index" :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0',
+                    { 'bg-gray-100': focusedStateIndex === index }]" @click="selectState(state)"
+                                                    @keydown.enter.prevent="selectState(state)"
+                                                    @keydown.space.prevent="selectState(state)" tabindex="-1">
+                                                    {{ state.name }}
+                                                </div>
+                                            </div>
+                                        </transition>
+                                    </div>
+                                </div>
+
 
                                 <!-- City Dropdown -->
-                                <label for="city-dropdown" class="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                                <LocationDropdown id="city-dropdown" v-model="cityDropdown.selectedValue"
-                                    v-model:show="cityDropdown.showDropdown.value"
-                                    :options="cityDropdown.filteredOptions" :focused-index="cityDropdown.focusedIndex"
-                                    @select="cityDropdown.selectOption" @navigate="cityDropdown.keyboardNav"
-                                    :disabled="!stateDropdown.selectedValue" />
+                                <div class="relative dropdown-container" v-if="cities.length">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                                    <div class="relative">
+                                        <button type="button" aria-haspopup="listbox" :aria-expanded="showCityDropdown"
+                                            :aria-activedescendant="focusedCityIndex >= 0 ? `city-${focusedCityIndex}` : null"
+                                            @click="toggleCityDropdown" @keydown.down.prevent="handleCityKeyDown"
+                                            @keydown.up.prevent="handleCityKeyUp"
+                                            @keydown.enter.prevent="handleCityEnter"
+                                            @keydown.space.prevent="handleCityEnter"
+                                            @keydown.esc.prevent="closeCityDropdown"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all flex justify-between items-center">
+                                            {{ formData.new_institution.city || 'Select City' }}
+                                            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <transition name="fade">
+                                            <div v-if="showCityDropdown"
+                                                class="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                                <div :id="`city-${index}`" v-for="(city, index) in cities"
+                                                    :key="city.name" role="option"
+                                                    :aria-selected="focusedCityIndex === index" 
+                                                    :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0',
+                                                    { 'bg-gray-100': focusedCityIndex === index }]" 
+                                                    @click="selectCity(city)"
+                                                    @keydown.enter.prevent="selectCity(city)"
+                                                    @keydown.space.prevent="selectCity(city)" tabindex="-1">
+                                                    {{ city.name }}
+                                                </div>
+                                            </div>
+                                        </transition>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <!-- AI Technology Used Section -->
                             <div class="relative">
-                                <label for="tech-search" class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used *</label>
-                                
+                                <label class="block text-sm font-medium text-gray-700 mb-2">AI Technology Used *</label>
+
                                 <!-- Selected Technologies -->
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     <div v-for="(tech, index) in formData.technologies" :key="index"
@@ -131,16 +221,16 @@
                                             class="ml-2 text-blue-600 hover:text-blue-800">&times;</button>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Search Input -->
-                                <input id="tech-search" type="text" ref="techInput" v-model="aiTechnologySearch"
+                                <input type="text" ref="techInput" v-model="aiTechnologySearch"
                                     @focus="handleTechInputFocus" @blur="handleTechInputBlur"
                                     @keydown.down.prevent="handleTechArrowDown" @keydown.up.prevent="handleTechArrowUp"
                                     @keydown.enter.prevent="handleTechEnter" @keydown.esc.prevent="handleTechEscape"
                                     aria-haspopup="listbox" :aria-expanded="showTechDropdown" aria-controls="tech-list"
                                     placeholder="Search AI technologies..."
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                                
+
                                 <!-- Dropdown -->
                                 <transition name="fade">
                                     <div v-if="showTechDropdown" id="tech-list" role="listbox"
@@ -162,19 +252,20 @@
                                         <div role="option" :class="['p-3 hover:bg-gray-50 cursor-pointer border-t border-gray-100',
                     { 'bg-gray-100': focusedTechIndex === filteredTechnologies.length }]"
                                             @mousedown.prevent="handleAddNewTechnology"
-                                            @keydown.enter.prevent="handleAddNewTechnology" :tabindex="-1"
-                                            :ref="el => setTechItemRef(el, filteredTechnologies.length)">
+                                            @keydown.enter.prevent="handleAddNewTechnology"
+                                            :tabindex="-1" :ref="el => setTechItemRef(el, filteredTechnologies.length)">
                                             <div class="font-medium text-blue-600">+ Add new technology</div>
                                         </div>
                                     </div>
                                 </transition>
-                                
+
                                 <!-- New Technology Input Field -->
                                 <div v-if="showNewTechField" class="mt-4 space-y-4 new-institution-section">
                                     <div class="space-y-4">
                                         <div>
-                                            <label for="new-tech-name" class="block text-sm font-medium text-gray-700 mb-2">Technology Name *</label>
-                                            <input id="new-tech-name" v-model="newTechName" type="text" required ref="newTechInput"
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Technology Name
+                                                *</label>
+                                            <input v-model="newTechName" type="text" required ref="newTechInput"
                                                 @keydown.enter.prevent="confirmNewTechnology"
                                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                                 placeholder="Enter technology name">
@@ -193,15 +284,10 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="contact-email" class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
-                                <input id="contact-email" v-model="formData.contact" type="email"
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email *</label>
+                                <input v-model="formData.contact" type="email"
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     placeholder="Enter contact email">
-                            </div>
-                            <div>
-                                <label for="project-date" class="block text-sm font-medium text-gray-700 mb-2">Project Initiation Date *</label>
-                                <input id="project-date" v-model="formData.projectInitiationDate" type="date" required
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                             </div>
                         </div>
                     </div>
@@ -211,22 +297,22 @@
                         <h2 class="text-xl font-semibold text-gray-900 border-b pb-2">Additional Information</h2>
 
                         <div>
-                            <label for="short-description" class="block text-sm font-medium text-gray-700 mb-2">Short Description *</label>
-                            <textarea id="short-description" v-model="formData.shortDescription" v-auto-resize required
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Short Description *</label>
+                            <textarea v-model="formData.shortDescription" v-auto-resize required
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="Brief summary (max 200 characters)"></textarea>
                         </div>
 
                         <div>
-                            <label for="full-description" class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
-                            <textarea id="full-description" v-model="formData.fullDescription.value" v-auto-resize
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
+                            <textarea v-model="formData.fullDescription" v-auto-resize
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="Detailed description of the case study"></textarea>
                         </div>
 
                         <div>
-                            <label for="case-url" class="block text-sm font-medium text-gray-700 mb-2">Case Study URL</label>
-                            <input id="case-url" v-model="formData.url" type="url"
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Case Study URL</label>
+                            <input v-model="formData.url" type="url"
                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                 placeholder="https://example.com/case-study">
                         </div>
@@ -244,7 +330,7 @@
                     <div class="pt-6">
                         <button type="submit"
                             class="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold disabled:bg-gray-400"
-                            :disabled="loading" @click="handleSubmit">
+                            :disabled="loading">
                             <span v-if="!loading">Submit Case</span>
                             <span v-else>Sending...</span>
                         </button>
@@ -259,10 +345,19 @@
 <script setup>
 import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import { Country, State, City } from 'country-state-city';
-import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
-import useCaseForm from '@/composables/useCaseForm.js'
-import LocationDropdown from '@/components/LocationDropdown.vue';
 
+// Add these new reactive states
+const countries = ref([]);
+const states = ref([]);
+const cities = ref([]);
+const selectedCountry = ref('');
+const selectedState = ref('');
+const showCountryDropdown = ref(false);
+const showStateDropdown = ref(false);
+const showCityDropdown = ref(false);
+const focusedCountryIndex = ref(-1);
+const focusedStateIndex = ref(-1);
+const focusedCityIndex = ref(-1);
 const aiTechnologySearch = ref('');
 const showTechDropdown = ref(false);
 const focusedTechIndex = ref(-1);
@@ -281,114 +376,8 @@ const loadingInstitutions = ref(false);
 const institutionInput = ref(null)
 const focusedItemIndex = ref(-1);
 const itemRefs = ref([]);
-const currentCountrycode = ref('');
-const currentStatecode = ref('');
-const currentCitycode = ref('');
 
-
-// form date structure
-const formData = ref({
-    title: '',
-    institution_id: null,
-    new_institution: {
-        name: '',
-        country: '',
-        state: '',
-        city: ''
-    },
-    technologies: [],
-    contact: '',
-    projectInitiationDate: '',
-    shortDescription: '',
-    fullDescription: {
-        value: ''
-    },
-    url: ''
-});
-
-const {
-    loading,
-    successMessage,
-    errorMessage,
-    submitForm
-} = useCaseForm()
-
-// Add submit handler
-const handleSubmit = async () => {
-    const success = await submitForm(formData.value)
-    if (success) {
-        // Reset form
-        formData.value = {
-            title: '',
-            institution_id: null,
-            new_institution: {
-                name: '',
-                country: '',
-                state: '',
-                city: ''
-            },
-            technologies: [],
-            contact: '',
-            projectInitiationDate: '',
-            shortDescription: '',
-            fullDescription: {
-                value: ''
-            },
-            url: ''
-        }
-
-    }
-}
-
-
-// country, state, city dropdowns
-const countryDropdown = useLocationDropdown({
-    getOptions: () => Country.getAllCountries(),
-    initialValue: formData.value.new_institution.country
-});
-
-
-const stateDropdown = useLocationDropdown({
-    parentValue: countryDropdown.selectedValue,
-    getOptions: (countryCode) =>
-        countryCode ? State.getStatesOfCountry(countryCode) : [],
-    initialValue: formData.value.new_institution.state
-});
-
-const cityDropdown = useLocationDropdown({
-    parentValue: stateDropdown.selectedValue,
-    getOptions: (stateCode) =>
-        stateCode ? City.getCitiesOfState(currentCountrycode.value, stateCode) : [],
-    initialValue: formData.value.new_institution.city
-});
-
-watch(countryDropdown.selectedValue, (newValue) => {
-    const country = Country.getCountryByCode(newValue);
-    formData.value.new_institution.country = country?.name || '';
-    currentCountrycode.value = newValue;
-    stateDropdown.selectedValue = '';
-    cityDropdown.selectedValue = '';
-
-});
-
-watch(stateDropdown.selectedValue, (newValue) => {
-    const state = State.getStateByCodeAndCountry(newValue, currentCountrycode.value);
-    formData.value.new_institution.state = state?.name || '';
-    currentStatecode.value = newValue;
-    cityDropdown.selectedValue = '';
-});
-
-watch(cityDropdown.selectedValue, (newValue) => {
-    currentCitycode.value = newValue;
-    formData.value.new_institution.city = newValue;
-});
-
-
-
-
-
-
-// Fetch technologies
+// Fetch technologies similar to institutions
 onMounted(async () => {
     try {
         loadingTechnologies.value = true;
@@ -435,6 +424,7 @@ const handleAddNewTechnology = () => {
 const confirmNewTechnology = () => {
     if (newTechName.value.trim()) {
         const newTech = {
+            id: Date.now(), // Temporary ID for local use
             name: newTechName.value.trim()
         };
 
@@ -459,7 +449,7 @@ const removeTechnology = (index) => {
     formData.value.technologies.splice(index, 1);
 };
 
-// Keyboard navigation handlers for tech dropdown
+// Keyboard navigation handlers
 const handleTechArrowDown = () => {
     if (!showTechDropdown.value) return;
     focusedTechIndex.value = Math.min(
@@ -514,25 +504,194 @@ const handleTechInputBlur = () => {
     }, 0);
 };
 
+const selectedCountryName = computed(() => {
+    const country = countries.value.find(c => c.isoCode === selectedCountry.value);
+    return country ? country.name : '';
+});
+
+const selectedStateName = computed(() => {
+    const state = states.value.find(s => s.isoCode === selectedState.value);
+    return state ? state.name : '';
+});
 
 
 
-// Fetch institutions
-onMounted(async () => {
-    try {
-        loadingInstitutions.value = true;
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+const selectCountry = (country) => {
+    selectedCountry.value = country.isoCode;
+    showCountryDropdown.value = false;
+    focusedCountryIndex.value = -1; // Reset focus
+    loadStates();
+};
+
+
+const selectState = (state) => {
+    selectedState.value = state.isoCode;
+    showStateDropdown.value = false;
+    loadCities();
+};
+
+
+const selectCity = (city) => {
+    formData.value.new_institution.city = city;
+    showCityDropdown.value = false;
+};
+
+
+
+const scrollToCountryOption = () => {
+    nextTick(() => {
+        const option = document.getElementById(`country-${focusedCountryIndex.value}`);
+        if (option) option.scrollIntoView({ block: 'nearest' });
+    });
+};
+
+const scrollToStateOption = () => {
+    nextTick(() => {
+        const option = document.getElementById(`state-${focusedStateIndex.value}`);
+        if (option) option.scrollIntoView({ block: 'nearest' });
+    });
+};
+
+const scrollToCityOption = () => {
+    nextTick(() => {
+        const option = document.getElementById(`city-${focusedCityIndex.value}`);
+        if (option) option.scrollIntoView({ block: 'nearest' });
+    });
+};
+
+
+
+// Country handlers
+const handleCountryEnter = () => {
+    if (showCountryDropdown.value) {
+        if (focusedCountryIndex.value >= 0) {
+            selectCountry(countries.value[focusedCountryIndex.value]);
         }
-        institutions.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching institutions:', error);
-        errorMessage.value = 'Could not load institution list';
-    } finally {
-        loadingInstitutions.value = false;
+    } else {
+        toggleCountryDropdown();
+    }
+};
+
+const handleCountryKeyDown = (e) => {
+    if (!showCountryDropdown.value) return;
+    focusedCountryIndex.value = Math.min(
+        focusedCountryIndex.value + 1,
+        countries.value.length - 1
+    );
+    scrollToCountryOption();
+};
+
+const handleCountryKeyUp = (e) => {
+    if (!showCountryDropdown.value) return;
+    focusedCountryIndex.value = Math.max(focusedCountryIndex.value - 1, 0);
+    scrollToCountryOption();
+};
+
+const toggleCountryDropdown = () => {
+    showCountryDropdown.value = !showCountryDropdown.value;
+    if (showCountryDropdown.value) {
+        const selectedIndex = countries.value.findIndex(c => c.isoCode === selectedCountry.value);
+        focusedCountryIndex.value = selectedIndex >= 0 ? selectedIndex : 0;
+    } else {
+        focusedCountryIndex.value = -1;
+    }
+};
+
+// State handlers
+const handleStateEnter = () => {
+    if (showStateDropdown.value) {
+        if (focusedStateIndex.value >= 0) {
+            selectState(states.value[focusedStateIndex.value]);
+        }
+    } else {
+        toggleStateDropdown();
+    }
+};
+
+const handleStateKeyDown = (e) => {
+    if (!showStateDropdown.value) return;
+    focusedStateIndex.value = Math.min(
+        focusedStateIndex.value + 1,
+        states.value.length - 1
+    );
+    scrollToStateOption();
+};
+
+const handleStateKeyUp = (e) => {
+    if (!showStateDropdown.value) return;
+    focusedStateIndex.value = Math.max(focusedStateIndex.value - 1, 0);
+    scrollToStateOption();
+};
+
+const toggleStateDropdown = () => {
+    showStateDropdown.value = !showStateDropdown.value;
+    if (showStateDropdown.value) {
+        const selectedIndex = states.value.findIndex(s => s.isoCode === selectedState.value);
+        focusedStateIndex.value = selectedIndex >= 0 ? selectedIndex : 0;
+    } else {
+        focusedStateIndex.value = -1;
+    }
+};
+
+// City handlers
+const handleCityEnter = () => {
+    if (showCityDropdown.value) {
+        if (focusedCityIndex.value >= 0) {
+            selectCity(cities.value[focusedCityIndex.value]);
+        }
+    } else {
+        toggleCityDropdown();
+    }
+};
+
+const handleCityKeyDown = (e) => {
+    if (!showCityDropdown.value) return;
+    focusedCityIndex.value = Math.min(
+        focusedCityIndex.value + 1,
+        cities.value.length - 1
+    );
+    scrollToCityOption();
+};
+
+const handleCityKeyUp = (e) => {
+    if (!showCityDropdown.value) return;
+    focusedCityIndex.value = Math.max(focusedCityIndex.value - 1, 0);
+    scrollToCityOption();
+};
+
+const toggleCityDropdown = () => {
+    showCityDropdown.value = !showCityDropdown.value;
+    if (showCityDropdown.value) {
+        const selectedIndex = cities.value.findIndex(c => c.name === formData.value.new_institution.city);
+        focusedCityIndex.value = selectedIndex >= 0 ? selectedIndex : 0;
+    } else {
+        focusedCityIndex.value = -1;
+    }
+};
+
+
+const closeAllDropdowns = () => {
+    showCountryDropdown.value = false;
+    showStateDropdown.value = false;
+    showCityDropdown.value = false;
+};
+
+// Add to mounted()
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+        closeAllDropdowns();
     }
 });
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown-container')) {
+        closeAllDropdowns();
+    }
+});
+
+
+
+
 
 const handleAddNewInstitution = () => {
     addNewInstitution();
@@ -542,7 +701,7 @@ const handleAddNewInstitution = () => {
     });
 };
 
-// Keyboard handlers for institution dropdown
+// Keyboard navigation handlers
 const handleArrowDown = () => {
     if (!showDropdown.value) return;
     focusedItemIndex.value = Math.min(
@@ -582,6 +741,62 @@ const scrollToFocusedItem = async () => {
 const setItemRef = (el, index) => {
     itemRefs.value[index] = el;
 };
+
+
+// Load countries on mount
+onMounted(() => {
+    countries.value = Country.getAllCountries();
+});
+
+const loadStates = () => {
+    formData.value.new_institution.country = selectedCountry.value;
+    states.value = State.getStatesOfCountry(selectedCountry.value);
+    cities.value = [];
+    selectedState.value = '';
+    formData.value.new_institution.city = '';
+};
+
+const loadCities = () => {
+    formData.value.new_institution.state = selectedState.value;
+    cities.value = City.getCitiesOfState(selectedCountry.value, selectedState.value);
+    formData.value.new_institution.city = '';
+};
+
+
+
+// Auto-resize text-area
+const vAutoResize = {
+    mounted(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+        el.style.overflowY = 'hidden';
+        el.addEventListener('input', () => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        });
+    },
+    updated(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+    }
+};
+
+// Fetch institutions on component mount
+onMounted(async () => {
+    try {
+        loadingInstitutions.value = true;
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        institutions.value = await response.json();
+    } catch (error) {
+        console.error('Error fetching institutions:', error);
+        errorMessage.value = 'Could not load institution list';
+    } finally {
+        loadingInstitutions.value = false;
+    }
+});
 
 
 
@@ -664,59 +879,3 @@ const handleInputBlur = () => {
         }
     }, 0);
 };
-
-
-
-// Auto-resize text-area
-const vAutoResize = {
-    mounted(el) {
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
-        el.style.overflowY = 'hidden';
-        el.addEventListener('input', () => {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
-        });
-    },
-    updated(el) {
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
-    }
-};
-
-
-
-
-
-</script>
-<style>
-.new-institution-section {
-    border-left: 2px solid #2563eb;
-    padding-left: 1rem;
-    transition: all 0.2s ease;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.2s;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.auto-resize-textarea {
-    resize: none;
-    min-height: 100px;
-    max-height: 400px;
-    transition: height 0.2s ease-out;
-}
-
-@media (min-width: 640px) {
-    .auto-resize-textarea {
-        min-height: 120px;
-        max-height: 600px;
-    }
-}
-</style>

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { getUserRole } from '@/utils/auth.js';
 import HomeView from '@/views/HomeView.vue';
 import AppDetail from '@/views/AppDetails.vue';
 import SubmitCase from '@/views/SubmitCase.vue';
@@ -29,6 +30,27 @@ const routes = [
     path: '/signup',
     name: 'SignUp',
     component: () => import('../views/SignUp.vue')
+  },
+  {
+    path:'/graphs',
+    name: 'Graphs',
+    component: () => import('../views/Graphs.vue')
+  },
+  {
+    path: '/admin/review',
+    name: 'AdminReview',
+    component: () => import('@/views/AdminReview.vue'),
+    meta: { requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      const userRole = getUserRole();
+      console.log('User role:', userRole);
+      if (userRole === 'admin') {
+        next();
+      } else {
+        alert('Admin access required');
+        next('/');
+      }
+    }
   }
 ];
 

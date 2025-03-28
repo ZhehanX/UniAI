@@ -61,14 +61,13 @@ def create_use_case(db: Session, use_case: UseCaseCreate, user_id: int):
         db.rollback()
         raise e
 
-def get_use_cases(db: Session, skip: int = 0, limit: int = 100):
-    return (
-        db.query(UseCaseModel)
-        .options(joinedload(UseCaseModel.ai_technologies))
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+def get_use_cases(db: Session, status: str = None, skip: int = 0, limit: int = 100):
+    query = db.query(UseCaseModel).options(joinedload(UseCaseModel.ai_technologies))
+    
+    if status:
+        query = query.filter(UseCaseModel.status == status)
+    
+    return query.offset(skip).limit(limit).all()
 
 def get_use_case(db: Session, use_case_id: int):
     return (

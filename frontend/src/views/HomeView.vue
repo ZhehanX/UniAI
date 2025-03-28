@@ -13,6 +13,10 @@
                         class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Logout
                     </button>
+                    <button v-if="isAdmin" @click="router.push('/admin/review')"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        Admin Review
+                    </button>
                     <button @click="handleSubmitCase"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Submit a Case
@@ -24,7 +28,7 @@
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
             <div class="space-y-6">
-                <AppCard v-for="useCase in useCases" :key="useCase.id" :app="useCase"
+                <AppCard v-for="useCase in allUseCases" :key="useCase.id" :app="useCase"
                     @click="navigateToDetail(useCase.id)" />
             </div>
         </main>
@@ -32,16 +36,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router'; 
 import axios from 'axios';
 import AppCard from '@/components/AppCard.vue';
+import { getUserRole } from '@/utils/auth.js';
+import { useCases } from '@/composables/useCases.js';
 
 const router = useRouter();
 const route = useRoute();
+const { cases, fetchAllUseCases } = useCases();
 
-// Proper computed property
+// Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
+// Check if user is an admin
+const isAdmin = computed(() => getUserRole() === 'admin');
 
 // Add auth check function
 const checkAuthState = () => {
@@ -57,7 +66,7 @@ const handleLogout = () => {
     router.push({ path: '/login', replace: true })
     checkAuthState()
 }
-const useCases = ref([]);
+const allUseCases = cases;
 const loading = ref(true);
 const error = ref(null);
 
@@ -72,10 +81,10 @@ const handleSubmitCase = () => {
 
 // Fetch data from backend
 /*
-const fetchUseCases = async () => {
+const fetchAllUseCases = async () => {
     try {
         const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/usecases/` // Use environment variable
+            `${import.meta.env.VITE_API_URL}/api/use-cases/` // Use environment variable
         );
         useCases.value = response.data;
     } catch (err) {
@@ -91,15 +100,28 @@ const navigateToDetail = (caseId) => {
     router.push({ name: 'AppDetail', params: { id: caseId } });
 };
 
-// Fetch data when component mounts
-import { watch } from 'vue'
 
-
-
+// Load the use cases data
+/*
+const loadUseCases = async () => {
+    try {
+        loading.value = true;
+        const data = await fetchAllUseCases();
+        allUseCases.value = data;
+        console.log("allUseCases loaded:", allUseCases.value);
+    } catch (err) {
+        error.value = 'Failed to load use cases';
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
+};
+*/
+console.log("allUseCases: ", allUseCases.value);
 
 // Update mount hook
 onMounted(() => {
-    checkAuthState()
-    //fetchUseCases()
+    checkAuthState();
+    fetchAllUseCases();
 })
 </script>
