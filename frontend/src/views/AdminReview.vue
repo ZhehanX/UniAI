@@ -297,7 +297,7 @@ const {
 const { 
   institutions,
   fetchInstitutionDetailsById, 
-  fetchInstitutions
+  fetchAllInstitutions
 } = useInstitutions();
 
 const { 
@@ -446,7 +446,7 @@ const openEditModal = (caseItem) => {
 
     // Fetch institutions and AI technologies if not already loaded
     if (institutions.value.length === 0) {
-        fetchInstitutions();
+        fetchAllInstitutions();
     }
 
     if (allAiTechnologies.value.length === 0) {

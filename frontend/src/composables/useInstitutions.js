@@ -5,7 +5,7 @@ export function useInstitutions() {
     const loading = ref(false);
     const error = ref('');
 
-    const fetchInstitutions = async () => {
+    const fetchAllInstitutions = async () => {
         try {
             loading.value = true;
             const token = localStorage.getItem('authToken');
@@ -98,7 +98,7 @@ export function useInstitutions() {
         institutions,
         loading,
         error,
-        fetchInstitutions,
+        fetchAllInstitutions,
         fetchInstitutionDetailsById,
         updateInstitution,
         createInstitution
