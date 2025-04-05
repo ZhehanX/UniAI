@@ -17,6 +17,14 @@
                         class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Admin Review
                     </button>
+                    <button @click="$router.push('/graphs')"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
+                        <span>View Analytics</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                        </svg>
+                    </button>
                     <button @click="handleSubmitCase"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Submit a Case
@@ -37,7 +45,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router'; 
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import AppCard from '@/components/AppCard.vue';
 import { getUserRole } from '@/utils/auth.js';

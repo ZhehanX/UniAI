@@ -1,71 +1,222 @@
 <template>
-  <div class="p-4 border rounded-lg shadow">
-    <highcharts 
-      :options="chartOptions" 
-      class="min-h-[400px]"
-      v-if="hasData"
-    />
-    <div v-else class="text-gray-500 p-4">
-      No chart data available
+  <div class="chart-container h-full w-full">
+    <div v-if="!hasData" class="flex items-center justify-center h-full text-gray-500">
+      No data available
     </div>
+    <div v-else id="chart-container" class="h-full w-full"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, defineProps } from 'vue';
+import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
+import Highcharts from 'highcharts';
+// Fix the accessibility import
+import AccessibilityModule from 'highcharts/modules/accessibility';
+
+// Initialize Highcharts accessibility module correctly
+if (typeof AccessibilityModule === 'function') {
+  AccessibilityModule(Highcharts);
+}
 
 const props = defineProps({
-  chartData: {
-    type: Object,
+  data: {
+    type: [Array, Object], // Allow both array (for pie) and object (for line)
     required: true
   },
-  chartTitle: {
+  title: {
     type: String,
-    default: 'Performance Metrics'
-  }, 
+    default: 'AI Technologies Distribution'
+  },
   chartType: {
     type: String,
-    default: 'line',
-    validator: (value) => ['line', 'bar', 'pie', 'spline'].includes(value)
+    default: 'pie',
+    validator: (value) => ['pie', 'line', 'bar'].includes(value)
   }
 });
 
-const hasData = computed(() => 
-  props.chartData?.series?.length > 0 && 
-  props.chartData?.categories?.length > 0
-);
+const chart = ref(null);
+const hasData = computed(() => {
+  if (props.chartType === 'pie') {
+    return props.data && props.data.length > 0;
+  } else if (props.chartType === 'line') {
+    return props.data && props.data.categories && props.data.series && props.data.series.length > 0;
+  }
+  return false;
+});
 
-const chartOptions = computed(() => ({
-  chart: {
-    type: props.chartType
-  },
-  plotOptions: {
-    bar: {
-      // Optional: Customize bar appearance
-      borderRadius: 4,
-      dataLabels: {
-        enabled: true
+const createChart = () => {
+  if (!hasData.value) return;
+
+  try {
+    // Make sure the container exists before creating the chart
+    const container = document.getElementById('chart-container');
+    if (!container) {
+      console.warn('Chart container not found');
+      return;
+    }
+
+    let chartOptions = {};
+
+    if (props.chartType === 'pie') {
+      // Prepare data for pie chart
+      const chartData = props.data.map(item => ({
+        name: item.name,
+        y: item.value
+      }));
+
+      chartOptions = {
+        chart: {
+          type: 'pie',
+          backgroundColor: 'transparent',
+          style: {
+            fontFamily: 'Inter, sans-serif'
+          }
+        },
+        title: {
+          text: props.title,
+          style: {
+            fontSize: '16px',
+            fontWeight: 'bold'
+          }
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
+        },
+        accessibility: {
+          enabled: true,
+          description: 'Chart showing distribution of AI technologies across use cases',
+          keyboardNavigation: {
+            enabled: true
+          }
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)'
+            },
+            showInLegend: true
+          }
+        },
+        series: [{
+          name: 'Use Cases',
+          colorByPoint: true,
+          data: chartData
+        }]
+      };
+    } else if (props.chartType === 'line') {
+      // Line chart configuration
+      chartOptions = {
+        chart: {
+          type: 'line',
+          backgroundColor: 'transparent',
+          style: {
+            fontFamily: 'Inter, sans-serif'
+          }
+        },
+        title: {
+          text: props.title,
+          style: {
+            fontSize: '16px',
+            fontWeight: 'bold'
+          }
+        },
+        xAxis: {
+          categories: props.data.categories,
+          title: {
+            text: 'Year'
+          }
+        },
+        yAxis: {
+          title: {
+            text: 'Quantity'
+          }
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b>'
+        },
+        accessibility: {
+          enabled: true,
+          description: 'Chart showing AI use cases over time',
+          keyboardNavigation: {
+            enabled: true
+          }
+        },
+        series: props.data.series
+      };
+    }
+
+    // Add common options
+    chartOptions.credits = { enabled: false };
+
+    // Create the chart
+    chart.value = Highcharts.chart('chart-container', chartOptions);
+  } catch (error) {
+    console.error('Error creating chart:', error);
+    chart.value = null;
+  }
+};
+
+// Watch for changes in data and chart type
+watch([() => props.data, () => props.chartType], () => {
+  try {
+    if (chart.value) {
+      // Check if chart is valid before destroying
+      if (chart.value.destroy && typeof chart.value.destroy === 'function') {
+        chart.value.destroy();
       }
+      chart.value = null;
     }
-  },
-  title: {
-    text: props.chartTitle
-  },
-  xAxis: {
-    categories: props.chartData.categories || [],
-    title: {
-      text: props.chartData.xAxisTitle || 'Categories'
+  } catch (error) {
+    console.error('Error destroying chart:', error);
+    chart.value = null;
+  }
+
+  // Need to wait for the DOM to update
+  setTimeout(() => {
+    createChart();
+  }, 0);
+}, { deep: true });
+
+// Initialize chart when component is mounted
+onMounted(() => {
+  // Need to wait for the DOM to be ready
+  setTimeout(() => {
+    createChart();
+  }, 0);
+
+  // Add resize event listener
+  window.addEventListener('resize', handleResize);
+});
+
+// Handle window resize
+const handleResize = () => {
+  if (chart.value) {
+    chart.value.reflow();
+  }
+};
+
+// Clean up when component is unmounted
+onUnmounted(() => {
+  try {
+    if (chart.value) {
+      if (chart.value.destroy && typeof chart.value.destroy === 'function') {
+        chart.value.destroy();
+      }
+      chart.value = null;
     }
-  },
-  yAxis: {
-    title: {
-      text: props.chartData.yAxisTitle || 'Values'
-    }
-  },
-  series: props.chartData.series.map(s => ({
-    name: s.name,
-    data: s.data,
-    color: s.color || '#3B82F6' // default blue color
-  }))
-}));
+  } catch (error) {
+    console.error('Error destroying chart on unmount:', error);
+    chart.value = null;
+  }
+  window.removeEventListener('resize', handleResize);
+});
 </script>
+
+<style scoped>
+.chart-container {
+  min-height: 300px;
+}
+</style>
