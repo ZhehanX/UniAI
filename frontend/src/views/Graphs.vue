@@ -71,34 +71,7 @@
 
             <!-- Stats Section -->
             <div v-else-if="activeTab === 'stats'" class="flex flex-col gap-4">
-                <!-- Chart Type Navigation -->
-                <!--    <div class="flex justify-center mb-2">
-          <div class="inline-flex space-x-4 text-sm font-medium">
-            <span 
-              @click="currentChartType = 'pie'" 
-              :class="[
-                'px-2 py-1 cursor-pointer border-b-2 transition-colors',
-                currentChartType === 'pie' 
-                  ? 'border-blue-500 text-blue-800' 
-                  : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
-              ]"
-            >
-              Technology Distribution
-            </span>
-            <span 
-              @click="currentChartType = 'line'" 
-              :class="[
-                'px-2 py-1 cursor-pointer border-b-2 transition-colors',
-                currentChartType === 'line' 
-                  ? 'border-blue-500 text-blue-800' 
-                  : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
-              ]"
-            >
-              Yearly Trends
-            </span>
-          </div>
-        </div>
-    -->
+                
                 <!-- Chart Navigation -->
                 <div class="flex justify-center items-center mb-2">
                     <button @click="prevChart" class="px-3 py-1 text-gray-600 hover:text-gray-800">
@@ -120,7 +93,7 @@
                             title="AI Technologies Distribution" chartType="pie" />
                         <!-- Line Chart -->
                         <ChartComponent v-else-if="currentChartType === 'line'" :data="yearlyTrendData"
-                            title="AI Use Cases Over Time" chartType="line" />
+                            title="AI Technologies Adoption Over Time" chartType="line" />
                     </div>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
                         <!-- Filters for Stats -->
@@ -392,39 +365,68 @@ const filteredCities = computed(() => {
 const yearlyTrendData = computed(() => {
     // Get base cases
     let filteredResult = cases.value || [];
-
-    // Apply AI technology filters for yearly trends
-    if (selectedTechnologies.value.length > 0) {
-        filteredResult = filteredResult.filter(c => {
-            return c.ai_technologies && c.ai_technologies.some(tech =>
-                selectedTechnologies.value.includes(tech)
-            );
-        });
-    }
-
-    // Group cases by year of project initiation
-    const yearCounts = {};
-
+    
+    // Create a map to store data by year and technology
+    const techsByYear = {};
+    const techsToInclude = selectedTechnologies.value.length > 0 
+        ? selectedTechnologies.value 
+        : aiTechnologies.value.map(tech => tech.id);
+    
+    // Initialize the years set to track all years
+    const yearsSet = new Set();
+    
+    // Process each case
     filteredResult.forEach(c => {
         if (c.project_initiation_date) {
-            const year = new Date(c.project_initiation_date).getFullYear();
-            yearCounts[year] = (yearCounts[year] || 0) + 1;
+            try {
+                // Extract year from the date string (assuming format like "dd-mm-yyyy")
+                const dateParts = c.project_initiation_date.split('-');
+                const year = parseInt(dateParts[2], 10);
+                
+                if (!isNaN(year)) {
+                    yearsSet.add(year);
+                    
+                    // For each technology in this case
+                    if (c.ai_technologies && c.ai_technologies.length > 0) {
+                        c.ai_technologies.forEach(techId => {
+                            // Only include technologies that are in our filter (or all if no filter)
+                            if (techsToInclude.includes(techId)) {
+                                if (!techsByYear[techId]) {
+                                    techsByYear[techId] = {};
+                                }
+                                techsByYear[techId][year] = (techsByYear[techId][year] || 0) + 1;
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Error parsing date:", c.project_initiation_date, e);
+            }
         }
     });
-
-    // Sort years and prepare data for line chart
-    const years = Object.keys(yearCounts).sort();
-
-    // Prepare data in the format expected by the chart component
-    const categories = years;
-    const series = [{
-        name: 'Use Cases',
-        data: years.map(year => yearCounts[year])
-    }];
-
+    
+    // Sort years for consistent x-axis
+    const years = Array.from(yearsSet).sort();
+    
+    // Prepare series data for each technology
+    const series = [];
+    
+    Object.entries(techsByYear).forEach(([techId, yearData]) => {
+        const tech = aiTechnologies.value.find(t => t.id === parseInt(techId));
+        if (tech) {
+            // Create a data point for each year (0 if no data)
+            const data = years.map(year => yearData[year] || 0);
+            
+            series.push({
+                name: tech.name,
+                data: data
+            });
+        }
+    });
+    
     return {
-        categories,
-        series
+        categories: years,
+        series: series
     };
 });
 
