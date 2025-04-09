@@ -10,7 +10,6 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import Highcharts from 'highcharts';
-// Fix the accessibility import
 import AccessibilityModule from 'highcharts/modules/accessibility';
 
 // Initialize Highcharts accessibility module correctly
@@ -26,6 +25,14 @@ const props = defineProps({
   title: {
     type: String,
     default: 'AI Technologies Distribution'
+  },
+  xAxisTitle: {
+    type: String,
+    default: 'Year'
+  },
+  yAxisTitle: {
+    type: String,
+    default: 'Quantity'
   },
   chartType: {
     type: String,
@@ -126,12 +133,12 @@ const createChart = () => {
         xAxis: {
           categories: props.data.categories,
           title: {
-            text: 'Year'
+            text: props.xAxisTitle
           }
         },
         yAxis: {
           title: {
-            text: 'Quantity'
+            text: props.yAxisTitle
           }
         },
         tooltip: {

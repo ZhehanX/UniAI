@@ -84,7 +84,7 @@ const addMarkers = async () => {
     }
   }
   
-  //console.log('Grouped institutions:', institutionMap);
+
   
   // Create markers for each institution
   institutionMap.forEach(data => {
