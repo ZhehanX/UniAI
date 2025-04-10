@@ -1,11 +1,21 @@
 import { ref, computed } from 'vue'
 import { isAuthenticated } from '@/utils/auth.js';
 
+/**
+ * Composable for handling AI use case form submission and validation
+ * Manages form state, validation, and API interactions for creating new use cases
+ */
 export default function useCaseForm() {
-    const loading = ref(false)
-    const successMessage = ref('')
-    const errorMessage = ref('')
+    // State variables for form handling
+    const loading = ref(false)           // Tracks loading state during form submission
+    const successMessage = ref('')       // Stores success messages
+    const errorMessage = ref('')         // Stores error messages
     
+    /**
+     * Validates the form data before submission
+     * @param {Object} formData - The form data to validate
+     * @returns {Array} Array of validation error messages
+     */
     const validateForm = (formData) => {
         const errors = []
         
@@ -30,10 +40,14 @@ export default function useCaseForm() {
         return errors
     }
 
+    /**
+     * Submits the form data to create a new use case
+     * Handles creation of new institutions and AI technologies if needed
+     * @param {Object} formData - The complete form data to submit
+     * @returns {boolean} True if submission was successful
+     */
     const submitForm = async (formData) => {
         const validationErrors = validateForm(formData)
-        console.log('formData:', formData)
-        console.log('formData new institution:',formData.new_institution)
         if (validationErrors.length > 0) {
             errorMessage.value = validationErrors.join(', ')
             return false
@@ -50,7 +64,6 @@ export default function useCaseForm() {
             errorMessage.value = 'You must be logged in to submit a case.'
             return false
         }
-        console.log('token:', token)
 
         
 
@@ -84,6 +97,7 @@ export default function useCaseForm() {
             for (const tech of formData.technologies) {
                 let techData = null
                 if (!tech.id) {
+                    // Create new AI technology if it doesn't exist in the database
                     const techResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +127,6 @@ export default function useCaseForm() {
                 status: 'pending'
             }
             
-            console.log('useCasePayload:', useCasePayload)
 
             const useCaseResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/`, {
                 method: 'POST',
@@ -142,7 +155,7 @@ export default function useCaseForm() {
     }
             
 
-
+    // Return state variables and methods for use in components
     return {
         loading,
         successMessage,

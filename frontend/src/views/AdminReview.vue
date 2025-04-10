@@ -59,7 +59,7 @@
 
                         <!-- Main Content Grid -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
-                            <!-- Left Column -->
+                            <!-- Left Column: contact, url, project initiation date and AI Technologies-->
                             <div class="space-y-4">
                                 <div>
                                     <label class="text-gray-500 font-medium block mb-1">Contact</label>
@@ -102,7 +102,7 @@
                                 </div>
                             </div>
 
-                            <!-- Right Column -->
+                            <!-- Right Column: short description + full description -->
                             <div class="space-y-4">
                                 <div>
                                     <label class="text-gray-500 font-medium block mb-1">Short Description</label>

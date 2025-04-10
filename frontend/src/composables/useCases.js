@@ -1,13 +1,22 @@
 import { ref } from 'vue';
 import axios from 'axios';
 
+/**
+ * Composable for managing use cases data and API interactions
+ * Provides functions to fetch, update, approve, and reject use cases
+ */
 export function useCases() {
-    const cases = ref([]);
-    const currentCase = ref({});
-    const loading = ref(false);
-    const errorMessage = ref('');
-    const successMessage = ref('');
+    // State variables
+    const cases = ref([]);              // Stores the list of all use cases
+    const currentCase = ref({});        // Stores the currently selected use case
+    const loading = ref(false);         // Tracks loading state during API calls
+    const errorMessage = ref('');       // Stores error messages
+    const successMessage = ref('');     // Stores success messages
 
+    /**
+     * Fetches all use cases from the API
+     * @returns {Array} Array of use case objects
+     */
     const fetchAllUseCases = async () => {
         try {
             const response = await axios.get(
@@ -23,6 +32,11 @@ export function useCases() {
         }
     };
 
+    /**
+     * Fetches a specific use case by ID
+     * @param {number|string} id - The ID of the use case to fetch
+     * @returns {Object|null} Use case object or null if not found
+     */
     const fetchUseCasesById = async (id) => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/use-cases/${id}`);
@@ -37,6 +51,10 @@ export function useCases() {
         }
     };
 
+    /**
+     * Fetches all pending use cases that need review
+     * @returns {Array} Array of pending use case objects
+     */
     const fetchPendingCasesWithDetails = async () => {
         try {
             loading.value = true;
@@ -57,6 +75,11 @@ export function useCases() {
         }
     };
 
+    /**
+     * Approves a pending use case
+     * @param {number|string} caseId - The ID of the use case to approve
+     * @returns {boolean} True if approval was successful
+     */
     const approveCase = async (caseId) => {
         try {
             const token = localStorage.getItem('authToken');
@@ -77,6 +100,11 @@ export function useCases() {
         }
     };
 
+    /**
+     * Rejects a pending use case
+     * @param {number|string} caseId - The ID of the use case to reject
+     * @returns {boolean} True if rejection was successful
+     */
     const rejectCase = async (caseId) => {
         try {
             const token = localStorage.getItem('authToken');
@@ -97,6 +125,12 @@ export function useCases() {
         }
     };
 
+    /**
+     * Updates an existing use case
+     * @param {number|string} caseId - The ID of the use case to update
+     * @param {Object} caseData - New use case data
+     * @returns {Object} Updated use case object
+     */
     const updateCase = async (caseId, caseData) => {
         try {
             const token = localStorage.getItem('authToken');
@@ -120,6 +154,7 @@ export function useCases() {
         }
     };
 
+    // Return state variables and methods for use in components
     return {
         cases,
         currentCase,

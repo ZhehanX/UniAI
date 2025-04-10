@@ -1,10 +1,19 @@
 import { ref } from 'vue';
 
+/**
+ * Composable for managing AI technologies data and API interactions
+ * Provides functions to fetch all technologies and specific technology details
+ */
 export function useAiTechnologies() {
-  const technologies = ref([]);
-  const loading = ref(false);
-  const error = ref('');
+  // State variables
+  const technologies = ref([]);  // Stores the list of all AI technologies
+  const loading = ref(false);    // Tracks loading state during API calls
+  const error = ref('');         // Stores error messages
   
+  /**
+   * Fetches all AI technologies from the API
+   * @returns {Array} Array of AI technology objects
+   */
   const fetchAllTechnologies = async () => {
     try {
       loading.value = true;
@@ -21,6 +30,11 @@ export function useAiTechnologies() {
     }
   };
   
+  /**
+   * Fetches details for a specific AI technology by ID
+   * @param {number|string} techId - The ID of the technology to fetch
+   * @returns {Object|null} Technology details object or null if not found
+   */
   const fetchTechnologyDetails = async (techId) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/${techId}/`);
@@ -33,6 +47,7 @@ export function useAiTechnologies() {
     }
   };
   
+  // Return state variables and methods for use in components
   return {
     technologies,
     loading,

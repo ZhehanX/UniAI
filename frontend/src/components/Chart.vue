@@ -19,7 +19,7 @@ if (typeof AccessibilityModule === 'function') {
 
 const props = defineProps({
   data: {
-    type: [Array, Object], // Allow both array (for pie) and object (for line)
+    type: [Array, Object], 
     required: true
   },
   title: {

@@ -167,8 +167,7 @@ import { useInstitutions } from '@/composables/useInstitutions.js';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
 import { Country, State, City } from 'country-state-city';
-//import MapComponent from '@/components/Map.vue';
-import MapComponent from '@/components/Map_test.vue';
+import MapComponent from '@/components/Map.vue';
 import ChartComponent from '@/components/Chart.vue';
 import LocationDropdown from '@/components/LocationDropdown.vue';
 
