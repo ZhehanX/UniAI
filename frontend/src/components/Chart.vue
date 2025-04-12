@@ -11,6 +11,7 @@
 import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/accessibility';
+import 'highcharts/modules/pattern-fill';
 
 const props = defineProps({
   data: {
@@ -37,6 +38,7 @@ const props = defineProps({
 });
 
 const chart = ref(null);
+
 const hasData = computed(() => {
   if (props.chartType === 'pie') {
     return props.data && props.data.length > 0;
@@ -45,6 +47,15 @@ const hasData = computed(() => {
   }
   return false;
 });
+
+// Generate patterns for accessibility
+const generatePatterns = (colors) => {
+  return colors.map((color, i) => ({
+    pattern: Highcharts.merge(Highcharts.patterns[i % Highcharts.patterns.length], {
+      color: color
+    })
+  }));
+};
 
 const createChart = () => {
   if (!hasData.value) return;
@@ -58,6 +69,9 @@ const createChart = () => {
     }
 
     let chartOptions = {};
+    
+    // Default colors
+    const defaultColors = Highcharts.getOptions().colors;
 
     if (props.chartType === 'pie') {
       // Prepare data for pie chart
@@ -65,6 +79,9 @@ const createChart = () => {
         name: item.name,
         y: item.value
       }));
+      
+      // Generate patterns for pie chart
+      const patterns = generatePatterns(defaultColors);
 
       chartOptions = {
         chart: {
@@ -74,6 +91,7 @@ const createChart = () => {
             fontFamily: 'Inter, sans-serif'
           }
         },
+        colors: patterns,
         title: {
           text: props.title,
           style: {
@@ -109,9 +127,7 @@ const createChart = () => {
     } else if (props.chartType === 'line') {
       // Line chart configuration
       chartOptions = {
-        ...chartOptions,
         chart: {
-          ...chartOptions.chart,
           type: 'line',
           backgroundColor: 'transparent',
           style: {
@@ -139,12 +155,32 @@ const createChart = () => {
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b>'
         },
-        series: props.data.series
+        plotOptions: {
+          line: {
+            dataLabels: {
+              enabled: true
+            }
+          }
+        },
+        series: props.data.series.map((series, index) => {
+        // For line charts, we can use different dash styles for accessibility
+        return {
+        ...series,
+        dashStyle: ['Solid', 'ShortDash', 'ShortDot', 'ShortDashDot', 'ShortDashDotDot', 'Dot', 'Dash', 'LongDash', 'DashDot', 'LongDashDot', 'LongDashDotDot'][index % 11]
+        };
+        })
       };
     }
 
     // Add common options
     chartOptions.credits = { enabled: false };
+    chartOptions.accessibility = {
+      enabled: true,
+      description: `${props.title} chart showing data visualization`,
+      keyboardNavigation: {
+        enabled: true
+      }
+    };
 
     // Create the chart
     chart.value = Highcharts.chart('chart-container', chartOptions);
