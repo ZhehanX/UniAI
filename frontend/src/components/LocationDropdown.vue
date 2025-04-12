@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, computed, onMounted } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 
 
 const props = defineProps({
@@ -53,37 +53,25 @@ const focusedOption = ref(null);
 const emit = defineEmits(['update:modelValue', 'select', 'update:show', 'navigate']);
 
 
-
-watch(() => props.options, (newOptions) => {
-    console.log('Options List:', newOptions);
-    console.log('Props Options List:', newOptions.value);
-}, { immediate: true, deep: true });
-
 // Log selected option
 const handleSelect = (option, index) => {
     // Check if isoCode exists
     if (!option.isoCode) {
         console.warn('Selected option is missing isoCode:', option);
     }
-    
     emit('update:modelValue', option.name);
     emit('select', option);
-    console.log('show value false in handleselect');
     emit('update:show', false);
-    //focusedIndex.value = -1;
-    console.log('option selected', option);
-    console.log('index: ', index);
 };
 
 
 const toggleDropdown = () => {
     if (!props.disabled) {
-        console.log('toggleDropdown called in LocationDropdown.vue');
         emit('update:show', !props.show);
     }
 };
 
-
+// When press enter, toggle dropdown and focus on the first option
 const handleButtonKeydown = (event) => {
   if (['Enter'].includes(event.key)) {
     event.preventDefault();
@@ -100,21 +88,17 @@ const handleButtonKeydown = (event) => {
 
 
 const handleOptionKeydown = (event, option, index) => {
-  console.log('handleOptionKeydown called');
+  // handle key down, up, enter, escape
   if (event.key === 'ArrowDown') {
     event.preventDefault();
-    console.log('ArrowDown key pressed');
     emit('navigate', 'down');
   } else if (event.key === 'ArrowUp') {
     event.preventDefault();
-    console.log('ArrowUp key pressed');
     emit('navigate', 'up');
   } else if (event.key === 'Enter') {
     event.preventDefault();
-    console.log('Enter key pressed');
     handleSelect(option);
   } else if (event.key === 'Escape') {
-    console.log('Escape key pressed');
     emit('update:show', false);
   }
 };
@@ -125,7 +109,6 @@ const handleOptionKeydown = (event, option, index) => {
 watch(() => props.focusedIndex.value, async (newIndex) => {
     await nextTick();
     if (focusedOption.value) {
-        console.log('focusedOption.value', focusedOption.value);
         focusedOption.value.scrollIntoView({
             block: 'nearest',
             behavior: 'smooth'
@@ -154,7 +137,6 @@ watch(() => props.show, (newVal) => {
         const handleClickOutside = (event) => {
             // Check if the click is outside the dropdown container
             if (dropdownContainer.value && !dropdownContainer.value.contains(event.target)) {
-                console.log('Click outside the dropdown container');
                 emit('update:show', false);
             }
         };
@@ -169,7 +151,7 @@ watch(() => props.show, (newVal) => {
                 emit('update:show', false);
             }
         };
-
+        // when click outside the dropdown, close it
         document.addEventListener('click', handleClickOutside);
         dropdownContainer.value.addEventListener('focusout', handleFocusOut);
         return () => {

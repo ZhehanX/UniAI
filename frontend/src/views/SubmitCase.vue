@@ -66,12 +66,13 @@
                                             <div v-for="(institution, index) in filteredInstitutions"
                                                 :key="institution.id" role="option"
                                                 :aria-selected="focusedItemIndex === index" :class="['p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100',
-                    { 'bg-gray-100': focusedItemIndex === index }]" @mousedown.prevent="selectInstitution(institution)"
+                                                { 'bg-gray-100': focusedItemIndex === index }]" @mousedown.prevent="selectInstitution(institution)"
                                                 @keydown.enter.prevent="selectInstitution(institution)" :tabindex="-1"
                                                 :ref="el => setItemRef(el, index)">
                                                 <div class="font-medium text-gray-900">{{ institution.name }}</div>
-                                                <div class="text-sm text-gray-500">{{ institution.city }}, {{
-                    institution.country }}</div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ [institution.city, institution.state, institution.country].filter(Boolean).join(', ') }}
+                                                </div>
                                             </div>
                                         </template>
                                         <div role="option" :class="['p-3 hover:bg-gray-50 cursor-pointer border-t border-gray-100',
@@ -262,31 +263,10 @@ import { Country, State, City } from 'country-state-city';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
 import useCaseForm from '@/composables/useCaseForm.js'
 import LocationDropdown from '@/components/LocationDropdown.vue';
+import { useInstitutions } from '@/composables/useInstitutions.js';
+import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 
-const aiTechnologySearch = ref('');
-const showTechDropdown = ref(false);
-const focusedTechIndex = ref(-1);
-const techItemRefs = ref([]);
-const techInput = ref(null);
-const technologies = ref([]);
-const loadingTechnologies = ref(false);
-const showNewTechField = ref(false);
-const newTechName = ref('');
-const isInputFocused = ref(false)
-const institutionSearch = ref('');
-const showDropdown = ref(false);
-const institutions = ref([]);
-const showNewInstitutionFields = ref(false);
-const loadingInstitutions = ref(false);
-const institutionInput = ref(null)
-const focusedItemIndex = ref(-1);
-const itemRefs = ref([]);
-const currentCountrycode = ref('');
-const currentStatecode = ref('');
-const currentCitycode = ref('');
-
-
-// form date structure
+// Form data structure
 const formData = ref({
     title: '',
     institution_id: null,
@@ -306,6 +286,7 @@ const formData = ref({
     url: ''
 });
 
+// Form submission handling
 const {
     loading,
     successMessage,
@@ -336,17 +317,164 @@ const handleSubmit = async () => {
             },
             url: ''
         }
-
     }
 }
 
+// ===== INSTITUTION HANDLING =====
+const institutionSearch = ref('');
+const showDropdown = ref(false);
+const showNewInstitutionFields = ref(false);
+const institutionInput = ref(null);
+const focusedItemIndex = ref(-1);
+const itemRefs = ref([]);
+const isInputFocused = ref(false);
 
-// country, state, city dropdowns
+
+// Use the institutions composable
+const { 
+  institutions, 
+  loading: loadingInstitutions, 
+  error: institutionsError,
+  fetchAllInstitutions 
+} = useInstitutions();
+
+// Fetch institutions on component mount
+onMounted(() => {
+  fetchAllInstitutions();
+});
+
+const filteredInstitutions = computed(() => {
+    const search = institutionSearch.value.toLowerCase();
+    return institutions.value.filter(inst =>
+        inst.name.toLowerCase().includes(search) ||
+        inst.city?.toLowerCase().includes(search) ||
+        inst.country?.toLowerCase().includes(search)
+    );
+});
+
+const selectInstitution = (institution) => {
+    formData.value.institution_id = institution.id;
+    institutionSearch.value = institution.name;
+    showDropdown.value = false;
+    // Clear new institution fields when selecting existing
+    showNewInstitutionFields.value = false;
+    formData.value.new_institution = {
+        name: '',
+        country: '',
+        state: '',
+        city: ''
+    };
+    setTimeout(() => {
+        institutionInput.value.blur();
+        document.activeElement.blur();
+    }, 10);
+    focusedItemIndex.value = -1;
+};
+
+const addNewInstitution = () => {
+    formData.value.institution_id = 'new';
+    showDropdown.value = false;
+    showNewInstitutionFields.value = true;
+    institutionSearch.value = '';
+
+    // Force blur the institution input
+    institutionInput.value.blur();
+
+    // Focus new institution name field after blur
+    nextTick(() => {
+        document.querySelector('[name="new-institution-name"]')?.focus();
+    });
+
+    formData.value.new_institution = {
+        name: '',
+        country: '',
+        state: '',
+        city: ''
+    };
+    focusedItemIndex.value = -1;
+};
+
+const handleAddNewInstitution = () => {
+    addNewInstitution();
+    // Manually focus the first field of new institution
+    nextTick(() => {
+        document.querySelector('[name="new-institution-name"]')?.focus();
+    });
+};
+
+// Institution dropdown keyboard navigation
+const handleArrowDown = () => {
+    if (!showDropdown.value) return;
+    focusedItemIndex.value = Math.min(
+        focusedItemIndex.value + 1,
+        filteredInstitutions.value.length
+    );
+    scrollToFocusedItem();
+};
+
+const handleArrowUp = () => {
+    if (!showDropdown.value) return;
+    focusedItemIndex.value = Math.max(focusedItemIndex.value - 1, 0);
+    scrollToFocusedItem();
+};
+
+const handleEnter = () => {
+    if (!showDropdown.value) return;
+    if (focusedItemIndex.value === filteredInstitutions.value.length) {
+        addNewInstitution();
+    } else if (focusedItemIndex.value >= 0) {
+        selectInstitution(filteredInstitutions.value[focusedItemIndex.value]);
+    }
+};
+
+const handleEscape = () => {
+    showDropdown.value = false;
+    institutionInput.value.blur();
+};
+
+const scrollToFocusedItem = async () => {
+    await nextTick();
+    itemRefs.value[focusedItemIndex.value]?.scrollIntoView({
+        block: 'nearest'
+    });
+};
+
+const setItemRef = (el, index) => {
+    itemRefs.value[index] = el;
+};
+
+const handleInputFocus = () => {
+    isInputFocused.value = true;
+    showDropdown.value = true;
+    focusedItemIndex.value = 0;
+};
+
+const handleInputBlur = () => {
+    setTimeout(() => {
+        if (!document.activeElement?.closest('[role="option"]')) {
+            showDropdown.value = false;
+            focusedItemIndex.value = -1;
+        }
+    }, 0);
+};
+
+// Watch for search changes
+watch(institutionSearch, (newVal) => {
+    if (isInputFocused.value && newVal === '' && !showNewInstitutionFields.value) {
+        showDropdown.value = true;
+    }
+});
+
+// ===== LOCATION HANDLING =====
+const currentCountrycode = ref('');
+const currentStatecode = ref('');
+const currentCitycode = ref('');
+
+// Country, state, city dropdowns
 const countryDropdown = useLocationDropdown({
     getOptions: () => Country.getAllCountries(),
     initialValue: formData.value.new_institution.country
 });
-
 
 const stateDropdown = useLocationDropdown({
     parentValue: countryDropdown.selectedValue,
@@ -368,7 +496,6 @@ watch(countryDropdown.selectedValue, (newValue) => {
     currentCountrycode.value = newValue;
     stateDropdown.selectedValue = '';
     cityDropdown.selectedValue = '';
-
 });
 
 watch(stateDropdown.selectedValue, (newValue) => {
@@ -383,24 +510,28 @@ watch(cityDropdown.selectedValue, (newValue) => {
     formData.value.new_institution.city = newValue;
 });
 
+// ===== TECHNOLOGY HANDLING =====
+const aiTechnologySearch = ref('');
+const showTechDropdown = ref(false);
+const focusedTechIndex = ref(-1);
+const techItemRefs = ref([]);
+const techInput = ref(null);
+const showNewTechField = ref(false);
+const newTechName = ref('');
+const newTechInput = ref(null);
 
 
+// Use the AI technologies composable
+const { 
+    technologies, 
+    loading: loadingTechnologies, 
+    error: technologiesError,
+    fetchAllTechnologies 
+} = useAiTechnologies();
 
-
-
-// Fetch technologies
+// Fetch technologies on component mount
 onMounted(async () => {
-    try {
-        loadingTechnologies.value = true;
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ai-technologies/`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        technologies.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching technologies:', error);
-        errorMessage.value = 'Could not load technology list';
-    } finally {
-        loadingTechnologies.value = false;
-    }
+    fetchAllTechnologies();
 });
 
 
@@ -411,7 +542,6 @@ const filteredTechnologies = computed(() => {
     );
 });
 
-// Modified selectTechnology function
 const selectTechnology = (tech) => {
     if (!formData.value.technologies.some(t => t.id === tech.id)) {
         formData.value.technologies.push(tech);
@@ -454,12 +584,11 @@ const cancelNewTechnology = () => {
     nextTick(() => techInput.value?.focus());
 };
 
-
 const removeTechnology = (index) => {
     formData.value.technologies.splice(index, 1);
 };
 
-// Keyboard navigation handlers for tech dropdown
+// Technology dropdown keyboard navigation
 const handleTechArrowDown = () => {
     if (!showTechDropdown.value) return;
     focusedTechIndex.value = Math.min(
@@ -514,159 +643,7 @@ const handleTechInputBlur = () => {
     }, 0);
 };
 
-
-
-
-// Fetch institutions
-onMounted(async () => {
-    try {
-        loadingInstitutions.value = true;
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/institutions/`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        institutions.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching institutions:', error);
-        errorMessage.value = 'Could not load institution list';
-    } finally {
-        loadingInstitutions.value = false;
-    }
-});
-
-const handleAddNewInstitution = () => {
-    addNewInstitution();
-    // Manually focus the first field of new institution
-    nextTick(() => {
-        document.querySelector('[name="new-institution-name"]')?.focus();
-    });
-};
-
-// Keyboard handlers for institution dropdown
-const handleArrowDown = () => {
-    if (!showDropdown.value) return;
-    focusedItemIndex.value = Math.min(
-        focusedItemIndex.value + 1,
-        filteredInstitutions.value.length // Include "Add new" option
-    );
-    scrollToFocusedItem();
-};
-
-const handleArrowUp = () => {
-    if (!showDropdown.value) return;
-    focusedItemIndex.value = Math.max(focusedItemIndex.value - 1, 0);
-    scrollToFocusedItem();
-};
-
-const handleEnter = () => {
-    if (!showDropdown.value) return;
-    if (focusedItemIndex.value === filteredInstitutions.value.length) {
-        addNewInstitution();
-    } else if (focusedItemIndex.value >= 0) {
-        selectInstitution(filteredInstitutions.value[focusedItemIndex.value]);
-    }
-};
-
-const handleEscape = () => {
-    showDropdown.value = false;
-    institutionInput.value.blur();
-};
-
-const scrollToFocusedItem = async () => {
-    await nextTick();
-    itemRefs.value[focusedItemIndex.value]?.scrollIntoView({
-        block: 'nearest'
-    });
-};
-
-const setItemRef = (el, index) => {
-    itemRefs.value[index] = el;
-};
-
-
-
-const selectInstitution = (institution) => {
-    formData.value.institution_id = institution.id;
-    institutionSearch.value = institution.name;
-    showDropdown.value = false;
-    // Clear new institution fields when selecting existing
-    showNewInstitutionFields.value = false;
-    formData.value.new_institution = {
-        name: '',
-        country: '',
-        state: '',
-        city: ''
-    };
-    setTimeout(() => {
-        institutionInput.value.blur();
-        document.activeElement.blur();
-    }, 10);
-    focusedItemIndex.value = -1;
-};
-
-
-const addNewInstitution = () => {
-    formData.value.institution_id = 'new';
-    showDropdown.value = false;
-    showNewInstitutionFields.value = true;
-    institutionSearch.value = '';
-
-    // Force blur the institution input
-    institutionInput.value.blur();
-
-    // Focus new institution name field after blur
-    nextTick(() => {
-        document.querySelector('[name="new-institution-name"]')?.focus();
-    });
-
-    formData.value.new_institution = {
-        name: '',
-        country: '',
-        state: '',
-        city: ''
-    };
-    focusedItemIndex.value = -1;
-};
-
-const filteredInstitutions = computed(() => {
-    const search = institutionSearch.value.toLowerCase();
-    return institutions.value.filter(inst =>
-        inst.name.toLowerCase().includes(search) ||
-        inst.city?.toLowerCase().includes(search) ||
-        inst.country?.toLowerCase().includes(search)
-    );
-});
-
-
-
-
-// Watch for search changes
-watch(institutionSearch, (newVal) => {
-    if (isInputFocused.value && newVal === '' && !showNewInstitutionFields.value) {
-        showDropdown.value = true;
-    }
-});
-
-
-
-
-const handleInputFocus = () => {
-    isInputFocused.value = true;
-    showDropdown.value = true;
-    focusedItemIndex.value = 0;
-};
-
-const handleInputBlur = () => {
-    setTimeout(() => {
-        if (!document.activeElement?.closest('[role="option"]')) {
-            showDropdown.value = false;
-            focusedItemIndex.value = -1;
-        }
-    }, 0);
-};
-
-
-
+// ===== UTILITIES =====
 // Auto-resize text-area
 const vAutoResize = {
     mounted(el) {
@@ -683,40 +660,4 @@ const vAutoResize = {
         el.style.height = el.scrollHeight + 'px';
     }
 };
-
-
-
-
-
 </script>
-<style>
-.new-institution-section {
-    border-left: 2px solid #2563eb;
-    padding-left: 1rem;
-    transition: all 0.2s ease;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.2s;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.auto-resize-textarea {
-    resize: none;
-    min-height: 100px;
-    max-height: 400px;
-    transition: height 0.2s ease-out;
-}
-
-@media (min-width: 640px) {
-    .auto-resize-textarea {
-        min-height: 120px;
-        max-height: 600px;
-    }
-}
-</style>

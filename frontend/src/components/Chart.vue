@@ -10,22 +10,25 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import Highcharts from 'highcharts';
-// Fix the accessibility import
-import AccessibilityModule from 'highcharts/modules/accessibility';
-
-// Initialize Highcharts accessibility module correctly
-if (typeof AccessibilityModule === 'function') {
-  AccessibilityModule(Highcharts);
-}
+import 'highcharts/modules/accessibility';
+import 'highcharts/modules/pattern-fill';
 
 const props = defineProps({
   data: {
-    type: [Array, Object], // Allow both array (for pie) and object (for line)
+    type: [Array, Object], 
     required: true
   },
   title: {
     type: String,
     default: 'AI Technologies Distribution'
+  },
+  xAxisTitle: {
+    type: String,
+    default: 'Year'
+  },
+  yAxisTitle: {
+    type: String,
+    default: 'Quantity'
   },
   chartType: {
     type: String,
@@ -35,6 +38,7 @@ const props = defineProps({
 });
 
 const chart = ref(null);
+
 const hasData = computed(() => {
   if (props.chartType === 'pie') {
     return props.data && props.data.length > 0;
@@ -43,6 +47,15 @@ const hasData = computed(() => {
   }
   return false;
 });
+
+// Generate patterns for accessibility
+const generatePatterns = (colors) => {
+  return colors.map((color, i) => ({
+    pattern: Highcharts.merge(Highcharts.patterns[i % Highcharts.patterns.length], {
+      color: color
+    })
+  }));
+};
 
 const createChart = () => {
   if (!hasData.value) return;
@@ -56,6 +69,9 @@ const createChart = () => {
     }
 
     let chartOptions = {};
+    
+    // Default colors
+    const defaultColors = Highcharts.getOptions().colors;
 
     if (props.chartType === 'pie') {
       // Prepare data for pie chart
@@ -63,6 +79,9 @@ const createChart = () => {
         name: item.name,
         y: item.value
       }));
+      
+      // Generate patterns for pie chart
+      const patterns = generatePatterns(defaultColors);
 
       chartOptions = {
         chart: {
@@ -72,6 +91,7 @@ const createChart = () => {
             fontFamily: 'Inter, sans-serif'
           }
         },
+        colors: patterns,
         title: {
           text: props.title,
           style: {
@@ -82,20 +102,18 @@ const createChart = () => {
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
         },
-        accessibility: {
-          enabled: true,
-          description: 'Chart showing distribution of AI technologies across use cases',
-          keyboardNavigation: {
-            enabled: true
-          }
-        },
         plotOptions: {
           pie: {
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
               enabled: true,
-              format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)'
+              format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+              style: {
+                color: '#333333',
+                textOutline: '1px contrast'
+              },
+              connectorColor: 'silver'
             },
             showInLegend: true
           }
@@ -126,30 +144,43 @@ const createChart = () => {
         xAxis: {
           categories: props.data.categories,
           title: {
-            text: 'Year'
+            text: props.xAxisTitle
           }
         },
         yAxis: {
           title: {
-            text: 'Quantity'
+            text: props.yAxisTitle
           }
         },
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b>'
         },
-        accessibility: {
-          enabled: true,
-          description: 'Chart showing AI use cases over time',
-          keyboardNavigation: {
-            enabled: true
+        plotOptions: {
+          line: {
+            dataLabels: {
+              enabled: true
+            }
           }
         },
-        series: props.data.series
+        series: props.data.series.map((series, index) => {
+        // For line charts, we can use different dash styles for accessibility
+        return {
+        ...series,
+        dashStyle: ['Solid', 'ShortDash', 'ShortDot', 'ShortDashDot', 'ShortDashDotDot', 'Dot', 'Dash', 'LongDash', 'DashDot', 'LongDashDot', 'LongDashDotDot'][index % 11]
+        };
+        })
       };
     }
 
     // Add common options
     chartOptions.credits = { enabled: false };
+    chartOptions.accessibility = {
+      enabled: true,
+      description: `${props.title} chart showing data visualization`,
+      keyboardNavigation: {
+        enabled: true
+      }
+    };
 
     // Create the chart
     chart.value = Highcharts.chart('chart-container', chartOptions);
@@ -177,7 +208,7 @@ watch([() => props.data, () => props.chartType], () => {
   // Need to wait for the DOM to update
   setTimeout(() => {
     createChart();
-  }, 0);
+  }, 500);
 }, { deep: true });
 
 // Initialize chart when component is mounted

@@ -1,217 +1,288 @@
 <template>
-  <div class="map-container h-full w-full">
-    <div id="map" class="h-full w-full rounded-lg"></div>
-  </div>
+    <div class="map-container h-full w-full">
+        <div id="map" class="h-full w-full rounded-lg"></div>
+    </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
 import { useInstitutions } from '@/composables/useInstitutions.js';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import Highcharts from 'highcharts';
+import 'highcharts/modules/accessibility';
+import 'highcharts/modules/map';
+import 'highcharts/modules/tiledwebmap';
 
 // Props from parent component
 const props = defineProps({
-  cases: {
-    type: Array,
-    required: true
-  }
+    cases: {
+        type: Array,
+        required: true
+    }
 });
 
 // Map instance reference
-const map = ref(null);
-const markers = ref([]);
+const chart = ref(null);
 
 // Initialize map
-const initMap = () => {
-  //console.log('Initializing map');
-  
-  // Create map instance
-  map.value = L.map('map').setView([41.3851, 2.1734], 5); // Default view centered on Barcelona
-  //console.log('Map instance created');
+const initMap = async () => {
+    // Group cases by institution to avoid duplicate markers
+    const institutionMap = new Map();
+    const { fetchInstitutionDetailsById } = useInstitutions();
 
-  // Add OpenStreetMap tile layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
-  }).addTo(map.value);
-  //console.log('Tile layer added');
+    // Fetch institution details for each use case
+    for (const useCase of props.cases) {
+        try {
+            // Fetch institution details if not already fetched
+            if (!institutionMap.has(useCase.institution_id)) {
+                const institutionDetails = await fetchInstitutionDetailsById(useCase.institution_id);
 
-  // Add markers for each case with institution data
-  addMarkers();
-  
-  // Force a resize after initialization to ensure the map fills the container
-  setTimeout(() => {
-    if (map.value) {
-      map.value.invalidateSize();
-      //console.log('Map size invalidated');
+                institutionMap.set(useCase.institution_id, {
+                    institution: institutionDetails,
+                    cases: [useCase]
+                });
+            } else {
+                institutionMap.get(useCase.institution_id).cases.push(useCase);
+            }
+        } catch (error) {
+            console.error('Error fetching institution details:', error);
+        }
     }
-  }, 200);
-};
 
-// Add markers to the map
-const addMarkers = async () => {
-  // Clear existing markers
-  clearMarkers();
-  
-  //console.log('Adding markers, cases data:', props.cases);
-  
-  // Import the useInstitutions composable
-  const { fetchInstitutionDetailsById } = useInstitutions();
-  
-  // Group cases by institution to avoid duplicate markers
-  const institutionMap = new Map();
-  
-  // Fetch institution details for each use case
-  for (const useCase of props.cases) {
-    //console.log('Processing use case:', useCase.id, useCase.title);
+    // Prepare data points for the map
+    const mapData = [];
+
+    institutionMap.forEach(data => {
+        const { institution, cases } = data;
+
+        if (institution && institution.latitude && institution.longitude) {
+
+            // Convert latitude and longitude to numbers
+            const lat = parseFloat(institution.latitude);
+            const lon = parseFloat(institution.longitude);
+
+            // Verify coordinates are valid numbers
+            if (!isNaN(lat) && !isNaN(lon)) {
+                // Add data point
+                mapData.push({
+                    name: institution.name,
+                    lat: lat,
+                    lon: lon,
+                    institution: institution,
+                    cases: cases
+                });
+            }
+        }
+    });
+
+    // Calculate the center of the map based on the points
+    let centerLon = 0;
+    let centerLat = 0;
+    let validPoints = 0;
     
-    try {
-      // Fetch institution details if not already fetched
-      if (!institutionMap.has(useCase.institution_id)) {
-        //console.log('Fetching institution details for ID:', useCase.institution_id);
-        const institutionDetails = await fetchInstitutionDetailsById(useCase.institution_id);
-        
-        institutionMap.set(useCase.institution_id, {
-          institution: institutionDetails,
-          cases: [useCase]
-        });
-      } else {
-        institutionMap.get(useCase.institution_id).cases.push(useCase);
-      }
-    } catch (error) {
-      console.error('Error fetching institution details:', error);
-    }
-  }
-  
-  //console.log('Grouped institutions:', institutionMap);
-  
-  // Create markers for each institution
-  institutionMap.forEach(data => {
-    const { institution, cases } = data;
+    // Calculate average of all points
+    mapData.forEach(point => {
+        if (point.lat && point.lon) {
+            centerLat += point.lat;
+            centerLon += point.lon;
+            validPoints++;
+        }
+    });
     
-    if (institution && institution.latitude && institution.longitude) {
-      //console.log('Creating marker for institution:', institution.name, 'at', institution.latitude, institution.longitude);
-      
-      // Create marker
-      const marker = L.marker([institution.latitude, institution.longitude])
-        .addTo(map.value);
-      
-      // Create popup content
-      let popupContent = `
-        <div class="popup-content">
-          <h3 class="font-bold">${institution.name}</h3>
-          <p>${institution.city}, ${institution.state}, ${institution.country}</p>
-          <p class="text-xs text-gray-500">Coordinates: ${institution.latitude.toFixed(4)}, ${institution.longitude.toFixed(4)}</p>
-          <hr class="my-2">
-          <h4 class="font-semibold">Use Cases:</h4>
-          <ul class="list-disc pl-4">
-      `;
-      
-      cases.forEach(useCase => {
-        popupContent += `<li>${useCase.title}</li>`;
-      });
-      
-      popupContent += `
-          </ul>
-        </div>
-      `;
-      
-      // Bind popup to marker
-      marker.bindPopup(popupContent);
-      
-      // Store marker reference for later cleanup
-      markers.value.push(marker);
-      //console.log('Marker added, total markers:', markers.value.length);
+    // Set default center if no valid points
+    if (validPoints === 0) {
+        centerLon = 0;
+        centerLat = 20;
     } else {
-      console.warn('Missing coordinates for institution:', institution?.name || 'Unknown');
+        centerLon = centerLon / validPoints;
+        centerLat = centerLat / validPoints;
     }
-  });
-  
-  // Adjust map view to fit all markers if there are any
-  if (markers.value.length > 0) {
-    //console.log('Adjusting map view to fit', markers.value.length, 'markers');
-    const group = L.featureGroup(markers.value);
-    map.value.fitBounds(group.getBounds().pad(0.1));
-  } else {
-    console.warn('No markers to display on the map');
-  }
-};
+    
+    // Find appropriate zoom level based on point distribution
+    let maxDistance = 0;
+    mapData.forEach(point => {
+        if (point.lat && point.lon) {
+            const distance = Math.sqrt(
+                Math.pow(point.lat - centerLat, 2) + 
+                Math.pow(point.lon - centerLon, 2)
+            );
+            maxDistance = Math.max(maxDistance, distance);
+        }
+    });
+    
+    // Calculate zoom level - lower value for wider spread
+    // Adjust these values based on testing
+    let zoomLevel = 2; // Default world view
+    if (maxDistance < 1) zoomLevel = 8;
+    else if (maxDistance < 5) zoomLevel = 6;
+    else if (maxDistance < 15) zoomLevel = 4;
+    else if (maxDistance < 50) zoomLevel = 3;
 
-// Clear all markers from the map
-const clearMarkers = () => {
-  markers.value.forEach(marker => {
-    map.value.removeLayer(marker);
-  });
-  markers.value = [];
+    // Create the chart with OpenStreetMap and points
+    chart.value = Highcharts.mapChart('map', {
+        chart: {
+            margin: 0,
+            backgroundColor: '#f8fafc',
+            style: {
+                fontFamily: 'Inter, sans-serif'
+            }
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        navigation: {
+            buttonOptions: {
+                align: 'left',
+                theme: {
+                    stroke: '#e6e6e6'
+                }
+            }
+        },
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                alignTo: 'spacingBox'
+            }
+        },
+        mapView: {
+            center: [centerLon, centerLat], // Center on the calculated center point
+            zoom: zoomLevel // Calculated zoom level
+        },
+        // Tooltip, information of the point (institution name, use cases...)
+        tooltip: {
+            useHTML: true,
+            headerFormat: '',
+            pointFormat: '<b>{point.name}</b><br>{point.locationFormatted}<br><hr><b>Use Cases:</b><br>{point.casesFormatted}',
+            style: {
+                fontSize: '0.9rem'
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderWidth: 0,
+            shadow: true
+        },
+        legend: {
+            enabled: true,
+            title: {
+                text: 'Institutions'
+            },
+            align: 'left',
+            symbolWidth: 20,
+            symbolHeight: 20,
+            itemStyle: {
+                textOutline: '1 1 1px rgba(255,255,255)'
+            },
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            float: true,
+            borderColor: '#e6e6e6',
+            borderWidth: 1,
+            borderRadius: 2,
+            itemMarginBottom: 5
+        },
+        plotOptions: {
+            mappoint: {
+                dataLabels: {
+                    enabled: false
+                }
+            }
+        },
+        series: [{
+            type: 'tiledwebmap',
+            name: 'Basemap',
+            // type of map
+            provider: {
+                type: 'OpenStreetMap'
+            },
+            showInLegend: false
+        }, {
+            type: 'mappoint',
+            name: 'Institutions',
+            color: '#4f46e5',
+            marker: {
+                symbol: 'circle',
+                radius: 8,
+                fillColor: {
+                    radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 },
+                    stops: [
+                        [0, '#6366F1'],
+                        [1, '#4338CA']
+                    ]
+                },
+                lineWidth: 2,
+                lineColor: '#ffffff'
+            },
+            data: mapData.map(point => {
+                // Pre-format the cases list for the tooltip
+                const casesFormatted = point.cases.map(c => `• ${c.title}`).join('<br>');
+                
+                // Format location string to handle missing data
+                // To avoid situations like: , Hampshire, United Kingdom (when the city is missing, because 
+                // normally state and country won't be missing)
+                const city = point.institution.city || '';
+                const state = point.institution.state || '';
+                const country = point.institution.country || '';
+                
+                let location = '';
+                if (city) location += city;
+                if (state) location += location ? `, ${state}` : state;
+                if (country) location += location ? `, ${country}` : country;
+                
+                return {
+                    name: point.name,
+                    lon: point.lon,
+                    lat: point.lat,
+                    institution: point.institution,
+                    cases: point.cases,
+                    casesFormatted: casesFormatted,
+                    locationFormatted: location
+                };
+            })
+        }]
+    });
+
 };
 
 // Watch for changes in cases data
-watch(() => props.cases, (newCases) => {
-  //console.log('Cases data changed, new length:', newCases?.length);
-  if (map.value) {
-    addMarkers();
-  }
+watch(() => props.cases, () => {
+    if (chart.value) {
+        // Destroy existing chart and reinitialize
+        chart.value.destroy();
+        initMap();
+    }
 }, { deep: true });
 
 // Handle window resize
 const handleResize = () => {
-  if (map.value) {
-    map.value.invalidateSize();
-  }
+    if (chart.value) {
+        chart.value.reflow();
+    }
 };
 
 // Initialize map when component is mounted
 onMounted(() => {
-  // Need to wait for the DOM to be ready
-  setTimeout(() => {
-    initMap();
-  }, 100);
-  
-  // Add resize event listener
-  window.addEventListener('resize', handleResize);
+    // Need to wait for the DOM to be ready
+    setTimeout(() => {
+        initMap();
+    }, 100);
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResize);
 });
 
 // Clean up when component is unmounted
 onUnmounted(() => {
-  if (map.value) {
-    map.value.remove();
-    map.value = null;
-  }
-  window.removeEventListener('resize', handleResize);
+    if (chart.value) {
+        chart.value.destroy();
+        chart.value = null;
+    }
+    window.removeEventListener('resize', handleResize);
 });
 </script>
 
 <style>
-/* Fix for Leaflet marker icon issues */
-.leaflet-default-icon-path {
-  background-image: url('https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png');
-}
-
-.leaflet-default-shadow-path {
-  background-image: url('https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png');
-}
-
 /* Ensure the map container takes full height */
 .map-container {
-  min-height: 400px;
-}
-
-/* Style the popup content */
-.popup-content h3 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-.popup-content p {
-  margin-bottom: 0.5rem;
-}
-
-.popup-content ul {
-  margin-top: 0.5rem;
-}
-
-.popup-content li {
-  margin-bottom: 0.25rem;
+    min-height: 400px;
 }
 </style>

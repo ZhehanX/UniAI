@@ -44,15 +44,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import { onMounted, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import AppCard from '@/components/AppCard.vue';
 import { getUserRole } from '@/utils/auth.js';
 import { useCases } from '@/composables/useCases.js';
 
 const router = useRouter();
-const route = useRoute();
 const { cases, fetchAllUseCases } = useCases();
 
 // Check if user is logged in
@@ -75,8 +73,6 @@ const handleLogout = () => {
     checkAuthState()
 }
 const allUseCases = cases;
-const loading = ref(true);
-const error = ref(null);
 
 
 const handleSubmitCase = () => {
@@ -87,21 +83,7 @@ const handleSubmitCase = () => {
     }
 };
 
-// Fetch data from backend
-/*
-const fetchAllUseCases = async () => {
-    try {
-        const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/use-cases/` // Use environment variable
-        );
-        useCases.value = response.data;
-    } catch (err) {
-        error.value = 'Failed to load use cases. Please try again later.';
-    } finally {
-        loading.value = false;
-    }
-};
-*/
+
 
 // Navigation to detail page
 const navigateToDetail = (caseId) => {
@@ -109,23 +91,6 @@ const navigateToDetail = (caseId) => {
 };
 
 
-// Load the use cases data
-/*
-const loadUseCases = async () => {
-    try {
-        loading.value = true;
-        const data = await fetchAllUseCases();
-        allUseCases.value = data;
-        console.log("allUseCases loaded:", allUseCases.value);
-    } catch (err) {
-        error.value = 'Failed to load use cases';
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
-};
-*/
-console.log("allUseCases: ", allUseCases.value);
 
 // Update mount hook
 onMounted(() => {

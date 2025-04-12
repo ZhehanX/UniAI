@@ -66,27 +66,15 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import axios from 'axios';
 import { useCases } from '@/composables/useCases.js';
 
 const route = useRoute();
 
-const error = ref(null);
 const { currentCase, fetchUseCasesById } = useCases();
 
-/*
-const fetchUseCasesById = async (id) => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/use-cases/${id}`);
-    currentApp.value = response.data;
-  } catch (err) {
-    console.error("API Error:", err.response ? err.response.data : err.message);
-    error.value = 'Failed to load application details';
-  }
-};
-*/
+
 const currentApp = currentCase;
 
 // Fetch when component mounts or ID changes

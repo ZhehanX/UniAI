@@ -13,6 +13,7 @@
         <!-- Toggle Buttons -->
         <div class="flex justify-center mb-6">
             <div class="inline-flex rounded-md shadow-sm" role="group">
+                <!-- Map Tab -->
                 <button @click="activeTab = 'map'" :class="[
                     'px-4 py-2 text-sm font-medium rounded-l-lg border',
                     activeTab === 'map'
@@ -21,6 +22,7 @@
                 ]">
                     Map
                 </button>
+                <!-- Stats Tab -->
                 <button @click="activeTab = 'stats'" :class="[
                     'px-4 py-2 text-sm font-medium rounded-r-lg border',
                     activeTab === 'stats'
@@ -37,31 +39,32 @@
             <!-- Map Section -->
             <div v-if="activeTab === 'map'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="h-200 bg-gray-100 rounded-lg">
-                    <!-- Map Component will go here -->
+                    <!-- Map Component -->
                     <MapComponent :cases="filteredCases" />
-                    {{ console.log('Passing to map component:', filteredCases) }}
                 </div>
                 <div class="bg-white border border-gray-200 rounded-lg p-4">
                     <!-- Filters for Map -->
                     <h3 class="text-lg font-medium mb-4">Filters</h3>
-
+                    <!-- Intitution filter section -->
                     <div class="mb-4">
                         <h4 class="font-medium mb-2">Institution</h4>
                         <div class="space-y-2">
                             <div v-for="institution in institutions" :key="institution.id" class="flex items-center">
                                 <input type="checkbox" :id="`inst-${institution.id}`" v-model="selectedInstitutions"
-                                    :value="institution.id" class="mr-2">
+                                    :value="institution.id" class="mr-2" 
+                                    @keydown.enter.prevent="toggleCheckbox($event.target)">
                                 <label :for="`inst-${institution.id}`">{{ institution.name }}</label>
                             </div>
                         </div>
                     </div>
-
+                    <!-- AI Tech filter section -->
                     <div>
                         <h4 class="font-medium mb-2">AI Tech</h4>
                         <div class="space-y-2">
                             <div v-for="tech in aiTechnologies" :key="tech.id" class="flex items-center">
                                 <input type="checkbox" :id="`tech-${tech.id}`" v-model="selectedTechnologies"
-                                    :value="tech.id" class="mr-2">
+                                    :value="tech.id" class="mr-2"
+                                    @keydown.enter.prevent="toggleCheckbox($event.target)">
                                 <label :for="`tech-${tech.id}`">{{ tech.name }}</label>
                             </div>
                         </div>
@@ -93,7 +96,8 @@
                             title="AI Technologies Distribution" chartType="pie" />
                         <!-- Line Chart -->
                         <ChartComponent v-else-if="currentChartType === 'line'" :data="yearlyTrendData"
-                            title="AI Technologies Adoption Over Time" chartType="line" />
+                            title="AI Technologies Adoption Over Time" xAxisTitle="Year" 
+                            yAxisTitle="Quantity" chartType="line" />
                     </div>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
                         <!-- Filters for Stats -->
@@ -105,8 +109,9 @@
                             Select only what you need.
                         </p>
 
-                        <!-- Location filters (for pie chart) -->
+                        <!-- Location filters (for pie chart: AI Technologies Distribution) -->
                         <div v-if="currentChartType === 'pie'">
+                            <!--country dropdown-->
                             <div class="mb-4">
                                 <h4 class="font-medium mb-2">Country</h4>
                                 <LocationDropdown id="country-dropdown" v-model="countryDropdown.selectedValue"
@@ -115,7 +120,7 @@
                                     :focused-index="countryDropdown.focusedIndex" @select="countryDropdown.selectOption"
                                     @navigate="countryDropdown.keyboardNav" />
                             </div>
-
+                            <!--state dropdown-->
                             <div class="mb-4">
                                 <h4 class="font-medium mb-2">State <span class="text-xs text-gray-500">(optional)</span>
                                 </h4>
@@ -125,7 +130,7 @@
                                     @select="stateDropdown.selectOption" @navigate="stateDropdown.keyboardNav"
                                     :disabled="!countryDropdown.selectedValue" />
                             </div>
-
+                            <!--city dropdown-->
                             <div class="mb-4">
                                 <h4 class="font-medium mb-2">City <span class="text-xs text-gray-500">(optional)</span>
                                 </h4>
@@ -137,13 +142,14 @@
                             </div>
                         </div>
 
-                        <!-- AI Technology filters (for line chart) -->
+                        <!-- AI Technology filters (for line chart: AI Technologies Adoption Over Time) -->
                         <div v-else>
                             <h4 class="font-medium mb-2">AI Technology</h4>
                             <div class="space-y-2">
                                 <div v-for="tech in aiTechnologies" :key="tech.id" class="flex items-center">
                                     <input type="checkbox" :id="`stat-tech-${tech.id}`" v-model="selectedTechnologies"
-                                        :value="tech.id" class="mr-2">
+                                        :value="tech.id" class="mr-2"
+                                        @keydown.enter.prevent="toggleCheckbox($event.target)">
                                     <label :for="`stat-tech-${tech.id}`">{{ tech.name }}</label>
                                 </div>
                             </div>
@@ -273,9 +279,12 @@ watch(cityDropdown.selectedValue, (newValue) => {
     selectedCity.value = newValue;
 });
 
-
-
-
+// Function to toggle checkbox with Enter key
+const toggleCheckbox = (checkbox) => {
+    checkbox.checked = !checkbox.checked;
+    // Trigger the change event to update the v-model
+    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+};
 
 // Computed properties for filtered data
 const filteredCases = computed(() => {
@@ -322,43 +331,37 @@ const filteredCases = computed(() => {
                 return institution.city === selectedCity.value;
             });
         }
-        console.log("filtered cases", result);
+        
     }
 
-    console.log('Filtered cases:', result.length);
+
     return result;
 });
 
-// Extract unique location data for filters
-const countries = computed(() => {
-    const uniqueCountries = new Set();
-    cases.value.forEach(c => {
-        if (c.institution?.country) uniqueCountries.add(c.institution.country);
+
+
+// Prepare chart data based on filtered cases
+const chartData = computed(() => {
+    // Group cases by AI technology
+    const techCounts = {};
+
+    // Use the filtered cases which already have location filters applied
+    filteredCases.value.forEach(c => {
+        if (c.ai_technologies && c.ai_technologies.length > 0) {
+            c.ai_technologies.forEach(techId => {
+                techCounts[techId] = (techCounts[techId] || 0) + 1;
+            });
+        }
     });
-    return [...uniqueCountries].sort();
-});
 
-const filteredStates = computed(() => {
-    const uniqueStates = new Set();
-    cases.value
-        .filter(c => !selectedCountry.value || c.institution?.country === selectedCountry.value)
-        .forEach(c => {
-            if (c.institution?.state) uniqueStates.add(c.institution.state);
-        });
-    return [...uniqueStates].sort();
-});
-
-const filteredCities = computed(() => {
-    const uniqueCities = new Set();
-    cases.value
-        .filter(c => {
-            return (!selectedCountry.value || c.institution?.country === selectedCountry.value) &&
-                (!selectedState.value || c.institution?.state === selectedState.value);
-        })
-        .forEach(c => {
-            if (c.institution?.city) uniqueCities.add(c.institution.city);
-        });
-    return [...uniqueCities].sort();
+    // Format data for chart component
+    return Object.entries(techCounts).map(([techId, count]) => {
+        const tech = aiTechnologies.value.find(t => t.id === parseInt(techId));
+        return {
+            name: tech ? tech.name : `Tech ${techId}`,
+            value: count
+        };
+    });
 });
 
 // Prepare yearly trend data based on project_initiation_date
@@ -367,14 +370,16 @@ const yearlyTrendData = computed(() => {
     let filteredResult = cases.value || [];
     
     // Create a map to store data by year and technology
+    // output of techsByYear = techId:{year:quantity, year:quantity, (...)} 
+    // Example: 3: {2023: 1, 2024: 1}
     const techsByYear = {};
+    // Include all if no filter
     const techsToInclude = selectedTechnologies.value.length > 0 
         ? selectedTechnologies.value 
         : aiTechnologies.value.map(tech => tech.id);
     
     // Initialize the years set to track all years
-    const yearsSet = new Set();
-    
+    const yearsSet = new Set();    
     // Process each case
     filteredResult.forEach(c => {
         if (c.project_initiation_date) {
@@ -384,16 +389,19 @@ const yearlyTrendData = computed(() => {
                 const year = parseInt(dateParts[2], 10);
                 
                 if (!isNaN(year)) {
+                    // add year to yearsSet
                     yearsSet.add(year);
                     
                     // For each technology in this case
                     if (c.ai_technologies && c.ai_technologies.length > 0) {
                         c.ai_technologies.forEach(techId => {
-                            // Only include technologies that are in our filter (or all if no filter)
+                            // Only include technologies that are in our filter (or all if no filter (see when declare techsToInclude))
                             if (techsToInclude.includes(techId)) {
                                 if (!techsByYear[techId]) {
+                                    // initialize techsByYear[techId] if it doesn't exist
                                     techsByYear[techId] = {};
                                 }
+                                // counter for ai technologies by year
                                 techsByYear[techId][year] = (techsByYear[techId][year] || 0) + 1;
                             }
                         });
@@ -428,33 +436,6 @@ const yearlyTrendData = computed(() => {
         categories: years,
         series: series
     };
-});
-
-// Prepare chart data based on filtered cases
-const chartData = computed(() => {
-    // Group cases by AI technology
-    const techCounts = {};
-
-    // Use the filtered cases which already have location filters applied
-    filteredCases.value.forEach(c => {
-        if (c.ai_technologies && c.ai_technologies.length > 0) {
-            c.ai_technologies.forEach(techId => {
-                techCounts[techId] = (techCounts[techId] || 0) + 1;
-            });
-        }
-    });
-
-    console.log('Tech counts after filtering:', techCounts);
-    console.log('Current filters - Country:', selectedCountry.value, 'State:', selectedState.value, 'City:', selectedCity.value);
-
-    // Format data for chart component
-    return Object.entries(techCounts).map(([techId, count]) => {
-        const tech = aiTechnologies.value.find(t => t.id === parseInt(techId));
-        return {
-            name: tech ? tech.name : `Tech ${techId}`,
-            value: count
-        };
-    });
 });
 
 // Load data on component mount
