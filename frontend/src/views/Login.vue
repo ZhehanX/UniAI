@@ -62,7 +62,6 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import { setToken, setUserRole } from '@/utils/auth';
 
 // Initialize router for navigation after login
 const router = useRouter();
@@ -80,32 +79,31 @@ const errorMessage = ref('');
 // Handle form submission
 const handleLogin = async () => {
     try {
-        // Set loading state and clear previous errors
         loading.value = true;
         errorMessage.value = '';
         
-        // Send login request to the backend API
+        // Encode data as form-urlencoded
+        const params = new URLSearchParams();
+        params.append('username', formData.value.email);
+        params.append('password', formData.value.password);
+
         const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/api/auth/login`,
+            params,
             {
-                email: formData.value.email,
-                password: formData.value.password
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
             }
         );
         
-        // Store authentication token and user role in local storage
-        setToken(response.data.access_token);
-        setUserRole(response.data.role);
         
-        // Redirect to home page after successful login
+        localStorage.setItem('authToken', response.data.access_token);
         router.push('/');
     } catch (error) {
-        // Handle and display error messages
-        errorMessage.value = error.response?.data?.detail || 
-                            error.message || 
-                            'Login failed. Please check your credentials and try again.';
+        console.error('Login Error:', error);
+        errorMessage.value = error.response?.data?.detail || 'Login failed. Please check credentials';
     } finally {
-        // Reset loading state regardless of outcome
         loading.value = false;
     }
 };

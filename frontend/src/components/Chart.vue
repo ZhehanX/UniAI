@@ -10,12 +10,7 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import Highcharts from 'highcharts';
-import AccessibilityModule from 'highcharts/modules/accessibility';
-
-// Initialize Highcharts accessibility module correctly
-if (typeof AccessibilityModule === 'function') {
-  AccessibilityModule(Highcharts);
-}
+import 'highcharts/modules/accessibility';
 
 const props = defineProps({
   data: {
@@ -89,20 +84,18 @@ const createChart = () => {
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
         },
-        accessibility: {
-          enabled: true,
-          description: 'Chart showing distribution of AI technologies across use cases',
-          keyboardNavigation: {
-            enabled: true
-          }
-        },
         plotOptions: {
           pie: {
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
               enabled: true,
-              format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)'
+              format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+              style: {
+                color: '#333333',
+                textOutline: '1px contrast'
+              },
+              connectorColor: 'silver'
             },
             showInLegend: true
           }
@@ -116,7 +109,9 @@ const createChart = () => {
     } else if (props.chartType === 'line') {
       // Line chart configuration
       chartOptions = {
+        ...chartOptions,
         chart: {
+          ...chartOptions.chart,
           type: 'line',
           backgroundColor: 'transparent',
           style: {
@@ -143,13 +138,6 @@ const createChart = () => {
         },
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        accessibility: {
-          enabled: true,
-          description: 'Chart showing AI use cases over time',
-          keyboardNavigation: {
-            enabled: true
-          }
         },
         series: props.data.series
       };
@@ -184,7 +172,7 @@ watch([() => props.data, () => props.chartType], () => {
   // Need to wait for the DOM to update
   setTimeout(() => {
     createChart();
-  }, 0);
+  }, 500);
 }, { deep: true });
 
 // Initialize chart when component is mounted

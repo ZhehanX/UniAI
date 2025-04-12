@@ -41,7 +41,6 @@
                 <div class="h-200 bg-gray-100 rounded-lg">
                     <!-- Map Component -->
                     <MapComponent :cases="filteredCases" />
-                    {{ console.log('Passing to map component:', filteredCases) }}
                 </div>
                 <div class="bg-white border border-gray-200 rounded-lg p-4">
                     <!-- Filters for Map -->

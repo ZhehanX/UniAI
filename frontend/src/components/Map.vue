@@ -7,11 +7,10 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from 'vue';
 import { useInstitutions } from '@/composables/useInstitutions.js';
-import Highcharts from 'highcharts/highmaps';
-import 'highcharts/modules/tiledwebmap';
-import 'highcharts/modules/exporting';
-import 'highcharts/modules/offline-exporting';
+import Highcharts from 'highcharts';
 import 'highcharts/modules/accessibility';
+import 'highcharts/modules/map';
+import 'highcharts/modules/tiledwebmap';
 
 // Props from parent component
 const props = defineProps({
