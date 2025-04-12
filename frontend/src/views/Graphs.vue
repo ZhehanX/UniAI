@@ -51,7 +51,8 @@
                         <div class="space-y-2">
                             <div v-for="institution in institutions" :key="institution.id" class="flex items-center">
                                 <input type="checkbox" :id="`inst-${institution.id}`" v-model="selectedInstitutions"
-                                    :value="institution.id" class="mr-2">
+                                    :value="institution.id" class="mr-2" 
+                                    @keydown.enter.prevent="toggleCheckbox($event.target)">
                                 <label :for="`inst-${institution.id}`">{{ institution.name }}</label>
                             </div>
                         </div>
@@ -62,7 +63,8 @@
                         <div class="space-y-2">
                             <div v-for="tech in aiTechnologies" :key="tech.id" class="flex items-center">
                                 <input type="checkbox" :id="`tech-${tech.id}`" v-model="selectedTechnologies"
-                                    :value="tech.id" class="mr-2">
+                                    :value="tech.id" class="mr-2"
+                                    @keydown.enter.prevent="toggleCheckbox($event.target)">
                                 <label :for="`tech-${tech.id}`">{{ tech.name }}</label>
                             </div>
                         </div>
@@ -146,7 +148,8 @@
                             <div class="space-y-2">
                                 <div v-for="tech in aiTechnologies" :key="tech.id" class="flex items-center">
                                     <input type="checkbox" :id="`stat-tech-${tech.id}`" v-model="selectedTechnologies"
-                                        :value="tech.id" class="mr-2">
+                                        :value="tech.id" class="mr-2"
+                                        @keydown.enter.prevent="toggleCheckbox($event.target)">
                                     <label :for="`stat-tech-${tech.id}`">{{ tech.name }}</label>
                                 </div>
                             </div>
@@ -276,9 +279,12 @@ watch(cityDropdown.selectedValue, (newValue) => {
     selectedCity.value = newValue;
 });
 
-
-
-
+// Function to toggle checkbox with Enter key
+const toggleCheckbox = (checkbox) => {
+    checkbox.checked = !checkbox.checked;
+    // Trigger the change event to update the v-model
+    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+};
 
 // Computed properties for filtered data
 const filteredCases = computed(() => {
