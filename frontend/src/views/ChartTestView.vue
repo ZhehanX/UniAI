@@ -17,6 +17,10 @@ import { onMounted, onUnmounted } from 'vue';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/pattern-fill';
 import 'highcharts/modules/accessibility';
+import 'highcharts/modules/exporting';
+import 'highcharts/modules/export-data';
+// Add the data module
+import 'highcharts/modules/data';
 
 let chart = null;
 
@@ -56,7 +60,17 @@ const initChart = () => {
     chart: {
       type: 'pie'
     },
-
+    exporting: {
+      enabled: false,
+      showTable: true,
+      tableCaption: 'Data table for screen reader usage statistics'
+    },
+    // Add custom table styling
+    dataTableOptions: {
+      tableClass: 'custom-data-table',
+      rowClass: 'data-table-row',
+      cellClass: 'data-table-cell'
+    },
     title: {
       text: 'Primary desktop/laptop screen readers',
       align: 'left'
@@ -183,5 +197,50 @@ label {
 
 input[type="checkbox"] {
   margin-right: 8px;
+}
+
+/* Add custom styling for the data table */
+:deep(.custom-data-table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: Inter, sans-serif;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:deep(.custom-data-table caption) {
+  font-weight: bold;
+  padding: 12px;
+  text-align: left;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 1.1em;
+}
+
+:deep(.custom-data-table th) {
+  background-color: #f3f4f6;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+:deep(.custom-data-table td) {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+:deep(.custom-data-table tr:last-child td) {
+  border-bottom: none;
+}
+
+:deep(.custom-data-table tr:nth-child(even)) {
+  background-color: #f9fafb;
+}
+
+:deep(.custom-data-table tr:hover) {
+  background-color: #f3f4f6;
 }
 </style>
