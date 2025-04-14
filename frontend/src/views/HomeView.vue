@@ -17,6 +17,10 @@
                         class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Admin Review
                     </button>
+                    <button v-if="isLoggedIn" @click="router.push('/my-cases')"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        My Cases
+                    </button>
                     <button @click="$router.push('/graphs')"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
                         <span>View Analytics</span>

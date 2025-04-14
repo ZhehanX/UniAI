@@ -52,6 +52,37 @@ export function useCases() {
     };
 
     /**
+     * Fetches all use cases submitted by a specific user
+     * @param {number|string} userId - The ID of the user whose cases to fetch
+     * @returns {Array} Array of use case objects submitted by the user
+     */
+    const fetchCasesByUserId = async (userId) => {
+        try {
+            loading.value = true;
+            const token = localStorage.getItem('authToken');
+            // Using the main endpoint with a query parameter for user_id
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/?user_id=${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+      
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to fetch user cases');
+            }
+      
+            return await response.json();
+        } catch (error) {
+            console.error('Error in fetchCasesByUserId:', error);
+            errorMessage.value = 'Failed to load your cases. Please try again later.';
+            throw error;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    /**
      * Fetches all pending use cases that need review
      * @returns {Array} Array of pending use case objects
      */
@@ -163,6 +194,7 @@ export function useCases() {
         successMessage,
         fetchAllUseCases,
         fetchUseCasesById,
+        fetchCasesByUserId,
         fetchPendingCasesWithDetails,
         approveCase,
         rejectCase,
