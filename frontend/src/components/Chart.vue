@@ -45,18 +45,6 @@ const props = defineProps({
 
 const chart = ref(null);
 
-const chartOptions = computed(() => ({
-  chart: {
-    type: props.chartType
-  },
-  showDataTable: {
-    type: Boolean,
-    default: false
-  }
-});
-
-const chart = ref(null);
-
 const hasData = computed(() => {
   if (props.chartType === 'pie') {
     return props.data && props.data.length > 0;
@@ -109,10 +97,7 @@ const createChart = () => {
             fontFamily: 'Inter, sans-serif'
           }
         },
-<<<<<<< Updated upstream
-=======
         // it applies for the entire chart configuration
->>>>>>> Stashed changes
         colors: patterns,
         title: {
           text: props.title,

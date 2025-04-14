@@ -40,8 +40,15 @@
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
             <div class="space-y-6">
-                <AppCard v-for="useCase in allUseCases" :key="useCase.id" :app="useCase"
-                    @click="navigateToDetail(useCase.id)" />
+                <div v-for="useCase in allUseCases" :key="useCase.id" 
+                     tabindex="0"
+                     role="button"
+                     class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
+                     @click="navigateToDetail(useCase.id)"
+                     @keydown.enter="navigateToDetail(useCase.id)"
+                     @keydown.space="navigateToDetail(useCase.id)">
+                    <AppCard :app="useCase" />
+                </div>
             </div>
         </main>
     </div>
