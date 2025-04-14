@@ -17,6 +17,10 @@
                         class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Admin Review
                     </button>
+                    <button v-if="isLoggedIn" @click="router.push('/my-cases')"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                        My Cases
+                    </button>
                     <button @click="$router.push('/graphs')"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
                         <span>View Analytics</span>
@@ -36,8 +40,15 @@
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
             <div class="space-y-6">
-                <AppCard v-for="useCase in allUseCases" :key="useCase.id" :app="useCase"
-                    @click="navigateToDetail(useCase.id)" />
+                <div v-for="useCase in allUseCases" :key="useCase.id" 
+                     tabindex="0"
+                     role="button"
+                     class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
+                     @click="navigateToDetail(useCase.id)"
+                     @keydown.enter="navigateToDetail(useCase.id)"
+                     @keydown.space="navigateToDetail(useCase.id)">
+                    <AppCard :app="useCase" />
+                </div>
             </div>
         </main>
     </div>

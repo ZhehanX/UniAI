@@ -46,7 +46,6 @@ const routes = [
     meta: { requiresAuth: true },
     beforeEnter: (to, from, next) => {
       const userRole = getUserRole();
-      console.log('User role:', userRole);
       if (userRole === 'admin') {
         next();
       } else {
@@ -59,6 +58,12 @@ const routes = [
     path: '/chart-test',
     name: 'ChartTest',
     component: ChartTestView
+  },
+  {
+    path: '/my-cases',
+    name: 'UserUseCases',
+    component: () => import('@/views/UserUseCases.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 

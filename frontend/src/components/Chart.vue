@@ -97,6 +97,7 @@ const createChart = () => {
             fontFamily: 'Inter, sans-serif'
           }
         },
+        // it applies for the entire chart configuration
         colors: patterns,
         title: {
           text: props.title,
