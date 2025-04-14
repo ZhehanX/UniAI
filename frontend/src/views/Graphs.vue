@@ -175,6 +175,7 @@
             </div>
         </div>
     </div>
+    <AppFooter />
 </template>
 
 <script setup>
@@ -187,6 +188,7 @@ import { Country, State, City } from 'country-state-city';
 import MapComponent from '@/components/Map.vue';
 import ChartComponent from '@/components/Chart.vue';
 import LocationDropdown from '@/components/LocationDropdown.vue';
+import AppFooter from '@/components/AppFooter.vue';
 
 // Tab state
 const activeTab = ref('map');

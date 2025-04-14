@@ -35,13 +35,13 @@
                                         <p class="font-medium text-gray-800">{{ caseItem.institution.name }}</p>
                                         <p class="text-gray-600">
                                             {{ [caseItem.institution.city, caseItem.institution.state,
-    caseItem.institution.country].filter(Boolean).join(', ') }}
+                                                caseItem.institution.country].filter(Boolean).join(', ') }}
                                         </p>
                                         <p class="text-gray-500 text-xs mt-1">
                                             Coordinates: {{ caseItem.institution.latitude !== undefined ?
-        caseItem.institution.latitude : 'N/A' }},
+                                            caseItem.institution.latitude : 'N/A' }},
                                             {{ caseItem.institution.longitude !== undefined ?
-        caseItem.institution.longitude : 'N/A' }}
+                                            caseItem.institution.longitude : 'N/A' }}
                                         </p>
                                     </div>
                                     <span v-else class="text-gray-400">No institution associated</span>
@@ -176,31 +176,39 @@
                         <div class="border rounded-md p-4 bg-gray-50">
                             <div class="space-y-3">
                                 <div>
-                                    <label for="editInstitutionName" class="block text-gray-600 text-sm mb-1">Name</label>
+                                    <label for="editInstitutionName"
+                                        class="block text-gray-600 text-sm mb-1">Name</label>
                                     <input id="editInstitutionName" v-model="editForm.institution_name" type="text"
                                         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <label for="editInstitutionCity" class="block text-gray-600 text-sm mb-1">City</label>
+                                        <label for="editInstitutionCity"
+                                            class="block text-gray-600 text-sm mb-1">City</label>
                                         <input id="editInstitutionCity" v-model="editForm.institution_city" type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                     <div>
-                                        <label for="editInstitutionCountry" class="block text-gray-600 text-sm mb-1">Country</label>
-                                        <input id="editInstitutionCountry" v-model="editForm.institution_country" type="text"
+                                        <label for="editInstitutionCountry"
+                                            class="block text-gray-600 text-sm mb-1">Country</label>
+                                        <input id="editInstitutionCountry" v-model="editForm.institution_country"
+                                            type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <label for="editInstitutionLatitude" class="block text-gray-600 text-sm mb-1">Latitude</label>
-                                        <input id="editInstitutionLatitude" v-model="editForm.institution_latitude" type="text"
+                                        <label for="editInstitutionLatitude"
+                                            class="block text-gray-600 text-sm mb-1">Latitude</label>
+                                        <input id="editInstitutionLatitude" v-model="editForm.institution_latitude"
+                                            type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                     <div>
-                                        <label for="editInstitutionLongitude" class="block text-gray-600 text-sm mb-1">Longitude</label>
-                                        <input id="editInstitutionLongitude" v-model="editForm.institution_longitude" type="text"
+                                        <label for="editInstitutionLongitude"
+                                            class="block text-gray-600 text-sm mb-1">Longitude</label>
+                                        <input id="editInstitutionLongitude" v-model="editForm.institution_longitude"
+                                            type="text"
                                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
@@ -224,13 +232,15 @@
                     </div>
 
                     <div>
-                        <label for="editShortDescription" class="block text-gray-700 font-medium mb-1">Short Description</label>
+                        <label for="editShortDescription" class="block text-gray-700 font-medium mb-1">Short
+                            Description</label>
                         <textarea id="editShortDescription" v-model="editForm.short_description" required rows="2"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
 
                     <div>
-                        <label for="editFullDescription" class="block text-gray-700 font-medium mb-1">Full Description</label>
+                        <label for="editFullDescription" class="block text-gray-700 font-medium mb-1">Full
+                            Description</label>
                         <textarea id="editFullDescription" v-model="editForm.full_description" rows="5"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
@@ -243,7 +253,8 @@
                         </div>
 
                         <div>
-                            <label for="editContactEmail" class="block text-gray-700 font-medium mb-1">Contact Email</label>
+                            <label for="editContactEmail" class="block text-gray-700 font-medium mb-1">Contact
+                                Email</label>
                             <input id="editContactEmail" v-model="editForm.contact" type="email"
                                 class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
@@ -251,7 +262,8 @@
 
                     <!-- Add project initiation date field -->
                     <div>
-                        <label for="editProjectDate" class="block text-gray-700 font-medium mb-1">Project Initiation Date</label>
+                        <label for="editProjectDate" class="block text-gray-700 font-medium mb-1">Project Initiation
+                            Date</label>
                         <input id="editProjectDate" v-model="editForm.project_initiation_date" type="date"
                             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
@@ -285,25 +297,25 @@ import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 const router = useRouter();
 const userRole = getUserRole();
 
-const { 
-  cases, 
-  loading,
-  successMessage, 
-  fetchPendingCasesWithDetails, 
-  approveCase: approveCaseAction, 
-  rejectCase: rejectCaseAction
+const {
+    cases,
+    loading,
+    successMessage,
+    fetchPendingCasesWithDetails,
+    approveCase: approveCaseAction,
+    rejectCase: rejectCaseAction
 } = useCases();
 
-const { 
-  institutions,
-  fetchInstitutionDetailsById, 
-  fetchAllInstitutions
+const {
+    institutions,
+    fetchInstitutionDetailsById,
+    fetchAllInstitutions
 } = useInstitutions();
 
-const { 
-  technologies: allAiTechnologies, 
-  fetchAllTechnologies, 
-  fetchTechnologyDetails 
+const {
+    technologies: allAiTechnologies,
+    fetchAllTechnologies,
+    fetchTechnologyDetails
 } = useAiTechnologies();
 
 // Local state
@@ -317,80 +329,80 @@ const editError = ref('');
 
 // Load institution details for each case
 const loadInstitutionDetails = async (caseItem) => {
-  if (!caseItem.institution_id) return;
+    if (!caseItem.institution_id) return;
 
-  try {
-    const institutionData = await fetchInstitutionDetailsById(caseItem.institution_id);
-    if (institutionData) {
-      // Update the case item with institution details
-      caseItem.institution = institutionData;
+    try {
+        const institutionData = await fetchInstitutionDetailsById(caseItem.institution_id);
+        if (institutionData) {
+            // Update the case item with institution details
+            caseItem.institution = institutionData;
+        }
+    } catch (error) {
+        console.error('Error loading institution details:', error);
     }
-  } catch (error) {
-    console.error('Error loading institution details:', error);
-  }
 };
 
 // Fetch cases with details
 const loadCasesWithDetails = async () => {
-  try {
-    const casesData = await fetchPendingCasesWithDetails();
-    
-    // Load institution details for each case
-    for (const caseItem of casesData) {
-      if (caseItem.institution_id) {
-        await loadInstitutionDetails(caseItem);
-      }
+    try {
+        const casesData = await fetchPendingCasesWithDetails();
 
-      // Load AI technology details
-      if (caseItem.ai_technologies && caseItem.ai_technologies.length) {
-        caseItem.aiTechDetails = [];
-        for (const techId of caseItem.ai_technologies) {
-          // Check if we already have this tech in our cache
-          if (!aiTechnologies.value[techId]) {
-            const techDetails = await fetchTechnologyDetails(techId);
-            if (techDetails) {
-              aiTechnologies.value[techId] = techDetails;
+        // Load institution details for each case
+        for (const caseItem of casesData) {
+            if (caseItem.institution_id) {
+                await loadInstitutionDetails(caseItem);
             }
-          }
 
-          if (aiTechnologies.value[techId]) {
-            caseItem.aiTechDetails.push(aiTechnologies.value[techId]);
-          }
+            // Load AI technology details
+            if (caseItem.ai_technologies && caseItem.ai_technologies.length) {
+                caseItem.aiTechDetails = [];
+                for (const techId of caseItem.ai_technologies) {
+                    // Check if we already have this tech in our cache
+                    if (!aiTechnologies.value[techId]) {
+                        const techDetails = await fetchTechnologyDetails(techId);
+                        if (techDetails) {
+                            aiTechnologies.value[techId] = techDetails;
+                        }
+                    }
+
+                    if (aiTechnologies.value[techId]) {
+                        caseItem.aiTechDetails.push(aiTechnologies.value[techId]);
+                    }
+                }
+            }
         }
-      }
+    } catch (error) {
+        console.error('Error loading cases with details:', error);
     }
-  } catch (error) {
-    console.error('Error loading cases with details:', error);
-  }
 };
 
 // Approve case wrapper
 const approveCase = async (caseId) => {
-  try {
-    await approveCaseAction(caseId);
-    await loadCasesWithDetails();
-  } catch (error) {
-    console.error('Error approving case:', error);
-  }
+    try {
+        await approveCaseAction(caseId);
+        await loadCasesWithDetails();
+    } catch (error) {
+        console.error('Error approving case:', error);
+    }
 };
 
 // Reject case wrapper
 const rejectCase = async (caseId) => {
-  try {
-    await rejectCaseAction(caseId);
-    await loadCasesWithDetails();
-  } catch (error) {
-    console.error('Error rejecting case:', error);
-  }
+    try {
+        await rejectCaseAction(caseId);
+        await loadCasesWithDetails();
+    } catch (error) {
+        console.error('Error rejecting case:', error);
+    }
 };
 
 onMounted(() => {
-  if (userRole === 'admin') {
-    loadCasesWithDetails();
-    fetchAllTechnologies();
-  } else {
-    router.push('/');
-  }
+    if (userRole === 'admin') {
+        loadCasesWithDetails();
+        fetchAllTechnologies();
+    } else {
+        router.push('/');
+    }
 });
 
 // Status badge styling
@@ -583,7 +595,7 @@ const saveEditedCase = async () => {
         editLoading.value = false;
     }
 };
-  
+
 const closeEditModal = () => {
     showEditModal.value = false;
     editingCase.value = null;

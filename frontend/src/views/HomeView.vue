@@ -39,7 +39,14 @@
 
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
-            <div class="space-y-6">
+            <!-- Loading state -->
+            <div v-if="loading" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-2 text-gray-600">Loading AI tools...</p>
+            </div>
+            
+            <!-- Cases list -->
+            <div v-else class="space-y-6">
                 <div v-for="useCase in allUseCases" :key="useCase.id" 
                      tabindex="0"
                      role="button"
@@ -51,18 +58,22 @@
                 </div>
             </div>
         </main>
+        
+        <AppFooter />
     </div>
 </template>
 
 <script setup>
-import { onMounted, computed, watch } from 'vue';
+import { onMounted, computed, watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AppCard from '@/components/AppCard.vue';
+import AppFooter from '@/components/AppFooter.vue';
 import { getUserRole } from '@/utils/auth.js';
 import { useCases } from '@/composables/useCases.js';
 
 const router = useRouter();
 const { cases, fetchAllUseCases } = useCases();
+const loading = ref(true);
 
 // Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
@@ -104,8 +115,10 @@ const navigateToDetail = (caseId) => {
 
 
 // Update mount hook
-onMounted(() => {
+onMounted(async () => {
     checkAuthState();
-    fetchAllUseCases();
+    loading.value = true;
+    await fetchAllUseCases();
+    loading.value = false;
 })
 </script>

@@ -155,6 +155,7 @@
         </div>
       </div>
     </main>
+    <AppFooter />
   </div>
 </template>
 
@@ -165,6 +166,7 @@ import { getUserId } from '@/utils/auth.js';
 import { useCases } from '@/composables/useCases.js';
 import { useInstitutions } from '@/composables/useInstitutions.js';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
+import AppFooter from '@/components/AppFooter.vue';
 
 const router = useRouter();
 const userId = getUserId();

@@ -79,6 +79,8 @@
     <div v-else class="min-h-screen flex items-center justify-center text-gray-500">
         Loading application details...
     </div>
+
+    <AppFooter />
 </template>
 
 
@@ -87,6 +89,7 @@ import { onMounted, watch, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCases } from '@/composables/useCases.js';
 import { useInstitutions } from '@/composables/useInstitutions.js';
+import AppFooter from '@/components/AppFooter.vue';
 
 const route = useRoute();
 const { currentCase, fetchUseCasesById } = useCases();

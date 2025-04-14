@@ -254,6 +254,7 @@
 
             </div>
         </main>
+        <AppFooter />
     </div>
 </template>
 
@@ -265,6 +266,7 @@ import useCaseForm from '@/composables/useCaseForm.js'
 import LocationDropdown from '@/components/LocationDropdown.vue';
 import { useInstitutions } from '@/composables/useInstitutions.js';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
+import AppFooter from '@/components/AppFooter.vue';
 
 // Form data structure
 const formData = ref({
