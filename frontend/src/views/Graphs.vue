@@ -38,7 +38,14 @@
         <div class="bg-white rounded-lg shadow p-6">
             <!-- Map Section -->
             <div v-if="activeTab === 'map'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="h-200 bg-gray-100 rounded-lg">
+                <div class="h-[650px] bg-white rounded-lg shadow p-4 overflow-auto map-container" 
+                     tabindex="0" 
+                     @keydown.down.prevent="scrollDown" 
+                     @keydown.up.prevent="scrollUp"
+                     @keydown.page-down.prevent="pageDown"
+                     @keydown.page-up.prevent="pageUp"
+                     @keydown.home.prevent="scrollToTop"
+                     @keydown.end.prevent="scrollToBottom">
                     <!-- Map Component -->
                     <MapComponent :cases="filteredCases" />
                 </div>
@@ -90,14 +97,22 @@
 
                 <!-- Charts and Filters Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="h-200 bg-white rounded-lg shadow">
+                    <!-- Added tabindex and keyboard event handlers for scroll navigation -->
+                    <div class="h-[650px] bg-white rounded-lg shadow p-4 overflow-auto chart-container" 
+                         tabindex="0" 
+                         @keydown.down.prevent="scrollDown" 
+                         @keydown.up.prevent="scrollUp"
+                         @keydown.page-down.prevent="pageDown"
+                         @keydown.page-up.prevent="pageUp"
+                         @keydown.home.prevent="scrollToTop"
+                         @keydown.end.prevent="scrollToBottom">
                         <!-- Pie Chart -->
                         <ChartComponent v-if="currentChartType === 'pie'" :data="chartData"
-                            title="AI Technologies Distribution" chartType="pie" />
+                            title="AI Technologies Distribution" chartType="pie" :showDataTable="true" />
                         <!-- Line Chart -->
                         <ChartComponent v-else-if="currentChartType === 'line'" :data="yearlyTrendData"
                             title="AI Technologies Adoption Over Time" xAxisTitle="Year" 
-                            yAxisTitle="Quantity" chartType="line" />
+                            yAxisTitle="Quantity" chartType="line" :showDataTable="true" />
                     </div>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
                         <!-- Filters for Stats -->
@@ -444,4 +459,93 @@ onMounted(async () => {
     await fetchAllInstitutions();
     await fetchAllTechnologies();
 });
+
+// Scroll navigation methods for chart container
+const scrollDown = (event) => {
+    const container = event.target;
+    container.scrollTop += 40; // Scroll down by 40px
+};
+
+const scrollUp = (event) => {
+    const container = event.target;
+    container.scrollTop -= 40; // Scroll up by 40px
+};
+
+const pageDown = (event) => {
+    const container = event.target;
+    container.scrollTop += container.clientHeight * 0.8; // Scroll down by 80% of visible height
+};
+
+const pageUp = (event) => {
+    const container = event.target;
+    container.scrollTop -= container.clientHeight * 0.8; // Scroll up by 80% of visible height
+};
+
+const scrollToTop = (event) => {
+    const container = event.target;
+    container.scrollTop = 0; // Scroll to the top
+};
+
+const scrollToBottom = (event) => {
+    const container = event.target;
+    container.scrollTop = container.scrollHeight; // Scroll to the bottom
+};
 </script>
+
+<style>
+.highcharts-data-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#highcharts-data-table-0,
+#highcharts-data-table-1 {
+    margin: 0;
+}
+
+/* Added styles for chart container focus state */
+.chart-container:focus,
+.map-container:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
+}
+
+.chart-container:focus:not(:focus-visible),
+.map-container:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.highcharts-data-table table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: white;
+    min-width: 100%;
+    margin-top: 10px;
+    font-family: sans-serif;
+    font-size: 0.9em;
+}
+
+.highcharts-data-table td,
+.highcharts-data-table th,
+.highcharts-data-table caption {
+    border: 1px solid silver;
+    padding: 0.5em;
+}
+
+.highcharts-data-table thead tr,
+.highcharts-data-table tbody tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+    background: #eff;
+}
+
+.highcharts-data-table caption {
+    border-bottom: none;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+</style>

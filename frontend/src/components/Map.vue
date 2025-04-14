@@ -261,10 +261,8 @@ const handleResize = () => {
 
 // Initialize map when component is mounted
 onMounted(() => {
-    // Need to wait for the DOM to be ready
-    setTimeout(() => {
-        initMap();
-    }, 100);
+    
+    initMap();
 
     // Add resize event listener
     window.addEventListener('resize', handleResize);

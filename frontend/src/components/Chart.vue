@@ -1,9 +1,9 @@
 <template>
-  <div class="chart-container h-full w-full">
+  <div class="chart-container h-half w-full">
     <div v-if="!hasData" class="flex items-center justify-center h-full text-gray-500">
       No data available
     </div>
-    <div v-else id="chart-container" class="h-full w-full"></div>
+    <div v-else id="chart-container" class="h-half w-full"></div>
   </div>
 </template>
 
@@ -12,6 +12,8 @@ import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import Highcharts from 'highcharts';
 import 'highcharts/modules/accessibility';
 import 'highcharts/modules/pattern-fill';
+import 'highcharts/modules/exporting';
+import 'highcharts/modules/export-data';
 
 const props = defineProps({
   data: {
@@ -34,6 +36,10 @@ const props = defineProps({
     type: String,
     default: 'pie',
     validator: (value) => ['pie', 'line', 'bar'].includes(value)
+  },
+  showDataTable: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -180,6 +186,13 @@ const createChart = () => {
       keyboardNavigation: {
         enabled: true
       }
+    };
+    
+    // Add exporting options with data table
+    chartOptions.exporting = {
+      enabled: true,
+      showTable: props.showDataTable,
+      tableCaption: `Data table for ${props.title}`
     };
 
     // Create the chart
