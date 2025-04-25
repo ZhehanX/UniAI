@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date, datetime
 from pydantic import computed_field, PrivateAttr, model_validator, field_validator
-from app.models import UseCaseAITechnology
+from app.models import ProjectAITechnology
 
 class UserBase(BaseModel):
     username: str
@@ -43,7 +43,7 @@ class AITechnology(AITechnologyBase):
     id: int
     model_config = {"from_attributes": True}
 
-class UseCaseBase(BaseModel):
+class ProjectBase(BaseModel):
     title: str
     short_description: str
     full_description: dict
@@ -51,7 +51,7 @@ class UseCaseBase(BaseModel):
     institution_id: int
     ai_technologies: List[int]
 
-class UseCaseCreate(BaseModel):
+class ProjectCreate(BaseModel):
     title: str
     short_description: str
     full_description: dict
@@ -63,7 +63,7 @@ class UseCaseCreate(BaseModel):
     logo_filename: Optional[str] = None
     status: str = "pending"
 
-class UseCase(BaseModel):
+class Project(BaseModel):
     id: int
     title: str
     short_description: str
@@ -92,7 +92,7 @@ class UseCase(BaseModel):
     @classmethod
     def extract_tech_ids(cls, value):
         """Convert SQLAlchemy relationships to list of IDs"""
-        if value and isinstance(value[0], UseCaseAITechnology):
+        if value and isinstance(value[0], ProjectAITechnology):
             return [tech.ai_technology_id for tech in value]
         return value
  

@@ -2,10 +2,10 @@ import { ref, computed } from 'vue'
 import { isAuthenticated } from '@/utils/auth.js';
 
 /**
- * Composable for handling AI use case form submission and validation
- * Manages form state, validation, and API interactions for creating new use cases
+ * Composable for handling AI project form submission and validation
+ * Manages form state, validation, and API interactions for creating new projects
  */
-export default function useCaseForm() {
+export default function useProjectForm() {
     // State variables for form handling
     const loading = ref(false)           // Tracks loading state during form submission
     const successMessage = ref('')       // Stores success messages
@@ -41,7 +41,7 @@ export default function useCaseForm() {
     }
 
     /**
-     * Submits the form data to create a new use case
+     * Submits the form data to create a new project
      * Handles creation of new institutions and AI technologies if needed
      * @param {Object} formData - The complete form data to submit
      * @returns {boolean} True if submission was successful
@@ -61,14 +61,11 @@ export default function useCaseForm() {
         // Check authentication
         const token = localStorage.getItem('authToken')
         if (!isAuthenticated()) {
-            errorMessage.value = 'You must be logged in to submit a case.'
+            errorMessage.value = 'You must be logged in to submit a project.'
             return false
         }
 
-        
-
         try {
-
             // 1. Create institution if new
             let institutionId = 0
             if (formData.institution_id === 'new') {
@@ -83,8 +80,7 @@ export default function useCaseForm() {
                         latitude: 0,
                         longitude: 0
                     })
-                })
-                
+                })                
                 if (!institutionResponse.ok) throw new Error('Institution creation failed')
                 const institutionData = await institutionResponse.json()
                 institutionId = institutionData.id
@@ -108,13 +104,11 @@ export default function useCaseForm() {
                 }else{
                     techData = tech
                 }
-                
                 aiTechIds.push(techData.id)
             }
 
-
-            // 3. Create use case
-            const useCasePayload = {
+            // 3. Create project
+            const projectPayload = {
                 title: formData.title,
                 short_description: formData.shortDescription,
                 full_description: formData.fullDescription,
@@ -128,18 +122,18 @@ export default function useCaseForm() {
             }
             
 
-            const useCaseResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/use-cases/`, {
+            const projectResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(useCasePayload)
+                body: JSON.stringify(projectPayload)
             })
 
-            if (!useCaseResponse.ok) {
-                const errorData = await useCaseResponse.json()
-                throw new Error(errorData.detail || `HTTP error ${useCaseResponse.status}`);
+            if (!projectResponse.ok) {
+                const errorData = await projectResponse.json()
+                throw new Error(errorData.detail || `HTTP error ${projectResponse.status}`);
             }
-            successMessage.value = 'Case submitted successfully!'
+            successMessage.value = 'Project submitted successfully!'
             return true
         } catch (error) {
             if (error.response) {

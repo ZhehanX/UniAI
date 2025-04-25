@@ -11,8 +11,8 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default='user')
-    # WARNING: This will delete all the UseCase records associated with the User
-    use_cases = relationship("UseCase", back_populates="submitter", cascade="all, delete")
+    # WARNING: This will delete all the Project records associated with the User
+    projects = relationship("Project", back_populates="submitter", cascade="all, delete")
 
 class Institution(Base):
     __tablename__ = "institutions"
@@ -23,16 +23,16 @@ class Institution(Base):
     city = Column(String, nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    use_cases = relationship("UseCase", back_populates="institution")
+    projects = relationship("Project", back_populates="institution")
 
 class AITechnology(Base):
     __tablename__ = "ai_technology"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
-    use_cases = relationship("UseCaseAITechnology", back_populates="ai_technology")
+    projects = relationship("ProjectAITechnology", back_populates="ai_technology")
 
-class UseCase(Base):
-    __tablename__ = "use_cases"
+class Project(Base):
+    __tablename__ = "projects"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True, nullable=False)
     short_description = Column(String, nullable=False)
@@ -46,14 +46,14 @@ class UseCase(Base):
     institution_id = Column(Integer, ForeignKey("institutions.id"), nullable=False)
     submitted_by = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False)
     
-    institution = relationship("Institution", back_populates="use_cases")
-    submitter = relationship("User", back_populates="use_cases")
-    # By adding cascade="all, delete-orphan", the related UseCaseAITechnology records will be automatically delete
-    ai_technologies = relationship("UseCaseAITechnology", back_populates="use_case", cascade="all, delete-orphan")
+    institution = relationship("Institution", back_populates="projects")
+    submitter = relationship("User", back_populates="projects")
+    # By adding cascade="all, delete-orphan", the related ProjectAITechnology records will be automatically delete
+    ai_technologies = relationship("ProjectAITechnology", back_populates="project", cascade="all, delete-orphan")
 
-class UseCaseAITechnology(Base):
-    __tablename__ = "use_case_ai_technology"
-    use_case_id = Column(Integer, ForeignKey("use_cases.id", ondelete="CASCADE"), primary_key=True)
+class ProjectAITechnology(Base):
+    __tablename__ = "project_ai_technology"
+    project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"), primary_key=True)
     ai_technology_id = Column(Integer, ForeignKey("ai_technology.id"), primary_key=True)
-    use_case = relationship("UseCase", back_populates="ai_technologies")
-    ai_technology = relationship("AITechnology", back_populates="use_cases")
+    project = relationship("Project", back_populates="ai_technologies")
+    ai_technology = relationship("AITechnology", back_populates="projects")

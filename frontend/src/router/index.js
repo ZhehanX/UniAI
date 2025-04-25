@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { getUserRole } from '@/utils/auth.js';
 import HomeView from '@/views/HomeView.vue';
 import AppDetail from '@/views/AppDetails.vue';
-import SubmitCase from '@/views/SubmitCase.vue';
+import SubmitProject from '@/views/SubmitProject.vue';
 
 // Import the ChartTestView component
 import ChartTestView from '@/views/ChartTestView.vue'
@@ -20,9 +20,9 @@ const routes = [
     props: true // Pass route params as props
   },
   {
-    path: '/submit-case',
-    name: 'SubmitCase',
-    component: SubmitCase
+    path: '/submit-project',
+    name: 'SubmitProject',
+    component: SubmitProject
   },
   {
     path: '/login',
@@ -60,9 +60,9 @@ const routes = [
     component: ChartTestView
   },
   {
-    path: '/my-cases',
-    name: 'UserUseCases',
-    component: () => import('@/views/UserUseCases.vue'),
+    path: '/my-projects',
+    name: 'UserUseProjects',
+    component: () => import('@/views/UserProjects.vue'),
     meta: { requiresAuth: true }
   }
 ];
