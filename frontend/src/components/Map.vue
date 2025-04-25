@@ -11,10 +11,9 @@ import Highcharts from 'highcharts';
 import 'highcharts/modules/accessibility';
 import 'highcharts/modules/map';
 import 'highcharts/modules/tiledwebmap';
-// Import the exporting module
 import 'highcharts/modules/exporting';
-// Import the offline-exporting module for client-side export
 import 'highcharts/modules/offline-exporting';
+import 'highcharts/modules/export-data';
 
 // Props from parent component
 const props = defineProps({
@@ -142,7 +141,20 @@ const initMap = async () => {
             fallbackToExportServer: false, // Disable fallback to export server
             buttons: {
                 contextButton: {
-                    menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG']
+                    menuItems: [
+                        'viewFullscreen',
+                        'printChart',
+                        'separator',
+                        'downloadPNG', 
+                        'downloadJPEG', 
+                        'downloadPDF', 
+                        'downloadSVG',
+                        'separator',
+                        'downloadCSV',
+                        'downloadXLS',
+                        'viewData',
+                        'hideData'
+                    ]
                 }
             }
         },
