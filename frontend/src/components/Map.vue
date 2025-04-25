@@ -11,10 +11,14 @@ import Highcharts from 'highcharts';
 import 'highcharts/modules/accessibility';
 import 'highcharts/modules/map';
 import 'highcharts/modules/tiledwebmap';
+// Import the exporting module
+import 'highcharts/modules/exporting';
+// Import the offline-exporting module for client-side export
+import 'highcharts/modules/offline-exporting';
 
 // Props from parent component
 const props = defineProps({
-    cases: {
+    projects: {
         type: Array,
         required: true
     }
@@ -25,23 +29,23 @@ const chart = ref(null);
 
 // Initialize map
 const initMap = async () => {
-    // Group cases by institution to avoid duplicate markers
+    // Group projects by institution to avoid duplicate markers
     const institutionMap = new Map();
     const { fetchInstitutionDetailsById } = useInstitutions();
 
-    // Fetch institution details for each use case
-    for (const useCase of props.cases) {
+    // Fetch institution details for each project
+    for (const project of props.projects) {
         try {
             // Fetch institution details if not already fetched
-            if (!institutionMap.has(useCase.institution_id)) {
-                const institutionDetails = await fetchInstitutionDetailsById(useCase.institution_id);
+            if (!institutionMap.has(project.institution_id)) {
+                const institutionDetails = await fetchInstitutionDetailsById(project.institution_id);
 
-                institutionMap.set(useCase.institution_id, {
+                institutionMap.set(project.institution_id, {
                     institution: institutionDetails,
-                    cases: [useCase]
+                    projects: [project]
                 });
             } else {
-                institutionMap.get(useCase.institution_id).cases.push(useCase);
+                institutionMap.get(project.institution_id).projects.push(project);
             }
         } catch (error) {
             console.error('Error fetching institution details:', error);
@@ -52,7 +56,7 @@ const initMap = async () => {
     const mapData = [];
 
     institutionMap.forEach(data => {
-        const { institution, cases } = data;
+        const { institution, projects } = data;
 
         if (institution && institution.latitude && institution.longitude) {
 
@@ -68,7 +72,7 @@ const initMap = async () => {
                     lat: lat,
                     lon: lon,
                     institution: institution,
-                    cases: cases
+                    projects: projects
                 });
             }
         }
@@ -132,6 +136,16 @@ const initMap = async () => {
         subtitle: {
             text: ''
         },
+        // Configure client-side exporting
+        exporting: {
+            enabled: true,
+            fallbackToExportServer: false, // Disable fallback to export server
+            buttons: {
+                contextButton: {
+                    menuItems: ['downloadPNG', 'downloadJPEG', 'downloadPDF', 'downloadSVG']
+                }
+            }
+        },
         navigation: {
             buttonOptions: {
                 align: 'left',
@@ -150,11 +164,11 @@ const initMap = async () => {
             center: [centerLon, centerLat], // Center on the calculated center point
             zoom: zoomLevel // Calculated zoom level
         },
-        // Tooltip, information of the point (institution name, use cases...)
+        // Tooltip, information of the point (institution name, projects...)
         tooltip: {
             useHTML: true,
             headerFormat: '',
-            pointFormat: '<b>{point.name}</b><br>{point.locationFormatted}<br><hr><b>Use Cases:</b><br>{point.casesFormatted}',
+            pointFormat: '<b>{point.name}</b><br>{point.locationFormatted}<br><hr><b>Projects:</b><br>{point.projectsFormatted}',
             style: {
                 fontSize: '0.9rem'
             },
@@ -213,8 +227,8 @@ const initMap = async () => {
                 lineColor: '#ffffff'
             },
             data: mapData.map(point => {
-                // Pre-format the cases list for the tooltip
-                const casesFormatted = point.cases.map(c => `• ${c.title}`).join('<br>');
+                // Pre-format the projects list for the tooltip
+                const projectsFormatted = point.projects.map(c => `• ${c.title}`).join('<br>');
                 
                 // Format location string to handle missing data
                 // To avoid situations like: , Hampshire, United Kingdom (when the city is missing, because 
@@ -233,8 +247,8 @@ const initMap = async () => {
                     lon: point.lon,
                     lat: point.lat,
                     institution: point.institution,
-                    cases: point.cases,
-                    casesFormatted: casesFormatted,
+                    projects: point.projects,
+                    projectsFormatted: projectsFormatted,
                     locationFormatted: location
                 };
             })
@@ -243,8 +257,8 @@ const initMap = async () => {
 
 };
 
-// Watch for changes in cases data
-watch(() => props.cases, () => {
+// Watch for changes in projects data
+watch(() => props.projects, () => {
     if (chart.value) {
         // Destroy existing chart and reinitialize
         chart.value.destroy();

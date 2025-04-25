@@ -45,9 +45,9 @@ def delete_user(db: Session, user_id: int):
     if not db_user:
         return None
 
-    # Delete associated use cases
-    for use_case in db_user.use_cases:
-        db.delete(use_case)
+    # Delete associated projects
+    for project in db_user.projects:
+        db.delete(project)
 
     db.delete(db_user)
     db.commit()

@@ -10,6 +10,7 @@
     
     <div id="container" class="chart-container"></div>
   </div>
+  
 </template>
 
 <script setup>
@@ -19,7 +20,6 @@ import 'highcharts/modules/pattern-fill';
 import 'highcharts/modules/accessibility';
 import 'highcharts/modules/exporting';
 import 'highcharts/modules/export-data';
-// Add the data module
 import 'highcharts/modules/data';
 
 let chart = null;

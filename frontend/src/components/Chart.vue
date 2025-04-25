@@ -193,7 +193,12 @@ const createChart = () => {
     chartOptions.exporting = {
       enabled: true,
       showTable: props.showDataTable,
-      tableCaption: `Data table for ${props.title}`
+      tableCaption: `Data table for ${props.title}`,
+      buttons: {
+        contextButton: {
+          enabled: false
+        }
+      }
     };
 
     // Create the chart

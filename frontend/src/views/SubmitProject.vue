@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-gray-50">
         <header class="bg-white shadow">
             <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-                <h1 class="text-3xl font-bold text-gray-900">Submit New Case</h1>
+                <h1 class="text-3xl font-bold text-gray-900">Submit New Project</h1>
                 <button @click="$router.push('/')" class="text-blue-600 hover:text-blue-800 flex items-center">
                     ← Back to Overview
                 </button>
@@ -37,10 +37,10 @@
 
                         <div class="space-y-6">
                             <div>
-                                <label for="case-title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
-                                <input id="case-title" v-model="formData.title" type="text" required
+                                <label for="project-title" class="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+                                <input id="project-title" v-model="formData.title" type="text" required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                    placeholder="Enter case title">
+                                    placeholder="Enter project title">
                             </div>
 
                             <!-- Institution field -->
@@ -222,14 +222,14 @@
                             <label for="full-description" class="block text-sm font-medium text-gray-700 mb-2">Full Description </label>
                             <textarea id="full-description" v-model="formData.fullDescription.value" v-auto-resize
                                 class="auto-resize-textarea w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                placeholder="Detailed description of the case study"></textarea>
+                                placeholder="Detailed description of the project study"></textarea>
                         </div>
 
                         <div>
-                            <label for="case-url" class="block text-sm font-medium text-gray-700 mb-2">Case Study URL</label>
-                            <input id="case-url" v-model="formData.url" type="url"
+                            <label for="project-url" class="block text-sm font-medium text-gray-700 mb-2">Project Study URL</label>
+                            <input id="project-url" v-model="formData.url" type="url"
                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                                placeholder="https://example.com/case-study">
+                                placeholder="https://example.com/project-study">
                         </div>
                     </div>
 
@@ -246,7 +246,7 @@
                         <button type="submit"
                             class="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold disabled:bg-gray-400"
                             :disabled="loading" @click="handleSubmit">
-                            <span v-if="!loading">Submit Case</span>
+                            <span v-if="!loading">Submit Project</span>
                             <span v-else>Sending...</span>
                         </button>
                     </div>
@@ -254,6 +254,7 @@
 
             </div>
         </main>
+        <AppFooter />
     </div>
 </template>
 
@@ -261,10 +262,11 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import { Country, State, City } from 'country-state-city';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
-import useCaseForm from '@/composables/useCaseForm.js'
+import useProjectForm from '@/composables/useProjectForm.js'
 import LocationDropdown from '@/components/LocationDropdown.vue';
 import { useInstitutions } from '@/composables/useInstitutions.js';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
+import AppFooter from '@/components/AppFooter.vue';
 
 // Form data structure
 const formData = ref({
@@ -292,7 +294,7 @@ const {
     successMessage,
     errorMessage,
     submitForm
-} = useCaseForm()
+} = useProjectForm()
 
 // Add submit handler
 const handleSubmit = async () => {

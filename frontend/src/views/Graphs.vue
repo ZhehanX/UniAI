@@ -3,7 +3,7 @@
         <!-- Header -->
         <header class="bg-white shadow mb-6 -mx-6 px-6 py-4">
             <div class="container mx-auto flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-900">AI Use Cases Analytics</h1>
+                <h1 class="text-2xl font-bold text-gray-900">AI Use Projects Analytics</h1>
                 <button @click="$router.push('/')" class="text-blue-600 hover:text-blue-800 flex items-center">
                     ← Back to Overview
                 </button>
@@ -47,7 +47,7 @@
                      @keydown.home.prevent="scrollToTop"
                      @keydown.end.prevent="scrollToBottom">
                     <!-- Map Component -->
-                    <MapComponent :cases="filteredCases" />
+                    <MapComponent :projects="filteredProjects" />
                 </div>
                 <div class="bg-white border border-gray-200 rounded-lg p-4">
                     <!-- Filters for Map -->
@@ -175,11 +175,12 @@
             </div>
         </div>
     </div>
+    <AppFooter />
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { useCases } from '@/composables/useCases.js';
+import { useProjects } from '@/composables/useProjects.js';
 import { useInstitutions } from '@/composables/useInstitutions.js';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
@@ -187,6 +188,7 @@ import { Country, State, City } from 'country-state-city';
 import MapComponent from '@/components/Map.vue';
 import ChartComponent from '@/components/Chart.vue';
 import LocationDropdown from '@/components/LocationDropdown.vue';
+import AppFooter from '@/components/AppFooter.vue';
 
 // Tab state
 const activeTab = ref('map');
@@ -232,7 +234,7 @@ const prevChart = () => {
 };
 
 // Data sources
-const { cases, fetchAllUseCases } = useCases();
+const { projects, fetchAllProjects } = useProjects();
 const { institutions, fetchAllInstitutions } = useInstitutions();
 const { technologies: aiTechnologies, fetchAllTechnologies } = useAiTechnologies();
 
@@ -302,8 +304,8 @@ const toggleCheckbox = (checkbox) => {
 };
 
 // Computed properties for filtered data
-const filteredCases = computed(() => {
-    let result = cases.value || [];
+const filteredProjects = computed(() => {
+    let result = projects.value || [];
 
     if (activeTab.value === 'map') {
         if (selectedInstitutions.value.length > 0) {
@@ -320,7 +322,7 @@ const filteredCases = computed(() => {
         if (selectedCountry.value) {
             // Filter by country - need to match institution_id with institutions data
             result = result.filter(c => {
-                // Find the institution for this case
+                // Find the institution for this project
                 const institution = institutions.value.find(inst => inst.id === c.institution_id);
                 if (!institution) return false;
 
@@ -355,13 +357,13 @@ const filteredCases = computed(() => {
 
 
 
-// Prepare chart data based on filtered cases
+// Prepare chart data based on filtered projects
 const chartData = computed(() => {
-    // Group cases by AI technology
+    // Group projects by AI technology
     const techCounts = {};
 
-    // Use the filtered cases which already have location filters applied
-    filteredCases.value.forEach(c => {
+    // Use the filtered projects which already have location filters applied
+    filteredProjects.value.forEach(c => {
         if (c.ai_technologies && c.ai_technologies.length > 0) {
             c.ai_technologies.forEach(techId => {
                 techCounts[techId] = (techCounts[techId] || 0) + 1;
@@ -381,8 +383,8 @@ const chartData = computed(() => {
 
 // Prepare yearly trend data based on project_initiation_date
 const yearlyTrendData = computed(() => {
-    // Get base cases
-    let filteredResult = cases.value || [];
+    // Get base projects
+    let filteredResult = projects.value || [];
     
     // Create a map to store data by year and technology
     // output of techsByYear = techId:{year:quantity, year:quantity, (...)} 
@@ -395,7 +397,7 @@ const yearlyTrendData = computed(() => {
     
     // Initialize the years set to track all years
     const yearsSet = new Set();    
-    // Process each case
+    // Process each project
     filteredResult.forEach(c => {
         if (c.project_initiation_date) {
             try {
@@ -407,7 +409,7 @@ const yearlyTrendData = computed(() => {
                     // add year to yearsSet
                     yearsSet.add(year);
                     
-                    // For each technology in this case
+                    // For each technology in this project
                     if (c.ai_technologies && c.ai_technologies.length > 0) {
                         c.ai_technologies.forEach(techId => {
                             // Only include technologies that are in our filter (or all if no filter (see when declare techsToInclude))
@@ -455,7 +457,7 @@ const yearlyTrendData = computed(() => {
 
 // Load data on component mount
 onMounted(async () => {
-    await fetchAllUseCases();
+    await fetchAllProjects();
     await fetchAllInstitutions();
     await fetchAllTechnologies();
 });

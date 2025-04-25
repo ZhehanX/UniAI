@@ -17,9 +17,9 @@
                         class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
                         Admin Review
                     </button>
-                    <button v-if="isLoggedIn" @click="router.push('/my-cases')"
+                    <button v-if="isLoggedIn" @click="router.push('/my-projects')"
                         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                        My Cases
+                        My Projects
                     </button>
                     <button @click="$router.push('/graphs')"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
@@ -29,9 +29,9 @@
                             <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                         </svg>
                     </button>
-                    <button @click="handleSubmitCase"
+                    <button @click="handleSubmitProject"
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                        Submit a Case
+                        Submit a Project
                     </button>
                 </div>
             </div>
@@ -39,30 +39,41 @@
 
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
-            <div class="space-y-6">
-                <div v-for="useCase in allUseCases" :key="useCase.id" 
+            <!-- Loading state -->
+            <div v-if="loading" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-2 text-gray-600">Loading AI tools...</p>
+            </div>
+            
+            <!-- Projects list -->
+            <div v-else class="space-y-6">
+                <div v-for="project in allProjects" :key="project.id" 
                      tabindex="0"
                      role="button"
                      class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
-                     @click="navigateToDetail(useCase.id)"
-                     @keydown.enter="navigateToDetail(useCase.id)"
-                     @keydown.space="navigateToDetail(useCase.id)">
-                    <AppCard :app="useCase" />
+                     @click="navigateToDetail(project.id)"
+                     @keydown.enter="navigateToDetail(project.id)"
+                     @keydown.space="navigateToDetail(project.id)">
+                    <AppCard :app="project" />
                 </div>
             </div>
         </main>
+        
+        <AppFooter />
     </div>
 </template>
 
 <script setup>
-import { onMounted, computed, watch } from 'vue';
+import { onMounted, computed, watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AppCard from '@/components/AppCard.vue';
+import AppFooter from '@/components/AppFooter.vue';
 import { getUserRole } from '@/utils/auth.js';
-import { useCases } from '@/composables/useCases.js';
+import { useProjects } from '@/composables/useProjects.js';
 
 const router = useRouter();
-const { cases, fetchAllUseCases } = useCases();
+const { projects, fetchAllProjects } = useProjects();
+const loading = ref(true);
 
 // Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
@@ -83,12 +94,12 @@ const handleLogout = () => {
     router.push({ path: '/login', replace: true })
     checkAuthState()
 }
-const allUseCases = cases;
+const allProjects = projects;
 
 
-const handleSubmitCase = () => {
+const handleSubmitProject = () => {
     if (localStorage.getItem('authToken')) {
-        router.push('/submit-case');
+        router.push('/submit-project');
     } else {
         router.push('/login');
     }
@@ -97,15 +108,17 @@ const handleSubmitCase = () => {
 
 
 // Navigation to detail page
-const navigateToDetail = (caseId) => {
-    router.push({ name: 'AppDetail', params: { id: caseId } });
+const navigateToDetail = (projectId) => {
+    router.push({ name: 'AppDetail', params: { id: projectId } });
 };
 
 
 
 // Update mount hook
-onMounted(() => {
+onMounted(async () => {
     checkAuthState();
-    fetchAllUseCases();
+    loading.value = true;
+    await fetchAllProjects();
+    loading.value = false;
 })
 </script>

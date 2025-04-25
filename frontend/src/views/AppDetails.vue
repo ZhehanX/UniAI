@@ -79,20 +79,23 @@
     <div v-else class="min-h-screen flex items-center justify-center text-gray-500">
         Loading application details...
     </div>
+
+    <AppFooter />
 </template>
 
 
 <script setup>
 import { onMounted, watch, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { useCases } from '@/composables/useCases.js';
+import { useProjects } from '@/composables/useProjects.js';
 import { useInstitutions } from '@/composables/useInstitutions.js';
+import AppFooter from '@/components/AppFooter.vue';
 
 const route = useRoute();
-const { currentCase, fetchUseCasesById } = useCases();
+const { currentProject, fetchUseProjectsById } = useProjects();
 const { fetchInstitutionDetailsById } = useInstitutions();
 
-const currentApp = currentCase;
+const currentApp = currentProject;
 const institutionDetails = ref(null);
 
 
@@ -126,9 +129,9 @@ console.log("current app:", currentApp);
 
 // Fetch when component mounts or ID changes
 onMounted(() => {
-    fetchUseCasesById(route.params.id);
+    fetchUseProjectsById(route.params.id);
 });
-watch(() => route.params.id, (newId) => fetchUseCasesById(newId));
+watch(() => route.params.id, (newId) => fetchUseProjectsById(newId));
 
 
 

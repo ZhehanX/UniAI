@@ -72,12 +72,14 @@
             </div>
         </main>
     </div>
+    <AppFooter />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';  
+import AppFooter from '@/components/AppFooter.vue';
 
 // Initialize router for navigation after sign up
 const router = useRouter();
