@@ -92,7 +92,7 @@ import { useInstitutions } from '@/composables/useInstitutions.js';
 import AppFooter from '@/components/AppFooter.vue';
 
 const route = useRoute();
-const { currentProject, fetchUseProjectsById } = useProjects();
+const { currentProject, fetchProjectById } = useProjects();
 const { fetchInstitutionDetailsById } = useInstitutions();
 
 const currentApp = currentProject;
@@ -125,13 +125,11 @@ watch(currentApp, async () => {
     }
 }, { immediate: true });
 
-console.log("current app:", currentApp);
-
 // Fetch when component mounts or ID changes
 onMounted(() => {
-    fetchUseProjectsById(route.params.id);
+    fetchProjectById(route.params.id);
 });
-watch(() => route.params.id, (newId) => fetchUseProjectsById(newId));
+watch(() => route.params.id, (newId) => fetchProjectById(newId));
 
 
 

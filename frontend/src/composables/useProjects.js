@@ -37,7 +37,7 @@ export function useProjects() {
      * @param {number|string} id - The ID of the project to fetch
      * @returns {Object|null} project object or null if not found
      */
-    const fetchProjectsById = async (id) => {
+    const fetchProjectById = async (id) => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${id}`);
             currentProject.value = response.data;
@@ -101,6 +101,24 @@ export function useProjects() {
         } catch (error) {
             errorMessage.value = 'Error loading projects';
             throw error;
+        } finally {
+            loading.value = false;
+        }
+    };
+    // Search projects
+    const searchProjects = async (query) => {
+        loading.value = true;
+        errorMessage.value = null;
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/search?q=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error('Search failed');
+            
+            const data = await response.json();
+            return data;
+        } catch (err) {
+            console.error('Search error:', err);
+            errorMessage.value = 'Search failed. Please try again later.';
+            return [];
         } finally {
             loading.value = false;
         }
@@ -193,9 +211,10 @@ export function useProjects() {
         errorMessage,
         successMessage,
         fetchAllProjects,
-        fetchProjectsById,
+        fetchProjectById,
         fetchProjectsByUserId,
         fetchPendingProjectsWithDetails,
+        searchProjects,
         approveProject,
         rejectProject,
         updateProject

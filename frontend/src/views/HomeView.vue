@@ -37,6 +37,29 @@
             </div>
         </header>
 
+        <!-- Search Bar -->
+        <div class="container mx-auto px-6 py-4">
+            <div class="relative max-w-2xl mx-auto">
+                <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                    <input 
+                        type="text" 
+                        v-model="searchQuery" 
+                        @input="handleSearch"
+                        placeholder="Search AI projects by name, technology, or institution..." 
+                        class="w-full px-4 py-3 focus:outline-none"
+                    />
+                    <button 
+                        @click="handleSearch" 
+                        class="bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
             <!-- Loading state -->
@@ -47,13 +70,21 @@
             
             <!-- Projects list -->
             <div v-else class="space-y-6">
-                <div v-for="project in allProjects" :key="project.id" 
+                <!-- Search status -->
+                <div v-if="searchQuery.trim()" class="mb-4">
+                    <p v-if="isSearching" class="text-gray-600">Searching...</p>
+                    <p v-else-if="searchResults.length === 0" class="text-gray-600">No results found for "{{ searchQuery }}"</p>
+                    <p v-else class="text-gray-600">Found {{ searchResults.length }} results for "{{ searchQuery }}"</p>
+                </div>
+                
+                <div v-for="project in displayedProjects" :key="project.id" 
                      tabindex="0"
                      role="button"
-                     class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
-                     @click="navigateToDetail(project.id)"
-                     @keydown.enter="navigateToDetail(project.id)"
-                     @keydown.space="navigateToDetail(project.id)">
+                     @click="$router.push(`/app/${project.id}`)"
+                     @keydown.enter="$router.push(`/app/${project.id}`)"
+                     @keydown.space="$router.push(`/app/${project.id}`)"
+                     class="border rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer">
+                    <!-- Project content -->
                     <AppCard :app="project" />
                 </div>
             </div>
@@ -64,16 +95,56 @@
 </template>
 
 <script setup>
-import { onMounted, computed, watch, ref } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useProjects } from '@/composables/useProjects.js';
 import AppCard from '@/components/AppCard.vue';
 import AppFooter from '@/components/AppFooter.vue';
 import { getUserRole } from '@/utils/auth.js';
-import { useProjects } from '@/composables/useProjects.js';
 
 const router = useRouter();
-const { projects, fetchAllProjects } = useProjects();
+const { projects, fetchAllProjects, searchProjects } = useProjects();
 const loading = ref(true);
+const searchQuery = ref('');
+const searchResults = ref([]);
+const isSearching = ref(false);
+
+// Debounce function to limit API calls
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+};
+
+// Handle search with debounce
+const handleSearch = debounce(async () => {
+  if (!searchQuery.value.trim()) {
+    searchResults.value = [];
+    isSearching.value = false;
+    return;
+  }
+  
+  isSearching.value = true;
+  try {
+    const results = await searchProjects(searchQuery.value);
+    searchResults.value = results;
+  } catch (err) {
+    console.error('Search error:', err);
+    searchResults.value = [];
+  } finally {
+    isSearching.value = false;
+  }
+}, 300);
+
+// Computed property to determine which projects to display
+const displayedProjects = computed(() => {
+  if (searchQuery.value.trim() && searchResults.value.length > 0) {
+    return searchResults.value;
+  }
+  return projects.value;
+});
 
 // Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
@@ -94,8 +165,6 @@ const handleLogout = () => {
     router.push({ path: '/login', replace: true })
     checkAuthState()
 }
-const allProjects = projects;
-
 
 const handleSubmitProject = () => {
     if (localStorage.getItem('authToken')) {
@@ -104,8 +173,6 @@ const handleSubmitProject = () => {
         router.push('/login');
     }
 };
-
-
 
 // Navigation to detail page
 const navigateToDetail = (projectId) => {
