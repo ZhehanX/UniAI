@@ -1,10 +1,44 @@
 # app/main.py
-from fastapi import FastAPI
-from app.routes import use_cases, auth
+from fastapi import FastAPI, Depends
+from fastapi.openapi.utils import get_openapi
+from app.routes import projects, auth, users, institutions, ai_technology, project_ai_technology, search_routes
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.auth import oauth2_scheme
+from services import elastic_search_service
 
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    openapi_schema = get_openapi(
+        title="AI Project Tracker API",
+        version="1.0.0",
+        description="API documentation for managing AI projects",
+        routes=app.routes,
+    )
+    
+    # Add security scheme
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    
+    # Add security requirements to all protected paths
+    protected_paths = ["/api/projects/", "/api/projects/{project_id}"]
+    for path in openapi_schema["paths"]:
+        if any(p in path for p in protected_paths):
+            for method in openapi_schema["paths"][path]:
+                if method in ["post", "put", "delete"]:
+                    openapi_schema["paths"][path][method]["security"] = [{"BearerAuth": []}]
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
 
 app = FastAPI()
+app.openapi = custom_openapi 
 
 # Allow CORS for Vue.js frontend (adjust origins in production)
 app.add_middleware(
@@ -15,11 +49,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Initialize Elasticsearch index
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        await initialize_index()
+    except Exception as e:
+        print(f"Error initializing Elasticsearch: {e}")
+
 # app/main.py
 @app.get("/test")
 def test_endpoint():
     return {"message": "API is working!"}
 
+@app.get("/api/search")
+async def search_projects(q: str):
+    """
+    Search for projects using Elasticsearch
+    """
+    results = await elastic_search_service.search_projects(q)
+    return results
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-app.include_router(use_cases.router, prefix="/api", tags=["use_cases"])
+app.include_router(users.router, prefix="/api", tags=["users"])
+app.include_router(projects.router, prefix="/api", tags=["projects"])
+app.include_router(institutions.router, prefix="/api", tags=["institutions"])
+app.include_router(ai_technology.router, prefix="/api", tags=["ai-technologies"])
+app.include_router(project_ai_technology.router, prefix="/api", tags=["project-ai-tech"])
+app.include_router(search_routes.router, prefix="/api/search")

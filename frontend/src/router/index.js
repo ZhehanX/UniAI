@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { getUserRole } from '@/utils/auth.js';
 import HomeView from '@/views/HomeView.vue';
 import AppDetail from '@/views/AppDetails.vue';
-import SubmitCase from '@/views/SubmitCase.vue';
+import SubmitProject from '@/views/SubmitProject.vue';
+
+// Import the ChartTestView component
+import ChartTestView from '@/views/ChartTestView.vue'
 
 const routes = [
   {
@@ -16,9 +20,9 @@ const routes = [
     props: true // Pass route params as props
   },
   {
-    path: '/submit-case',
-    name: 'SubmitCase',
-    component: SubmitCase
+    path: '/submit-project',
+    name: 'SubmitProject',
+    component: SubmitProject
   },
   {
     path: '/login',
@@ -29,6 +33,37 @@ const routes = [
     path: '/signup',
     name: 'SignUp',
     component: () => import('../views/SignUp.vue')
+  },
+  {
+    path:'/graphs',
+    name: 'Graphs',
+    component: () => import('../views/Graphs.vue')
+  },
+  {
+    path: '/admin/review',
+    name: 'AdminReview',
+    component: () => import('@/views/AdminReview.vue'),
+    meta: { requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      const userRole = getUserRole();
+      if (userRole === 'admin') {
+        next();
+      } else {
+        alert('Admin access required');
+        next('/');
+      }
+    }
+  },
+  {
+    path: '/chart-test',
+    name: 'ChartTest',
+    component: ChartTestView
+  },
+  {
+    path: '/my-projects',
+    name: 'UserUseProjects',
+    component: () => import('@/views/UserProjects.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 
