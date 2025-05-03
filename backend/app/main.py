@@ -63,13 +63,6 @@ async def startup_db_client():
 def test_endpoint():
     return {"message": "API is working!"}
 
-@app.get("/api/search")
-async def search_projects(q: str):
-    """
-    Search for projects using Elasticsearch
-    """
-    results = await elastic_search_service.search_projects(q)
-    return results
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api", tags=["users"])
