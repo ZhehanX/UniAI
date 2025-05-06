@@ -25,6 +25,11 @@ def create_new_project(
 def read_projects(status=None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return project_crud.get_projects(db=db, status=status, skip=skip, limit=limit)
 
+@router.get("/projects/user/{user_id}", response_model=List[Project])
+def read_projects_by_user(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all projects submitted by a specific user"""
+    return project_crud.get_projects_by_user(db=db, user_id=user_id, skip=skip, limit=limit)
+
 @router.get("/projects/{project_id}", response_model=Project)
 def read_project(project_id: int, db: Session = Depends(get_db)):
     db_project = project_crud.get_project(db, project_id)

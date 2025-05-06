@@ -140,10 +140,15 @@ const handleSearch = debounce(async () => {
 
 // Computed property to determine which projects to display
 const displayedProjects = computed(() => {
+  let result;
   if (searchQuery.value.trim() && searchResults.value.length > 0) {
-    return searchResults.value;
+    result = searchResults.value;
+  } else {
+    result = projects.value;
   }
-  return projects.value;
+  
+  // Filter to show only approved projects
+  return result.filter(project => project.status === 'approved');
 });
 
 // Check if user is logged in

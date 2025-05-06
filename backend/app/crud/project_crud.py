@@ -129,3 +129,14 @@ def delete_project(db: Session, project_id: int):
     db.delete(db_project)
     db.commit()
     return db_project
+
+def get_projects_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    """Get all projects submitted by a specific user"""
+    return (
+        db.query(ProjectModel)
+        .options(joinedload(ProjectModel.ai_technologies))
+        .filter(ProjectModel.submitted_by == user_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )

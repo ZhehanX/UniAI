@@ -148,6 +148,13 @@ export default function useProjectForm() {
         }
     }
             
+    /**
+     * Clears all form messages (success and error)
+     */
+    const clearMessages = () => {
+        successMessage.value = '';
+        errorMessage.value = '';
+    }
 
     // Return state variables and methods for use in components
     return {
@@ -155,6 +162,8 @@ export default function useProjectForm() {
         successMessage,
         errorMessage,
         validateForm,
-        submitForm
+        submitForm,
+        clearMessages
+        
     }
 }

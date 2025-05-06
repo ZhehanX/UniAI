@@ -236,9 +236,11 @@
                     <!-- Status Messages -->
                     <div v-if="successMessage" class="p-4 bg-green-100 text-green-700 rounded-lg">
                         {{ successMessage }}
+                        <button @click="clearFormMessages" class="ml-2 text-sm underline">Dismiss</button>
                     </div>
                     <div v-if="errorMessage" class="p-4 bg-red-100 text-red-700 rounded-lg">
                         {{ errorMessage }}
+                        <button @click="clearFormMessages" class="ml-2 text-sm underline">Dismiss</button>
                     </div>
 
                     <!-- Submit Button -->
@@ -259,7 +261,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { ref, onMounted, computed, watch, nextTick, onBeforeUnmount } from 'vue';
 import { Country, State, City } from 'country-state-city';
 import { useLocationDropdown } from '@/composables/useLocationDropdown.js';
 import useProjectForm from '@/composables/useProjectForm.js'
@@ -293,34 +295,52 @@ const {
     loading,
     successMessage,
     errorMessage,
+    clearMessages,
     submitForm
 } = useProjectForm()
 
 // Add submit handler
 const handleSubmit = async () => {
-    const success = await submitForm(formData.value)
+    loading.value = true;
+    
+    // Reset dropdown states to prevent them from showing after validation
+    showDropdown.value = false;
+    showTechDropdown.value = false;
+    
+    const success = await submitForm(formData.value);
+    
     if (success) {
-        // Reset form
-        formData.value = {
-            title: '',
-            institution_id: null,
-            new_institution: {
-                name: '',
-                country: '',
-                state: '',
-                city: ''
-            },
-            technologies: [],
-            contact: '',
-            projectInitiationDate: '',
-            shortDescription: '',
-            fullDescription: {
-                value: ''
-            },
-            url: ''
-        }
+        // Reset form after successful submission
+        resetForm();
+    } else {
+        // Keep loading state consistent with the composable
+        loading.value = false;
     }
-}
+};
+
+// Function to reset the form
+const resetForm = () => {
+    formData.value = {
+        title: '',
+        institution_id: null,
+        new_institution: {
+            name: '',
+            country: '',
+            state: '',
+            city: ''
+        },
+        technologies: [],
+        contact: '',
+        projectInitiationDate: '',
+        shortDescription: '',
+        fullDescription: { value: '' },
+        url: ''
+    };
+    
+    // Reset institution section
+    institutionSearch.value = null;
+    
+};
 
 // ===== INSTITUTION HANDLING =====
 const institutionSearch = ref('');
@@ -346,7 +366,7 @@ onMounted(() => {
 });
 
 const filteredInstitutions = computed(() => {
-    const search = institutionSearch.value.toLowerCase();
+    const search = (institutionSearch.value || '').toLowerCase();
     return institutions.value.filter(inst =>
         inst.name.toLowerCase().includes(search) ||
         inst.city?.toLowerCase().includes(search) ||
@@ -662,4 +682,33 @@ const vAutoResize = {
         el.style.height = el.scrollHeight + 'px';
     }
 };
+
+
+// Function to clear form messages
+const clearFormMessages = () => {
+    clearMessages();
+};
+
+// Auto-clear messages after 5 seconds
+watch(successMessage, (newVal) => {
+    if (newVal) {
+        setTimeout(() => {
+            clearMessages();
+        }, 5000); // 5 seconds
+    }
+});
+
+watch(errorMessage, (newVal) => {
+    if (newVal) {
+        setTimeout(() => {
+            clearMessages();
+        }, 5000); // 5 seconds
+    }
+});
+
+// Clear messages when navigating away
+onBeforeUnmount(() => {
+    clearMessages();
+});
+
 </script>

@@ -148,7 +148,7 @@
 
         <div v-if="!userProjects.length && !loading" class="text-center py-8">
           <div class="text-gray-500 mb-4">You haven't submitted any use projects yet</div>
-          <button @click="$router.push('/submit')" 
+          <button @click="$router.push('/submit-project')" 
             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
             Submit a New Project
           </button>
