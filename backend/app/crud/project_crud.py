@@ -4,8 +4,10 @@ from app.schemas import ProjectCreate
 from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
 from datetime import datetime
+from services.event_service import event_dispatcher, PROJECT_CREATED, PROJECT_UPDATED, PROJECT_DELETED
+import asyncio
 
-def create_project(db: Session, project: ProjectCreate, user_id: int): 
+async def create_project(db: Session, project: ProjectCreate, user_id: int): 
     # Check for existing project with same title
     existing = db.query(ProjectModel).filter(
         ProjectModel.title == project.title
@@ -56,6 +58,10 @@ def create_project(db: Session, project: ProjectCreate, user_id: int):
             tech_ids.append(ai_tech_id)
 
         db.commit()
+        
+        # Dispatch event for Elasticsearch indexing
+        await event_dispatcher.dispatch(PROJECT_CREATED, db_project)
+        
         return db_project
     except Exception as e:
         db.rollback()
@@ -78,7 +84,7 @@ def get_project(db: Session, project_id: int):
     )
 
 
-def update_project(db: Session, project_id: int, project_data: dict):
+async def update_project(db: Session, project_id: int, project_data: dict):
     db_project = get_project(db, project_id)
     if not db_project:
         return None
@@ -119,15 +125,23 @@ def update_project(db: Session, project_id: int, project_data: dict):
     
     db.commit()
     db.refresh(db_project)
+    
+    # Dispatch event for Elasticsearch updating
+    await event_dispatcher.dispatch(PROJECT_UPDATED, db_project)
+    
     return db_project
 
-def delete_project(db: Session, project_id: int):
+async def delete_project(db: Session, project_id: int):
     db_project = get_project(db, project_id)
     if not db_project:
         return None
     
     db.delete(db_project)
     db.commit()
+    
+    # Dispatch event for Elasticsearch deletion
+    await event_dispatcher.dispatch(PROJECT_DELETED, project_id)
+    
     return db_project
 
 def get_projects_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):

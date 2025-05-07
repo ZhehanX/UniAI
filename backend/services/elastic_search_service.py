@@ -29,8 +29,7 @@ async def initialize_index():
                         "contact": {"type": "text"},
                         "url": {"type": "text"},
                         "status": {"type": "keyword"},
-                        "created_at": {"type": "date"},
-                        "updated_at": {"type": "date"}
+                        "created_at": {"type": "date"}
                     }
                 }
             }
@@ -47,6 +46,25 @@ async def index_project(project):
     
     # Refresh the index to make the document available for search
     await client.indices.refresh(index="projects")
+
+# Update a project document
+async def update_project(project_id, project_data):
+    await client.update(
+        index="projects",
+        id=project_id,
+        body={"doc": project_data},
+        refresh=True
+    )
+    return {"status": "updated", "id": project_id}
+
+# Delete a project document
+async def delete_project(project_id):
+    await client.delete(
+        index="projects",
+        id=project_id,
+        refresh=True
+    )
+    return {"status": "deleted", "id": project_id}
 
 # Search projects
 async def search_projects(query):
@@ -65,9 +83,9 @@ async def search_projects(query):
                         {"match": {"institution.country": query}},
                         {"term": {"ai_technologies": {"value": query, "boost": 3}}}
                     ],
-                    "minimum_should_match": 1, # this line require to have at least one match else it will return all projects
+                    "minimum_should_match": 1, # at least one match else it will return all projects
                     "filter": [
-                        {"term": {"status": "pending"}}
+                        {"term": {"status": "approved"}}
                     ]
                 }
             },

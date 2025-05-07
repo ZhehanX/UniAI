@@ -4,7 +4,9 @@ from fastapi.openapi.utils import get_openapi
 from app.routes import projects, auth, users, institutions, ai_technology, project_ai_technology, search_routes
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.auth import oauth2_scheme
-from services import elastic_search_service
+from services.elastic_search_service import initialize_index
+from services.event_service import event_dispatcher
+from services.elastic_sync_service import register_elasticsearch_listeners
 
 def custom_openapi():
     if app.openapi_schema:
@@ -50,13 +52,27 @@ app.add_middleware(
 )
 
 
-# Initialize Elasticsearch index
+# Initialize Elasticsearch index and event dispatcher
 @app.on_event("startup")
 async def startup_db_client():
     try:
         await initialize_index()
+        # Register Elasticsearch event listeners
+        register_elasticsearch_listeners()
+        # Start the event dispatcher
+        event_dispatcher.start()
+        print("Event dispatcher started")
     except Exception as e:
-        print(f"Error initializing Elasticsearch: {e}")
+        print(f"Error initializing services: {e}")
+
+# Shutdown event dispatcher
+@app.on_event("shutdown")
+async def shutdown_event():
+    try:
+        await event_dispatcher.stop()
+        print("Event dispatcher stopped")
+    except Exception as e:
+        print(f"Error shutting down event dispatcher: {e}")
 
 # app/main.py
 @app.get("/test")
