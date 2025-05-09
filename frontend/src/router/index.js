@@ -4,9 +4,6 @@ import HomeView from '@/views/HomeView.vue';
 import AppDetail from '@/views/AppDetails.vue';
 import SubmitProject from '@/views/SubmitProject.vue';
 
-// Import the ChartTestView component
-import ChartTestView from '@/views/ChartTestView.vue'
-
 const routes = [
   {
     path: '/',
@@ -53,11 +50,6 @@ const routes = [
         next('/');
       }
     }
-  },
-  {
-    path: '/chart-test',
-    name: 'ChartTest',
-    component: ChartTestView
   },
   {
     path: '/my-projects',

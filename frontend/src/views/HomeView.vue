@@ -37,6 +37,21 @@
             </div>
         </header>
 
+        <!-- Search Bar -->
+        <div class="container mx-auto px-6 py-4">
+            <div class="relative max-w-2xl mx-auto">
+                <SearchBar 
+                    v-model="searchQuery"
+                    @search="handleSearch"
+                    @input="handleSearchInput"
+                    @advanced-search="handleAdvancedSearch"
+                    placeholder="Search AI projects by name, technology, or institution..."
+                    :disabled="loading"
+                />
+                
+            </div>
+        </div>
+
         <!-- App Grid -->
         <main class="container mx-auto px-6 py-8">
             <!-- Loading state -->
@@ -46,15 +61,40 @@
             </div>
             
             <!-- Projects list -->
-            <div v-else class="space-y-6">
-                <div v-for="project in allProjects" :key="project.id" 
-                     tabindex="0"
-                     role="button"
-                     class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-lg"
-                     @click="navigateToDetail(project.id)"
-                     @keydown.enter="navigateToDetail(project.id)"
-                     @keydown.space="navigateToDetail(project.id)">
-                    <AppCard :app="project" />
+            <div v-else>
+                <SearchResults 
+                    :results="searchResults"
+                    :query="searchQuery"
+                    :is-searching="isSearching"
+                    :filter="filterApprovedProjects"
+                    :is-advanced-search="isAdvancedSearch"
+                    @select="navigateToDetail"
+                    @clear="clearSearch"
+                >
+                    <template #results="{ results }">
+                        <div v-for="project in results" :key="project.id" 
+                             tabindex="0"
+                             role="button"
+                             @click="$router.push(`/app/${project.id}`)"
+                             @keydown.enter="$router.push(`/app/${project.id}`)"
+                             @keydown.space="$router.push(`/app/${project.id}`)">
+                            <!-- Project content -->
+                            <AppCard :app="project" />
+                        </div>
+                    </template>
+                </SearchResults>
+                
+                <!-- Show all projects when not searching -->
+                <div v-if="!searchQuery.trim() && !isAdvancedSearch && projects.length > 0" class="space-y-6">
+                    <div v-for="project in displayedProjects" :key="project.id" 
+                         tabindex="0"
+                         role="button"
+                         @click="$router.push(`/app/${project.id}`)"
+                         @keydown.enter="$router.push(`/app/${project.id}`)"
+                         @keydown.space="$router.push(`/app/${project.id}`)">
+                        <!-- Project content -->
+                        <AppCard :app="project" />
+                    </div>
                 </div>
             </div>
         </main>
@@ -64,16 +104,69 @@
 </template>
 
 <script setup>
-import { onMounted, computed, watch, ref } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useProjects } from '@/composables/useProjects.js';
+import { useSearch } from '@/composables/useSearch.js';
 import AppCard from '@/components/AppCard.vue';
 import AppFooter from '@/components/AppFooter.vue';
+import SearchBar from '@/components/SearchBar.vue';
+import SearchResults from '@/components/SearchResults.vue';
 import { getUserRole } from '@/utils/auth.js';
-import { useProjects } from '@/composables/useProjects.js';
 
 const router = useRouter();
 const { projects, fetchAllProjects } = useProjects();
+const { 
+    searchQuery, 
+    searchResults, 
+    isSearching,
+    performSearch,
+    performAdvancedSearch, 
+    clearSearch
+} = useSearch();
+
+const isAdvancedSearch = ref(false);
+
 const loading = ref(true);
+
+// Filter function for approved projects
+const filterApprovedProjects = (project) => project.status === 'approved';
+
+// Handle search
+const handleSearch = async () => {
+    isAdvancedSearch.value = false;
+    if (!searchQuery.value.trim()) {
+        clearSearch();
+        return;
+    }
+    
+    await performSearch(searchQuery.value);
+};
+
+// Handle real-time search as user types
+const handleSearchInput = async (query) => {
+    isAdvancedSearch.value = false;
+    if (!query.trim()) {
+        clearSearch();
+        return;
+    }
+    
+    await performSearch(query);
+};
+
+// Handle advanced search
+const handleAdvancedSearch = async (filters) => {
+    isAdvancedSearch.value = true;
+    await performAdvancedSearch(filters);
+};
+
+
+
+
+// Computed property to determine which projects to display
+const displayedProjects = computed(() => {
+    return projects.value.filter(project => project.status === 'approved');
+});
 
 // Check if user is logged in
 const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
@@ -94,8 +187,6 @@ const handleLogout = () => {
     router.push({ path: '/login', replace: true })
     checkAuthState()
 }
-const allProjects = projects;
-
 
 const handleSubmitProject = () => {
     if (localStorage.getItem('authToken')) {
@@ -105,14 +196,10 @@ const handleSubmitProject = () => {
     }
 };
 
-
-
 // Navigation to detail page
-const navigateToDetail = (projectId) => {
-    router.push({ name: 'AppDetail', params: { id: projectId } });
+const navigateToDetail = (project) => {
+    router.push({ name: 'AppDetail', params: { id: project.id } });
 };
-
-
 
 // Update mount hook
 onMounted(async () => {

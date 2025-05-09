@@ -34,10 +34,10 @@ export function useProjects() {
 
     /**
      * Fetches a specific project by ID
-     * @param {number|string} id - The ID of the project to fetch
+     * @param {number} id - The ID of the project to fetch
      * @returns {Object|null} project object or null if not found
      */
-    const fetchProjectsById = async (id) => {
+    const fetchProjectById = async (id) => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${id}`);
             currentProject.value = response.data;
@@ -53,7 +53,7 @@ export function useProjects() {
 
     /**
      * Fetches all projects submitted by a specific user
-     * @param {number|string} userId - The ID of the user whose projects to fetch
+     * @param {number} userId - The ID of the user whose projects to fetch
      * @returns {Array} Array of project objects submitted by the user
      */
     const fetchProjectsByUserId = async (userId) => {
@@ -61,7 +61,7 @@ export function useProjects() {
             loading.value = true;
             const token = localStorage.getItem('authToken');
             // Using the main endpoint with a query parameter for user_id
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/?user_id=${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -105,23 +105,57 @@ export function useProjects() {
             loading.value = false;
         }
     };
+    // Search projects
+    const searchProjects = async (query) => {
+        loading.value = true;
+        errorMessage.value = null;
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/search?q=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error('Search failed');
+            
+            const data = await response.json();
+            return data;
+        } catch (err) {
+            console.error('Search error:', err);
+            errorMessage.value = 'Search failed. Please try again later.';
+            return [];
+        } finally {
+            loading.value = false;
+        }
+    };
 
     /**
      * Approves a pending project
-     * @param {number|string} projectId - The ID of the project to approve
+     * @param {number} projectId - The ID of the project to approve
      * @returns {boolean} True if approval was successful
      */
     const approveProject = async (projectId) => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/approve/`, {
+            
+            // First, get the current project data
+            const getResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!getResponse.ok) throw new Error('Failed to fetch project data');
+            const projectData = await getResponse.json();
+            
+            // Update only the status field
+            projectData.status = "approved";
+            
+            // Send the complete updated project data
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                body: JSON.stringify(projectData)
             });
-
+    
             if (!response.ok) throw new Error('Approval failed');
             successMessage.value = 'Project approved successfully';
             return true;
@@ -133,18 +167,34 @@ export function useProjects() {
 
     /**
      * Rejects a pending project
-     * @param {number|string} projectId - The ID of the project to reject
+     * @param {number} projectId - The ID of the project to reject
      * @returns {boolean} True if rejection was successful
      */
     const rejectProject = async (projectId) => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/reject/`, {
+            
+            // First, get the current project data
+            const getResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!getResponse.ok) throw new Error('Failed to fetch project data');
+            const projectData = await getResponse.json();
+            
+            // Update only the status field
+            projectData.status = "rejected";
+            
+            // Send the complete updated project data
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                body: JSON.stringify(projectData)
             });
 
             if (!response.ok) throw new Error('Rejection failed');
@@ -158,7 +208,7 @@ export function useProjects() {
 
     /**
      * Updates an existing project
-     * @param {number|string} projectId - The ID of the project to update
+     * @param {number} projectId - The ID of the project to update
      * @param {Object} projectData - New project data
      * @returns {Object} Updated project object
      */
@@ -193,9 +243,10 @@ export function useProjects() {
         errorMessage,
         successMessage,
         fetchAllProjects,
-        fetchProjectsById,
+        fetchProjectById,
         fetchProjectsByUserId,
         fetchPendingProjectsWithDetails,
+        searchProjects,
         approveProject,
         rejectProject,
         updateProject
