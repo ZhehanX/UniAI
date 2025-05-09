@@ -33,8 +33,8 @@ async def format_project_for_elasticsearch(project):
 
     # Add AI technologies if exist
     if project.ai_technologies:
-        project_dict["ai_technologies"] = [tech.ai_technology_id for tech in project.ai_technologies]
-    
+        project_dict["ai_technologies_names"] = [tech.ai_technology.name for tech in project.ai_technologies]
+
     return project_dict
 
 async def handle_project_created(project):

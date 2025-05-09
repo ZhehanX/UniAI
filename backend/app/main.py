@@ -1,10 +1,10 @@
 # app/main.py
 from fastapi import FastAPI, Depends
 from fastapi.openapi.utils import get_openapi
-from app.routes import projects, auth, users, institutions, ai_technology, project_ai_technology, search_routes
+from app.routes import projects, auth, users, institutions, ai_technology, project_ai_technology, search
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.auth import oauth2_scheme
-from services.elastic_search_service import initialize_index
+from services.elastic_search_service import initialize_index, check_index_status
 from services.event_service import event_dispatcher
 from services.elastic_sync_service import register_elasticsearch_listeners
 
@@ -57,6 +57,11 @@ app.add_middleware(
 async def startup_db_client():
     try:
         await initialize_index()
+        # Check index status after initialization
+        status = await check_index_status()
+        print(f"Elasticsearch index status: {status['status']}")
+        print(f"Document count: {status.get('document_count', 0)}")
+        
         # Register Elasticsearch event listeners
         register_elasticsearch_listeners()
         # Start the event dispatcher
@@ -86,4 +91,4 @@ app.include_router(projects.router, prefix="/api", tags=["projects"])
 app.include_router(institutions.router, prefix="/api", tags=["institutions"])
 app.include_router(ai_technology.router, prefix="/api", tags=["ai-technologies"])
 app.include_router(project_ai_technology.router, prefix="/api", tags=["project-ai-tech"])
-app.include_router(search_routes.router, prefix="/api/search")
+app.include_router(search.router, prefix="/api", tags=["search"])

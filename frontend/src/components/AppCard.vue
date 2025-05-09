@@ -13,7 +13,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
                 <div v-if="app.institution" class="flex items-start">
                     <span class="font-semibold min-w-[120px]">Institution:</span>
-                    <span class="ml-2">{{ app.institution }}</span>
+                    <span class="ml-2">{{ app.institution.name }}</span>
                 </div>
                 <div v-if="app.contact" class="flex items-start">
                     <span class="font-semibold min-w-[120px]">Contact:</span>
