@@ -20,6 +20,7 @@ if cloud_id and cloud_password:
 else:
     # Fallback to local for development
     client = AsyncElasticsearch([os.environ.get("ELASTICSEARCH_URL", "http://localhost:9200")])
+    print("Connected at: " + os.environ.get("http://localhost:9200", "http://localhost:9200"))
     print("Connected to local Elasticsearch")
 
 # Initialize Elasticsearch index for projects
