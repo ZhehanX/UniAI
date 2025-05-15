@@ -20,7 +20,6 @@ if cloud_id and cloud_password:
 else:
     # Fallback to local for development
     client = AsyncElasticsearch([os.environ.get("ELASTICSEARCH_URL", "http://localhost:9200")])
-    print("Connected at: " + os.environ.get("http://localhost:9200", "http://localhost:9200"))
     print("Connected to local Elasticsearch")
 
 # Initialize Elasticsearch index for projects
@@ -172,29 +171,7 @@ async def check_index_status():
         "mappings": mappings
     }
 
-# Add a simple search function for testing
-async def simple_search():
-    try:
-        response = await client.search(
-            index="projects",
-            body={
-                "query": {
-                    "match_all": {}
-                },
-                "size": 10
-            }
-        )
-        
-        return [
-            {
-                **hit["_source"],
-                "score": hit["_score"]
-            }
-            for hit in response["hits"]["hits"]
-        ]
-    except Exception as e:
-        print(f"Search error: {str(e)}")
-        return {"error": str(e)}
+
 
 # Advanced search projects with specific field filters
 async def advanced_search_projects(filters):
