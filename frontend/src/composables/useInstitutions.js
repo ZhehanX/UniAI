@@ -35,7 +35,7 @@ export function useInstitutions() {
 
     /**
      * Fetches details for a specific institution by ID
-     * @param {number|string} institutionId - The ID of the institution to fetch
+     * @param {number} institutionId - The ID of the institution to fetch
      * @returns {Object} Institution details object
      */
     const fetchInstitutionDetailsById = async (institutionId) => {
@@ -58,7 +58,7 @@ export function useInstitutions() {
 
     /**
      * Updates an existing institution's data
-     * @param {number|string} institutionId - The ID of the institution to update
+     * @param {number} institutionId - The ID of the institution to update
      * @param {Object} institutionData - New institution data
      * @returns {Object} Updated institution object
      */

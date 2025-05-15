@@ -32,7 +32,7 @@ export function useAiTechnologies() {
   
   /**
    * Fetches details for a specific AI technology by ID
-   * @param {number|string} techId - The ID of the technology to fetch
+   * @param {number} techId - The ID of the technology to fetch
    * @returns {Object|null} Technology details object or null if not found
    */
   const fetchTechnologyDetails = async (techId) => {

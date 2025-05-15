@@ -568,7 +568,6 @@ const saveEditedProject = async () => {
             project_initiation_date: formattedDate
         };
 
-        console.log('Sending project data:', JSON.stringify(projectData));
 
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${editingProject.value.id}/`, {
             method: 'PUT',

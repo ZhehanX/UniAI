@@ -36,6 +36,17 @@
                                 </div>
 
                                 <div class="flex flex-col">
+                                    <div class="text-gray-500 font-semibold mb-1">Contact:</div>
+                                    <div class="text-gray-700 break-all">
+                                        <a v-if="currentApp.contact" :href="currentApp.contact" target="_blank" 
+                                           class="text-blue-600 hover:underline">
+                                            {{ currentApp.contact }}
+                                        </a>
+                                        <span v-else>N/A</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col">
                                     <div class="text-gray-500 font-semibold mb-1">URL:</div>
                                     <div class="text-gray-700 break-all">
                                         <a v-if="currentApp.url" :href="currentApp.url" target="_blank" 
@@ -52,13 +63,13 @@
                                 </div>
                             </div>
 
-                            <!-- Tags -->
-                            <div v-if="currentApp.tags" class="pt-2 border-t mt-4">
-                                <div class="text-gray-500 font-semibold mb-2">Tags:</div>
+                            <!-- AI Technologies -->
+                            <div v-if="currentApp.ai_technologies" class="flex flex-col">
+                                <div class="text-gray-500 font-semibold mb-1 text-sm">AI Technologies:</div>
                                 <div class="flex flex-wrap gap-2">
-                                    <span v-for="tag in currentApp.tags" :key="tag"
-                                        class="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                                        {{ tag }}
+                                    <span v-for="(tech, index) in currentApp.ai_technologies" :key="tech"
+                                        class="px-3.5 py-1.5 bg-gray-100 text-gray-800 rounded-full text-sm">
+                                        {{ techNames[index] || tech }}
                                     </span>
                                 </div>
                             </div>
@@ -89,15 +100,17 @@ import { onMounted, watch, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProjects } from '@/composables/useProjects.js';
 import { useInstitutions } from '@/composables/useInstitutions.js';
+import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
 import AppFooter from '@/components/AppFooter.vue';
 
 const route = useRoute();
 const { currentProject, fetchProjectById } = useProjects();
 const { fetchInstitutionDetailsById } = useInstitutions();
+const { fetchTechnologyDetails } = useAiTechnologies();
 
 const currentApp = currentProject;
 const institutionDetails = ref(null);
-
+const techNames = ref([]);
 
 const hasLocation = computed(() => {
     return institutionDetails.value && 
@@ -114,6 +127,24 @@ const formatLocation = (institution) => {
     return locationParts.join(', ');
 };
 
+// Fetch technology names when currentApp changes
+const fetchTechnologyNames = async () => {
+    if (currentApp.value && currentApp.value.ai_technologies && Array.isArray(currentApp.value.ai_technologies)) {
+        // Fetch each technology name
+        const promises = currentApp.value.ai_technologies.map(async (techId) => {
+            try {
+                const techDetails = await fetchTechnologyDetails(techId);
+                return techDetails ? techDetails.name : `Tech ${techId}`;
+            } catch (error) {
+                console.error(`Error fetching tech ${techId}:`, error);
+                return `Tech ${techId}`;
+            }
+        });
+
+        techNames.value = await Promise.all(promises);
+    }
+};
+
 // Fetch institution details when currentApp changes
 watch(currentApp, async () => {
     if (currentApp.value && currentApp.value.institution_id) {
@@ -123,6 +154,9 @@ watch(currentApp, async () => {
             console.error('Error fetching institution details:', err);
         }
     }
+    
+    // Fetch technology names
+    await fetchTechnologyNames();
 }, { immediate: true });
 
 // Fetch when component mounts or ID changes
@@ -130,7 +164,4 @@ onMounted(() => {
     fetchProjectById(route.params.id);
 });
 watch(() => route.params.id, (newId) => fetchProjectById(newId));
-
-
-
 </script>

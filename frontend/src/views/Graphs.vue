@@ -306,6 +306,9 @@ const toggleCheckbox = (checkbox) => {
 // Computed properties for filtered data
 const filteredProjects = computed(() => {
     let result = projects.value || [];
+    
+    // First filter by status - only show approved projects
+    result = result.filter(c => c.status === 'approved');
 
     if (activeTab.value === 'map') {
         if (selectedInstitutions.value.length > 0) {
@@ -383,8 +386,8 @@ const chartData = computed(() => {
 
 // Prepare yearly trend data based on project_initiation_date
 const yearlyTrendData = computed(() => {
-    // Get base projects
-    let filteredResult = projects.value || [];
+    // Get filtered Projects 
+    let filteredResult = filteredProjects.value || [];
     
     // Create a map to store data by year and technology
     // output of techsByYear = techId:{year:quantity, year:quantity, (...)} 
