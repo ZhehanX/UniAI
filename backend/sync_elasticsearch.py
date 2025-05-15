@@ -5,7 +5,7 @@ from app.database import get_db
 from app.crud import project_crud
 from services.event_service import event_dispatcher, PROJECT_CREATED
 from services.elastic_sync_service import register_elasticsearch_listeners, format_project_for_elasticsearch
-from services.elastic_search_service import initialize_index, bulk_index_projects, client, simple_search
+from services.elastic_search_service import initialize_index, bulk_index_projects, client
 from elasticsearch import AsyncElasticsearch
 
 async def sync_projects():
@@ -49,10 +49,6 @@ async def sync_projects():
         count_response = await client.count(index="projects")
         print(f"Elasticsearch document count: {count_response['count']}")
         
-        # Test search to verify indexed data
-        print("Testing search functionality...")
-        search_results = await simple_search()
-        print(f"Found {len(search_results)} documents in test search")
         
         print("Index refreshed")
         print("Synchronization complete!")
