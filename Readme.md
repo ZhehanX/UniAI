@@ -4,8 +4,7 @@ This guide walks you through setting up and running the project using Docker.
 
 ## Prerequisites
 
-- Ensure [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) are **installed and running** on your machine.
-- Ensure Docker Desktop is running (or Docker service on Linux).
+- Ensure [Docker](https://www.docker.com/) is **installed and running** on your machine.
 
 ---
 
