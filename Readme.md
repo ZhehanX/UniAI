@@ -40,6 +40,8 @@ type backup.sql | docker-compose exec -T db psql -U postgres -d ai_use_cases -p 
 docker-compose exec backend python3 sync_elasticsearch.py
 ```
 
+---
+
 ## Troubleshooting
 
 ### Check container logs with:
@@ -53,6 +55,8 @@ docker-compose logs -f <service_name>
 ```bash
 docker-compose ps
 ```
+
+---
 
 ## Learn More
 [Docker Compose Documentation](https://docs.docker.com/compose/?spm=a2ty_o01.29997173.0.0.1ba1c921fPwE1A)
