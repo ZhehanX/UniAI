@@ -231,7 +231,7 @@ const initMap = async () => {
                 const projectsFormatted = point.projects.map(c => `• ${c.title}`).join('<br>');
                 
                 // Format location string to handle missing data
-                // To avoid situations like: , Hampshire, United Kingdom (when the city is missing, because 
+                // To avoid situations like: <, Hampshire, United Kingdom> (when the city is missing, because 
                 // normally state and country won't be missing)
                 const city = point.institution.city || '';
                 const state = point.institution.state || '';

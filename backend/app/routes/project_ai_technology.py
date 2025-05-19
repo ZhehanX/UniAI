@@ -13,6 +13,7 @@ from app.crud import (
 
 router = APIRouter()
 
+# create new project AI technology association
 @router.post("/projects/{project_id}/ai-technologies/{ai_tech_id}", response_model=AITechnology)
 def add_ai_tech_to_project(project_id: int, ai_tech_id: int, db: Session = Depends(get_db)):
     try:
@@ -41,6 +42,7 @@ def add_ai_tech_to_project(project_id: int, ai_tech_id: int, db: Session = Depen
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# remove AI technology from project
 @router.delete("/projects/{project_id}/ai-technologies/{ai_tech_id}")
 def remove_ai_tech_from_project(project_id: int, ai_tech_id: int, db: Session = Depends(get_db)):
     deleted = project_ai_technology_crud.delete_project_ai_technology(
@@ -50,6 +52,7 @@ def remove_ai_tech_from_project(project_id: int, ai_tech_id: int, db: Session = 
         raise HTTPException(status_code=404, detail="Association not found")
     return {"message": "AI Technology removed from project"}
 
+# get all AI technologies for a project
 @router.get("/projects/{project_id}/ai-technologies/", response_model=List[AITechnology])
 def get_project_ai_techs(project_id: int, db: Session = Depends(get_db)):
     associations = project_ai_technology_crud.get_project_ai_technologies(db, project_id)

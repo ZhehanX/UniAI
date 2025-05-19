@@ -1,4 +1,3 @@
-# app/main.py
 from fastapi import FastAPI, Depends
 from fastapi.openapi.utils import get_openapi
 from app.routes import projects, auth, users, institutions, ai_technology, project_ai_technology, search
@@ -28,11 +27,12 @@ def custom_openapi():
         }
     }
     
-    # Add security requirements to all protected paths
+    # Add security requirements to the next paths
     protected_paths = ["/api/projects/", "/api/projects/{project_id}"]
     for path in openapi_schema["paths"]:
         if any(p in path for p in protected_paths):
             for method in openapi_schema["paths"][path]:
+                # Only add security for methods that modify data, excluding get all, get by id and get by user id
                 if method in ["post", "put", "delete"]:
                     openapi_schema["paths"][path][method]["security"] = [{"BearerAuth": []}]
     

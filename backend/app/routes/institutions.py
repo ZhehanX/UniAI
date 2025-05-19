@@ -13,6 +13,7 @@ from app.crud.institutions_crud import (
 
 router = APIRouter()
 
+# create new institution
 @router.post("/institutions/", response_model=Institution)
 def create_new_institution(institution: InstitutionCreate, db: Session = Depends(get_db)):
     try:
@@ -20,10 +21,12 @@ def create_new_institution(institution: InstitutionCreate, db: Session = Depends
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# get all institutions
 @router.get("/institutions/", response_model=List[Institution])
 def read_institutions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return get_institutions(db=db, skip=skip, limit=limit)
 
+# get institution by ID
 @router.get("/institutions/{institution_id}", response_model=Institution)
 def read_institution(institution_id: int, db: Session = Depends(get_db)):
     db_institution = get_institution(db=db, institution_id=institution_id)
@@ -31,6 +34,7 @@ def read_institution(institution_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Institution not found")
     return db_institution
 
+# update institution
 @router.put("/institutions/{institution_id}", response_model=Institution)
 def update_institution_endpoint(institution_id: int, institution_data: dict, db: Session = Depends(get_db)):
     updated_institution = update_institution(db=db, institution_id=institution_id, institution_data=institution_data)
@@ -38,6 +42,7 @@ def update_institution_endpoint(institution_id: int, institution_data: dict, db:
         raise HTTPException(status_code=404, detail="Institution not found")
     return updated_institution
 
+# delete institution
 @router.delete("/institutions/{institution_id}")
 def delete_institution_endpoint(institution_id: int, db: Session = Depends(get_db)):
     deleted_institution = delete_institution(db=db, institution_id=institution_id)

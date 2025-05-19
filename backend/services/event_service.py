@@ -2,9 +2,7 @@ from typing import Dict, Any, Callable, List
 import asyncio
 
 class EventDispatcher:
-    """
-    A simple event dispatcher for handling asynchronous events
-    """
+    # A simple event dispatcher for handling asynchronous events
     def __init__(self):
         self.listeners: Dict[str, List[Callable]] = {}
         self._event_queue = asyncio.Queue()
@@ -12,17 +10,17 @@ class EventDispatcher:
         self._worker_task = None
 
     def register(self, event_type: str, listener: Callable):
-        """Register a listener for a specific event type"""
+        # Register a listener for a specific event type
         if event_type not in self.listeners:
             self.listeners[event_type] = []
         self.listeners[event_type].append(listener)
     
     async def dispatch(self, event_type: str, data: Any = None):
-        """Dispatch an event to all registered listeners"""
+        # Dispatch an event to all registered listeners
         await self._event_queue.put((event_type, data))
     
     async def _process_events(self):
-        """Process events from the queue"""
+        # Process events from the queue
         while self._running:
             try:
                 event_type, data = await self._event_queue.get()
@@ -40,13 +38,13 @@ class EventDispatcher:
                 print(f"Error processing event: {e}")
     
     def start(self):
-        """Start the event processing loop"""
+        # Start the event processing loop
         if not self._running:
             self._running = True
             self._worker_task = asyncio.create_task(self._process_events())
     
     async def stop(self):
-        """Stop the event processing loop"""
+        # Stop the event processing loop
         if self._running:
             self._running = False
             # Add a dummy event to unblock the queue
