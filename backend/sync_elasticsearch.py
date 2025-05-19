@@ -8,6 +8,9 @@ from services.elastic_sync_service import register_elasticsearch_listeners, form
 from services.elastic_search_service import initialize_index, bulk_index_projects, client
 from elasticsearch import AsyncElasticsearch
 
+# This function should be used to synchronize all projects in data base with Elasticsearch, normally used for once 
+# when creating a completely new elasticsearch service and there is no data in it
+
 async def sync_projects():
     # Register Elasticsearch event listeners
     register_elasticsearch_listeners()

@@ -11,7 +11,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False, default='user')
-    # WARNING: This will delete all the Project records associated with the User
+    #This will delete all the Project records associated with the User
     projects = relationship("Project", back_populates="submitter", cascade="all, delete")
 
 class Institution(Base):

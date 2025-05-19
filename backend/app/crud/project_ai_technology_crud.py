@@ -1,6 +1,9 @@
 from sqlalchemy.orm import Session
 from app.models import ProjectAITechnology as ProjectAITechnologyModel
 
+# project_ai_technology_crud stores the association between projects and AI technologies, with this table we can know the AI technologies used in a project
+# and we can also know the projects that use a specific AI technology
+
 def create_project_ai_technology(db: Session, project_id: int, ai_tech_id: int):
     try:
         db_assoc = ProjectAITechnologyModel(

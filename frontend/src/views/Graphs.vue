@@ -497,7 +497,11 @@ const scrollToBottom = (event) => {
 };
 </script>
 
+
+
 <style>
+/* Added styles for data table */
+
 .highcharts-data-table {
     display: flex;
     flex-direction: column;
