@@ -14,6 +14,7 @@ from app.crud.user_crud import (
 
 router = APIRouter()
 
+# create new user
 @router.post("/users/", response_model=User)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     try:
@@ -29,10 +30,12 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# get all users
 @router.get("/users/", response_model=List[User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return get_users(db=db, skip=skip, limit=limit)
 
+# get user by id
 @router.get("/users/{user_id}", response_model=User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = get_user(db=db, user_id=user_id)
@@ -40,6 +43,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+# update user
 @router.put("/users/{user_id}", response_model=User)
 def update_existing_user(user_id: int, user_data: dict, db: Session = Depends(get_db)):
     updated_user = update_user(db=db, user_id=user_id, user_data=user_data)
@@ -47,6 +51,7 @@ def update_existing_user(user_id: int, user_data: dict, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="User not found")
     return updated_user
 
+# delete user
 @router.delete("/users/{user_id}")
 def delete_existing_user(user_id: int, db: Session = Depends(get_db)):
     deleted_user = delete_user(db=db, user_id=user_id)
