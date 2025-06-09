@@ -57,7 +57,9 @@ docker-compose ps
 ```
 
 ---
-
+## Note
+The process may take 500–600 seconds (8–10 minutes), depending on the computer.
+---
 ## Learn More
 [Docker Compose Documentation](https://docs.docker.com/compose/?spm=a2ty_o01.29997173.0.0.1ba1c921fPwE1A)
 
