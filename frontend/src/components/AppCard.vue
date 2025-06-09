@@ -11,15 +11,17 @@
             </div>
             <!-- Metadata Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
-                <div v-if="app.institution" class="flex items-start">
+                <!-- app.institution is only returned by search, app.institution_id is in both -->
+                <div v-if="app.institution || app.institution_id" class="flex items-start">
                     <span class="font-semibold min-w-[120px]">Institution:</span>
-                    <span class="ml-2">{{ app.institution.name }}</span>
+                    <span class="ml-2">{{ institutionDisplay }}</span>
                 </div>
                 <div v-if="app.contact" class="flex items-start">
                     <span class="font-semibold min-w-[120px]">Contact:</span>
                     <span class="ml-2 break-all">{{ app.contact }}</span>
                 </div>
-                <div v-if="app.ai_technologies" class="flex items-start">
+                <!-- app.ai_technologies_names is returned by search, app.ai_technologies is the normal return -->
+                <div v-if="app.ai_technologies || app.ai_technologies_names" class="flex items-start">
                     <span class="font-semibold min-w-[120px]">AI Technologies:</span>
                     <span class="ml-2">
                         {{ technologiesDisplay }}
@@ -39,6 +41,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useAiTechnologies } from '@/composables/useAiTechnologies.js';
+import { useInstitutions } from '@/composables/useInstitutions';
 
 const props = defineProps({
     app: {
@@ -50,9 +53,27 @@ const props = defineProps({
 
 // Import the useAiTechnologies composable
 const { fetchTechnologyDetails } = useAiTechnologies();
+const { fetchInstitutionDetailsById } = useInstitutions();
 
 // State to store technology names
 const techNames = ref([]);
+// State to store institution name
+let institutionName = ref('');
+
+
+// Fetch institution on component mount
+onMounted(async () => {
+    if (props.app.institution_id) {
+        try {
+            // Fetch institution name
+            const institutionDetails = await fetchInstitutionDetailsById(props.app.institution_id);
+            institutionName.value = institutionDetails ? institutionDetails.name : `Institution ${props.app.institution_id}`;
+        } catch (err) {
+            console.error('Error fetching institution details:', err);
+        }
+    }
+});
+
 
 // Fetch technology names on component mount
 onMounted(async () => {
@@ -72,8 +93,25 @@ onMounted(async () => {
     }
 });
 
+
+// Computed property to display institution name
+const institutionDisplay = computed(() => {
+    // If institution is present (from search), use it directly. This is what the search returns
+    if (props.app.institution) {
+        return props.app.institution.name;
+    }
+    // Otherwise, use fetched names from IDs
+    return institutionName.value;
+});
+
+
 // Computed property to display technology names as a comma-separated string
 const technologiesDisplay = computed(() => {
+    // If ai_technologies_names is present (from search), use it directly. This is what the search returns
+    if (props.app.ai_technologies_names) {
+        return props.app.ai_technologies_names.join(', ');
+    }
+    // Otherwise, use fetched names from IDs
     return techNames.value.join(', ');
 });
 </script>
